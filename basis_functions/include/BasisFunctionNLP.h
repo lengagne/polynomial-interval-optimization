@@ -2,6 +2,8 @@
 #ifndef __BASISFUNCTIONNLP_HPP__
 #define __BASISFUNCTIONNLP_HPP__
 
+#ifdef IPOPT_FOUND
+
 #include "IpTNLP.hpp"
 #include "BasisFunctionProblem.h"
 #include <unsupported/Eigen/AutoDiff>
@@ -120,5 +122,6 @@ class BasisFunctionNLP:public TNLP
       std::string criteria_type_ = "Minvo";
 };
 
+#endif // IPOPT_FOUND
 
 #endif

@@ -52,11 +52,11 @@ add_definitions("-DGIT_BRANCH=\"${GIT_BRANCH}\"")
 file( GLOB_RECURSE PIO_SOURCES src/*.cpp )
 FILE ( GLOB_RECURSE PIO_HEADERS include/*.h   include/*.hxx )
 
-file( GLOB_RECURSE PIO_PIO_BasisFunctions_SOURCES basis_functions/src/*.cpp )
-FILE ( GLOB_RECURSE PIO_PIO_BasisFunctions_HEADERS basis_functions/include/*.h)
+file( GLOB_RECURSE PIO_BasisFunctions_SOURCES basis_functions/src/*.cpp )
+FILE ( GLOB_RECURSE PIO_BasisFunctions_HEADERS basis_functions/include/*.h)
 
-file( GLOB_RECURSE PIO_PIO_Solvers_SOURCES solvers/src/*.cpp )
-FILE ( GLOB_RECURSE PIO_PIO_Solvers_HEADERS solvers/include/*.h)
+file( GLOB_RECURSE PIO_Solvers_SOURCES solvers/src/*.cpp )
+FILE ( GLOB_RECURSE PIO_Solvers_HEADERS solvers/include/*.h)
 
 
 include_directories(	include
@@ -72,8 +72,8 @@ link_directories(	${CMAKE_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}
 
 
 add_library(PIO SHARED ${PIO_SOURCES} ${PIO_HEADERS})
-add_library(PIO_PIO_BasisFunctions SHARED ${PIO_BasisFunctions_SOURCES} ${PIO_HEADERS})
-add_library(PIO_PIO_Solvers SHARED ${PIO_Solvers_SOURCES} ${PIO_HEADERS})
+add_library(PIO_BasisFunctions SHARED ${PIO_BasisFunctions_SOURCES} ${PIO_HEADERS})
+add_library(PIO_Solvers SHARED ${PIO_Solvers_SOURCES} ${PIO_HEADERS})
 
 target_link_libraries(	PIO_BasisFunctions
                         ${TCMALLOC_LIBRARIES}

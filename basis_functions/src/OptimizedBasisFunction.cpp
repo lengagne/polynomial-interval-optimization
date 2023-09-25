@@ -1,3 +1,5 @@
+#ifdef IPOPT_FOUND
+
 #include "OptimizedBasisFunction.h"
 #include "BasisFunctionNLP.h"
 #include "IpIpoptApplication.hpp"
@@ -115,3 +117,5 @@ void OptimizedBasisFunction::rank_matrix(   uint order,
         cpt++;
     }
 }
+
+#endif // IPOPT_FOUND

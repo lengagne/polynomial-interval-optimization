@@ -1,5 +1,4 @@
-//      Problem_Visu.cpp
-//      Copyright (C) 2012 lengagne (lengagne@gmail.com) and druon 
+//      Copyright (C) 2012 lengagne (lengagne@gmail.com)
 // 
 //      This program is free software: you can redistribute it and/or modify
 //      it under the terms of the GNU General Public License as published by
@@ -16,6 +15,8 @@
 //
 //      This program was developped in the following labs:
 //      from 2022 : Université Blaise Pascal / axis : ISPR / theme MACCS
+
+#ifdef IPOPT_FOUND
 
 #include "BasisFunctionNLP.h"
 #include <cassert>
@@ -278,3 +279,5 @@ void BasisFunctionNLP::get_matrix( Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dy
 {
     m = final_mat_;
 }
+
+#endif // IPOPT_FOUND
