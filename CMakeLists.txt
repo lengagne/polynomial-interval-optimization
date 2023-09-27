@@ -237,3 +237,5 @@ target_link_libraries(	PIO
 # install ( 	FILES "${PROJECT_BINARY_DIR}/PIOConfig.cmake"
 # 			DESTINATION "${INSTALL_LIB_PATH}/PIOConfig" COMPONENT dev )
 # 
+
+add_subdirectory(apps)
