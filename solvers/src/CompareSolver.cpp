@@ -16,7 +16,6 @@ void CompareSolver::compare(const std::string & filename,
         uint nb = choice_solver_.get_nb_solver();
         std::cout<<"We will compare "<< nb <<" solveurs"<<std::endl;        
         for (int i=0;i<nb;i++)
-    //     int i = 1;
         {
             AbstractSolver* solver;
             std::cout<<"\n\nsolver : "<< choice_solver_.get_solver_name(i)<<std::endl;

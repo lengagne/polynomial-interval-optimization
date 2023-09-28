@@ -16,10 +16,13 @@ int main( int argc, char** argv)
 	double precision = 0.001;
 	unsigned int model = 0;
     uint basisfunction = 2;
+    int test = -1;
 	if(argc > 1)
         precision = atof(argv[1]);
 	if(argc > 2)
         model = atof(argv[2]);
+	if(argc > 3)
+        test = atoi(argv[3]);
 
     std::cout<<"precision = "<< precision <<std::endl;
     std::cout<<"model = "<< model <<std::endl;
@@ -50,6 +53,6 @@ int main( int argc, char** argv)
     }
     
     CompareSolver cp(pb);   
-    cp.compare("Robot3D_model_"+std::to_string(model),precision);
+    cp.compare("Robot3D_model_"+std::to_string(model),precision,test);
     return 0;
 }
