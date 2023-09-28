@@ -121,13 +121,10 @@ TYPE BasisFunctionProblem<TYPE>::CostFunction(std::vector<TYPE>&  x)
 {
     set_matrix(x);
     
-//     std::cout<<"A = "<< A_ <<std::endl;
-//     return -abs( determinant(A_)); //- abs ( A_.determinant());
     if( criteria_type_ == "MinVo")
     {
         TYPE det = A_.determinant();
         return - det*det;
-//         return - abs ( A_.determinant());
     }
     
     if (criteria_type_ == "MinNo")
@@ -155,33 +152,6 @@ TYPE BasisFunctionProblem<TYPE>::CostFunction(std::vector<TYPE>&  x)
             
         return out;        
     }
-// 
-// 
-// 
-//     if (criteria_type_ == "Test")
-//     {
-//         Eigen::Matrix<TYPE,Eigen::Dynamic,Eigen::Dynamic> B = A_.inverse();
-//         // we compute the mediane
-//         Eigen::Matrix<TYPE,Eigen::Dynamic,1> lin(n_);
-//         for (int i=0;i<n_;i++)
-//             lin(i) = 0;
-//         for (int i=0;i<n_;i++)
-//             for (int j=0;j<n_;j++)
-//                 lin(i) += B(j,i);            
-//         for (int i=0;i<n_;i++)
-//             lin(i) /= n_;
-//         
-//         TYPE tmp,out = -1e20;
-//         for (int i=0;i<n_;i++)
-//             for (int j=0;j<n_;j++)
-//             {
-//                 tmp = pow(B(j,i)-lin(i),2);
-//                 if (tmp > out)
-//                     out = tmp;
-//             }
-//             
-//         return out;        
-//     }
 
     std::cerr<<"Error we do not know this "<< criteria_type_<<std::endl;
     std::cerr<<"In file "<< __FILE__<<" at line "<< __LINE__ <<std::endl;

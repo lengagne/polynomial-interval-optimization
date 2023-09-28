@@ -3,6 +3,7 @@
 #include "ApproxMinvoFunction.h"
 #include "MinVoFunction.h"
 #include "MinNoFunction.h"
+#include "MinVariance.h"
 #include "BernsteinFunction.h"
 #include "BSplinesFunction.h"
 #include "RecursiveBSplinesFunction.h"
@@ -18,7 +19,7 @@ ChooseBasisFunction::ChooseBasisFunction()
 #ifdef IPOPT_FOUND
     basis_functions_[cpt++] = "MinVo";          // 3 
     basis_functions_[cpt++] = "MinNo";          // 4 
-    basis_functions_[cpt++] = "MinVarianceB";   // 5 
+    basis_functions_[cpt++] = "MinVariance";   // 5 
 #endif    
     basis_functions_[cpt++] = "RecursiveBSplines";// 6 
 }
@@ -60,7 +61,7 @@ void ChooseBasisFunction::choose(AbstractBasisFunction** bf,
 
     if (index == cpt ++)    //  5
     {
-        *bf = new OptimizedBasisFunction(); 
+        *bf = new MinVariance(); 
         return;
     }
 #endif // IPOPT_FOUND

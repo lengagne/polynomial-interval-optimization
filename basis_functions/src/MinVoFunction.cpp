@@ -4,7 +4,6 @@
        
 MinVoFunction::MinVoFunction(bool re_order): OptimizedBasisFunction("MinVo",re_order)
 {
-    
     for (uint i=2;i<=6;i++)
     {
         Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> M(i+1,i+1);

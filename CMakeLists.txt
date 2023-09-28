@@ -21,6 +21,7 @@ find_package( IPOPT QUIET)
 
 if(  IPOPT_FOUND)
     message(" Ipopt found")
+    add_definitions("-DIPOPT_FOUND")
 else()
     message(" Ipopt not found")
 endif()
@@ -71,6 +72,7 @@ include_directories(	include
                         ${EIGEN3_INCLUDE_DIR}
                         ${TCMALLOC_INCLUDE_DIRS}
                         ${LazyCPP_INCLUDE_DIRS}
+                        ${IPOPT_INCLUDE_DIRS}
                         )
 
 link_directories(	${CMAKE_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}
