@@ -27,12 +27,16 @@ int main( int argc, char** argv)
 	unsigned int ndof = 2;
     unsigned int npb = 1;
     double precision = 0.001;
+    int test = -1;
 	if(argc > 1)
         ndof = atoi(argv[1]);
 	if(argc > 2)
         npb = atoi(argv[2]);    
 	if(argc > 3)
         precision = atof(argv[3]);   
+	if(argc > 4)
+        test = atoi(argv[4]);   
+    
     std::cout<<"******************************" <<std::endl;
     std::cout<<"ndof = "<< ndof <<std::endl;
     std::cout<<"npb = "<< npb <<std::endl;
@@ -65,7 +69,7 @@ int main( int argc, char** argv)
     }
     
     CompareSolver cp(pb);   
-    cp.compare("Robot2D_"+std::to_string(ndof)+"_ndof_pb_"+std::to_string(npb),precision);
+    cp.compare("Robot2D_"+std::to_string(ndof)+"_ndof_pb_"+std::to_string(npb),precision,test);
         
     
     return 0;
