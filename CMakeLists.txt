@@ -19,6 +19,12 @@ endif()
 
 find_package( IPOPT QUIET)
 
+if(  IPOPT_FOUND)
+    message(" Ipopt found")
+else()
+    message(" Ipopt not found")
+endif()
+
 
  ## TCMALLOC used to optimized memory allocation
  find_package(PkgConfig REQUIRED)

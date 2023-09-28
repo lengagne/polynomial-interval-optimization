@@ -6,10 +6,7 @@ if(NOT MogsCore_FOUND)
 endif()
 
 if(MogsCore_FOUND)
-    message("MogsCore_FOUND")
-
-    message("MogsCore_INCLUDE_DIRS : " ${MogsCore_INCLUDE_DIRS})
-    
+    message("MogsCore_FOUND")   
     
     include_directories(    include
                             ${MogsCore_INCLUDE_DIRS})
