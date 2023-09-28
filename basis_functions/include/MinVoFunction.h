@@ -1,3 +1,5 @@
+#ifdef IPOPT_FOUND
+
 #ifndef MinVoFunction_H
 #define MinVoFunction_H
 
@@ -20,3 +22,5 @@ class MinVoFunction: public OptimizedBasisFunction
 };
 
 #endif // AbstractBasisFunction_H
+
+#endif //  IPOPT_FOUND

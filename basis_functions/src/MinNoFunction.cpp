@@ -1,3 +1,5 @@
+#ifdef IPOPT_FOUND
+
 #include "MinNoFunction.h"
        
 MinNoFunction::MinNoFunction(bool re_order): OptimizedBasisFunction("MinNo",re_order)
@@ -161,3 +163,4 @@ MinNoFunction::MinNoFunction(bool re_order): OptimizedBasisFunction("MinNo",re_o
     }    
 }
        
+#endif // IPOPT_FOUND

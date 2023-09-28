@@ -1,6 +1,9 @@
 #ifndef OptimizedBasisFunction_H
 #define OptimizedBasisFunction_H
 
+
+#ifdef IPOPT_FOUND
+
 #include "AbstractBasisFunction.h"
 
 
@@ -31,3 +34,5 @@ class OptimizedBasisFunction: public AbstractBasisFunction
 };
 
 #endif // AbstractBasisFunction_H
+
+#endif //  IPOPT_FOUND

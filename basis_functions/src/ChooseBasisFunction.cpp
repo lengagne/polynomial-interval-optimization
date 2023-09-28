@@ -11,84 +11,68 @@
 
 ChooseBasisFunction::ChooseBasisFunction()
 {
-//     basis_functions_.clear();
-//     basis_functions_.push_back("Bernstein");
-//     basis_functions_.push_back("BernsteinReOrder");
-//     basis_functions_.push_back("BSplines");
-//     basis_functions_.push_back("BSplinesReOrder");
-//     basis_functions_.push_back("ApproxMinVo");
-//     basis_functions_.push_back("ApproxMinVoReOrder");
-//     basis_functions_.push_back("MinVo");
-//     basis_functions_.push_back("MinVoReOrder");
-//     basis_functions_.push_back("MinNo");
-//     basis_functions_.push_back("MinNoReOrder");
-//     basis_functions_.push_back("MinVarianceB");
-//     basis_functions_.push_back("MinVarianceBReOrder");
-//     basis_functions_.push_back("RecursiveBSplines");
-//     basis_functions_.push_back("RecursiveBSplinesReOrder");
-//     basis_functions_.push_back("RecursiveBSplines2");    
-//     basis_functions_.push_back("RecursiveBSplines2ReOrder");   
-    
-/*    basis_functions_[0] = "Bernstein";
-    basis_functions_[1] = "BernsteinReOrder";
-    basis_functions_[2] = "BSplines";
-    basis_functions_[3] = "BSplinesReOrder";
-    basis_functions_[4] = "ApproxMinVo";
-    basis_functions_[5] = "ApproxMinVoReOrder";
-    basis_functions_[6] = "MinVo";
-    basis_functions_[7] = "MinVoReOrder";
-    basis_functions_[8] = "MinNo";
-    basis_functions_[9] = "MinNoReOrder";
-    basis_functions_[10] = "MinVarianceB";
-    basis_functions_[11] = "MinVarianceBReOrder";
-    basis_functions_[12] = "RecursiveBSplines";
-    basis_functions_[13] = "RecursiveBSplinesReOrder";
-    basis_functions_[14] = "RecursiveBSplines2";    
-    basis_functions_[15] = "RecursiveBSplines2ReOrder"; */   
-
-    basis_functions_[0] = "Bernstein";
-    basis_functions_[1] = "BSplines";
-    basis_functions_[2] = "ApproxMinVo";
-    basis_functions_[3] = "MinVo";
-    basis_functions_[4] = "MinNo";
-    basis_functions_[5] = "MinVarianceB";
-    basis_functions_[6] = "RecursiveBSplines";
+    uint cpt = 0;
+    basis_functions_[cpt++] = "Bernstein";      // 0 
+    basis_functions_[cpt++] = "BSplines";       // 1
+    basis_functions_[cpt++] = "ApproxMinVo";    // 2 
+#ifdef IPOPT_FOUND
+    basis_functions_[cpt++] = "MinVo";          // 3 
+    basis_functions_[cpt++] = "MinNo";          // 4 
+    basis_functions_[cpt++] = "MinVarianceB";   // 5 
+#endif    
+    basis_functions_[cpt++] = "RecursiveBSplines";// 6 
 }
 
 void ChooseBasisFunction::choose(AbstractBasisFunction** bf, 
                                  uint index)
 {
-    switch(index)
+    uint cpt = 0;
+    
+    if (index == cpt ++)    //  0
     {
-//         case(0): *bf = new BernsteinFunction();     break;
-//         case(1): *bf = new BernsteinFunction(true); break;
-//         case(2): *bf = new BSplinesFunction();      break;
-//         case(3): *bf = new BSplinesFunction(true);      break;
-//         case(4): *bf = new ApproxMinvoFunction();   break;
-//         case(5): *bf = new ApproxMinvoFunction(true);   break;
-//         case(6): *bf = new MinVoFunction();         break;
-//         case(7): *bf = new MinVoFunction(true);         break;
-//         case(8): *bf = new MinNoFunction();         break;
-//         case(9): *bf = new MinNoFunction(true);         break;
-//         case(10): *bf = new OptimizedBasisFunction("MinVarianceB");  break;
-//         case(11): *bf = new OptimizedBasisFunction("MinVarianceB",true);  break;
-//         case(12): *bf = new RecursiveBSplinesFunction(); break;
-//         case(13): *bf = new RecursiveBSplinesFunction(true); break;
-//         case(14): *bf = new RecursiveBSplinesFunction2();break;
-//         case(15): *bf = new RecursiveBSplinesFunction2(true);break;
-        
-        case(0): *bf = new BernsteinFunction();     break;
-        case(1): *bf = new BSplinesFunction();      break;
-        case(2): *bf = new ApproxMinvoFunction();   break;
-        case(3): *bf = new MinVoFunction();         break;
-        case(4): *bf = new MinNoFunction();         break;
-        case(5): *bf = new OptimizedBasisFunction("MinVarianceB");  break;
-        case(6): *bf = new RecursiveBSplinesFunction(); break;
-        
-        default:
+        *bf = new BernsteinFunction(); 
+        return;
+    }
+
+    if (index == cpt ++)    //  1
+    {
+        *bf = new BSplinesFunction(); 
+        return;
+    }
+    
+    if (index == cpt ++)    //  2
+    {
+        *bf = new ApproxMinvoFunction(); 
+            return;
+    }
+#ifdef IPOPT_FOUND    
+    if (index == cpt ++)    //  3
+    {
+        *bf = new MinVoFunction();
+        return;
+    }    
+
+    if (index == cpt ++)    //  4
+    {
+        *bf = new MinNoFunction(); 
+        return;
+    }
+
+    if (index == cpt ++)    //  5
+    {
+        *bf = new OptimizedBasisFunction(); 
+        return;
+    }
+#endif // IPOPT_FOUND
+
+    if (index == cpt ++)    //  6
+    {
+        *bf = new RecursiveBSplinesFunction(); 
+        return;
+    }
+
         std::cerr<<"Error in FILE "<< __FILE__<<" at line "<< __LINE__<<" the index "<<index <<" is not defined yet"<<std::endl;
         exit(123);
-    }    
 }
 
 

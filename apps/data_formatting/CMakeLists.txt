@@ -1,7 +1,3 @@
-               
-message("cmake in data_formatting")
-               
-
 find_package(Qt4 REQUIRED COMPONENTS QtCore QtXml QtXmlPatterns)
 
 include(${QT_USE_FILE})
