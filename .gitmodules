@@ -1,0 +1,18 @@
+[submodule "apps/Robot3D/ThirParty/mogs-core"]
+	path = apps/Robot3D/ThirParty/mogs-core
+	url = git@github.com:lengagne/mogs-core.git
+[submodule "apps/Robot3D/ThirParty/mogs-utils"]
+	path = apps/Robot3D/ThirParty/mogs-utils
+	url = git@github.com:lengagne/mogs-utils.git
+[submodule "apps/Robot3D/ThirParty/mogs-3dobjects"]
+	path = apps/Robot3D/ThirParty/mogs-3dobjects
+	url = git@github.com:lengagne/mogs-3dobjects.git
+[submodule "apps/Robot3D/ThirdParty/mogs-3dobjects"]
+	path = apps/Robot3D/ThirdParty/mogs-3dobjects
+	url = git@github.com:lengagne/mogs-3dobjects.git
+[submodule "apps/Robot3D/ThirdParty/mogs-core"]
+	path = apps/Robot3D/ThirdParty/mogs-core
+	url = git@github.com:lengagne/mogs-core.git
+[submodule "apps/Robot3D/ThirdParty/mogs-utils"]
+	path = apps/Robot3D/ThirdParty/mogs-utils
+	url = git@github.com:lengagne/mogs-utils.git
