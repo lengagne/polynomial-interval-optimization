@@ -8,40 +8,20 @@
 
 ChooseSolver::ChooseSolver()
 {
-//     solver_name_.clear();
-//     solver_name_.push_back("BissectionInterval");
-//     
-//     
-//     uint nb = choice_.get_nb_basis_type();
-//     std::string name = "BissectionBasis";    
-//     for (int i=0;i<nb;i++)
-//     {
-//         solver_name_.push_back(name+"_"+choice_.get_basis_type(i));
-//         nb_solver_++;
-//     }
-// //     name = "ContractionBasis";    
-// //     for (int i=0;i<nb;i++)
-// //     {
-// //         solver_name_.push_back(name+"_"+choice_.get_basis_type(i));
-// //     }
-// //     solver_name_.push_back("ContractionInterval");
-    
     uint nb = choice_.get_nb_basis_type();
-//     solver_name_.resize(2*(nb+1));
     uint cpt = 0;
     solver_name_[cpt++] = "BissectionInterval";
-    std::string name = "BissectionBasis_";    
+    std::string name = "BissectionBasis";    
     for (int i=0;i<nb;i++)
     {
-//         solver_name_.push_back(name+"_"+choice_.get_basis_type(i));
-        std::string n = name +choice_.get_basis_type(i);
+        std::string n = name+ std::string("_")+choice_.get_basis_type(i);
         solver_name_[cpt++] = n;
         nb_solver_++;
     }
-    name = "ContractionBasis_";    
+    name = "ContractionBasis";    
     for (int i=0;i<nb;i++)
     {
-        std::string n = name+choice_.get_basis_type(i);
+        std::string n = name+ std::string("_")+choice_.get_basis_type(i);
         solver_name_[cpt++] = n;
         nb_solver_++;
     }

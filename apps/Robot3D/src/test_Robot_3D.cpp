@@ -54,5 +54,6 @@ int main( int argc, char** argv)
     
     CompareSolver cp(pb);   
     cp.compare("Robot3D_model_"+std::to_string(model),precision,test);
+    delete pb;
     return 0;
 }

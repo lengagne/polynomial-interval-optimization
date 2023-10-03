@@ -34,17 +34,14 @@ void ContractionBasisFunctionSolver::init(double eps)
     }
 
     infos.resize(nb_fun_);
-    std::cout<<"prepare constraints"<<std::endl;
     for (int i=0;i<nb_fun_;i++)
     {
         infos[i] = new IntervalEstimatorContractor(bf_,output_Interval_value[i]);
     }
-    std::cout<<"prepare optim"<<std::endl;
     if(solve_optim_)
     {
         info_crit_ = new IntervalEstimator(bf_);
     }
-    std::cout<<"prepare optim done"<<std::endl;
 
 //     unsigned int cpt =  nb_intermediate_+nb_fun_ +1;
 //     for (int i=0;i<nb_fun_;i++)

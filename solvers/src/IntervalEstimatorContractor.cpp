@@ -67,7 +67,6 @@ unsigned int IntervalEstimatorContractor::prepare_coeffs( const MogsInterval& ou
         MCT_coeff_[index] = local_dual_.get_value(it->first);
         if(! MCT_coeff_[index].is_null())
         {
-//             std::cout<<"index = "<< index <<std::endl;
             if( it->first->contains_error())
             {
                 nb_sparse_errors_++;
@@ -130,7 +129,6 @@ unsigned int IntervalEstimatorContractor::prepare_coeffs( const MogsInterval& ou
             std::list<unsigned int> tmp;
             tmp.push_back(index);
             contractor_index.push_back(index);
-//             std::cout<<"index = "<< index <<std::endl;
             Kronecker* tmp_kron = new Kronecker(local_M_inverse_inputs_);
             specific_kron_solvers_.push_back(tmp_kron);
 

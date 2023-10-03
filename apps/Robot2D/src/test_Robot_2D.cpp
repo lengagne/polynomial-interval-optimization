@@ -71,6 +71,7 @@ int main( int argc, char** argv)
     CompareSolver cp(pb);   
     cp.compare("Robot2D_"+std::to_string(ndof)+"_ndof_pb_"+std::to_string(npb),precision,test);
         
+    delete pb;
     
     return 0;
 }

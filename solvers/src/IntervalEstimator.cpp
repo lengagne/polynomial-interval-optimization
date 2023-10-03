@@ -77,6 +77,9 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
         bf_->get_basis_coeff_matrix(val, order_[i],local_M_[nb_in_-i-1],local_M_inverse_[nb_in_-i-1]);
     }
     
+    for (int i=0;i<nb_in_;i++)  if(! dep_[nb_in_-i-1]->rely_on_error())
+        local_M_inverse_inputs_.push_back(local_M_inverse_[i]);    
+    
     kron_solver_inputs_ = new Kronecker(local_M_inverse_inputs_);
     kron_solver_errors_ = new Kronecker(local_M_inverse_);
 
@@ -91,15 +94,12 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
     for (int i=0;i<dep_inputs_.size();i++)
         coefdep_inputs_.push_back( coefdep_inputs_[i] * (order_inputs_[i]+1));
 
-    for (int i=0;i<nb_in_;i++)  if(! dep_[nb_in_-i-1]->rely_on_error())
-        local_M_inverse_inputs_.push_back(local_M_inverse_[i]);
-
     unsigned long long nb_coeff_ = 1;
     for (int i = 0;i<dep_.size();i++)
         nb_coeff_ *= order_[i]+1;
 
     std::list<unsigned int > coeff_inputs_, coeff_errors_;
-    std::vector<unsigned int > mem_index_input(nb_in_);
+    std::vector<unsigned int > mem_index_input(nb_control_point_inputs_);
     std::map<unsigned int, LazyVariable> MCT_coeff_;
 
     uint nb_valid_coeff = 0;
@@ -109,7 +109,6 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
     for( std::map<mem*,LazyVariable>::const_iterator it = out.dependances_.begin(); it != out.dependances_.end();it++)
     {        
         unsigned int index = get_index(it->first );        
-//         std::cout<<"index = "<< *it->first<<std::endl;
         MCT_coeff_[index] = out.get_value(it->first);
         
         if(! MCT_coeff_[index].is_null())
@@ -121,7 +120,6 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
             }else
             {
                 unsigned int index2 = get_index_input(it->first);
-//                 nb_sparse_inputs_++;
                 coeff_inputs_.push_back(index2);
                 mem_index_input[index2] = index;
             }
