@@ -168,6 +168,7 @@ check_constraint IntervalEstimatorContractor::update_from_inputs( Result& res, I
     for (int i=1;i<nb_control_point_inputs_;i++)
     {
         dual(i) = LazyUpdate(num_out_,cpt++);
+//         std::cout<<"dual("<<i<<") : ["<<num_out_<<"/"<< cpt<<"] "<<dual(i)<<std::endl;
         out = Hull(out,dual(i));
     }    
     
@@ -190,6 +191,7 @@ check_constraint IntervalEstimatorContractor::update_from_inputs( Result& res, I
             input = Hull( input, val); 
         }
         input = input + error;
+//         std::cout<<"input = "<< input <<std::endl;
         if (v !=0.0)
         {
             input = -input / v;//

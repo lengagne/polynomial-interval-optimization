@@ -161,4 +161,9 @@ void MogsIntervalChief::reset()
     intermediate_.clear();
     intermediate_in_.clear();
     memory_.clear();
+    monomials_.clear();
+    
+    mem tmp;
+//    monomials_.push_back(*double_value_);
+    double_value_ = check_input(&tmp);   // allows to define a double    
 }

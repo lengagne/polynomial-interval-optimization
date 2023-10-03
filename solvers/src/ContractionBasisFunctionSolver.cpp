@@ -62,6 +62,7 @@ void ContractionBasisFunctionSolver::init(double eps)
 //     }   
     
     BasisFunctionSolver::init_end();
+    
     std::cout<<"fin preparation "<<std::endl;
 }
 

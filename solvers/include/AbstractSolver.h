@@ -70,6 +70,8 @@ class AbstractSolver
 
         Result optim_;
 
+        bool print_ = false;
+        
     private:
 
         bool file_open = false;
@@ -81,7 +83,7 @@ class AbstractSolver
         std::string file_prefix_;
         unsigned int cpt_rec_input_, cpt_rec_output_;
 
-        bool print_ = false;
+        
 
 };
 

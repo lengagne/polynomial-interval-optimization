@@ -47,4 +47,6 @@ void BSplinesFunction::compute_basis_coeff_matrix( const Interval& inter,
 
     mat = re_order(mat);
     mat_inverse =mat.inverse();
+    
+    std::cout<<"order = " << order <<" matrix = \n "<< mat_inverse<<std::endl;
 }

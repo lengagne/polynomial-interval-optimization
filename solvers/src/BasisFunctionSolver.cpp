@@ -140,7 +140,14 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
         cpt_iter_++;
         test = true;
         set_next();        
-
+//         if (print_ ) //&& cpt_iter_ %100 == 0)
+//         {
+//             std::cout<<cpt_iter_<<" "<< optim_crit_ <<std::endl;
+//             for (int i=0;i<nb_var_;i++)
+//             {
+//                 std::cout<<"\t in["<<i<<"] = "<<  current_value_.in[i]<<std::endl;
+//             }
+//         }
         check_constraint type_optim = OVERLAP;
         Interval tmp_crit = Hull(-std::numeric_limits<double>::max(),optim_crit_);
         if(find_one_feasible_)  // if one solution found check if we can found better
@@ -159,11 +166,13 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
                 {
                     switch(infos[i]->update_from_inputs(current_value_, bounds_[i],i))    
                     {
-                        case(OUTSIDE)   :   type = OUTSIDE;
+                        case(OUTSIDE)   :   //if (print_) std::cout<<" ctr("<< i<<") =  OUTSIDE"<<std::endl;
+                                            type = OUTSIDE;
                                             break;
-                        case(INSIDE)    :   current_value_.ctr_ok[i] = true;
+                        case(INSIDE)    :   //if (print_) std::cout<<" ctr("<< i<<") =  INSIDE"<<std::endl;
+                                            current_value_.ctr_ok[i] = true;
                                             break;
-                        case(OVERLAP)   :   
+                        case(OVERLAP)   :   //if (print_) std::cout<<" ctr("<< i<<") =  OVERLAP"<<std::endl;
                                             type = OVERLAP;
                                             current_value_.ctr_ok[i] = false;
                                             break;
@@ -232,7 +241,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
             }
         }
         if(current_vector_.size() == 0) test = false;
-    }while(test);
+    }while(test ); // && cpt_iter_ < max_iter_ );
 
     return set_results();
 }
