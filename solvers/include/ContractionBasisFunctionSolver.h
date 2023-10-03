@@ -4,7 +4,6 @@
 #include <fstream>
 
 #include "BasisFunctionSolver.h"
-#include "output_infos_ndof.h"
 #include "IntervalEstimatorContractor.h"
 
 
@@ -20,8 +19,6 @@ class ContractionBasisFunctionSolver: public BasisFunctionSolver
         {
             std::cerr<<"Function evaluate not defined yet for ContractionBasisFunctionSolver"<<std::endl;
         }
-
-//         virtual param_optim solve_optim(double eps=1e-3);
 
         /// Update the intermediate values
         void update(Result & current_value);

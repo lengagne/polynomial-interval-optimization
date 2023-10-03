@@ -76,6 +76,11 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
         Interval val = dep_[i]->value_;
         bf_->get_basis_coeff_matrix(val, order_[i],local_M_[nb_in_-i-1],local_M_inverse_[nb_in_-i-1]);
     }
+    
+    kron_solver_inputs_ = new Kronecker(local_M_inverse_inputs_);
+    kron_solver_errors_ = new Kronecker(local_M_inverse_);
+
+     nb_control_point_inputs_ = kron_solver_inputs_->get_nb_control_point();
 
     coefdep_inputs_.push_back(1);
     for (int i=0;i<nb_in_;i++)  if(! dep_[i]->rely_on_error())
@@ -92,16 +97,13 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
     unsigned long long nb_coeff_ = 1;
     for (int i = 0;i<dep_.size();i++)
         nb_coeff_ *= order_[i]+1;
-    nb_coeff_inputs_ = 1;
-    for (int i = 0;i<dep_inputs_.size();i++)
-        nb_coeff_inputs_ *= order_inputs_[i]+1;
 
     std::list<unsigned int > coeff_inputs_, coeff_errors_;
-    std::vector<unsigned int > mem_index_input(nb_coeff_inputs_);
+    std::vector<unsigned int > mem_index_input(nb_in_);
     std::map<unsigned int, LazyVariable> MCT_coeff_;
 
-    uint nb_valid_coeff_ = 0;
-    nb_sparse_inputs_ = 0;
+    uint nb_valid_coeff = 0;
+//     nb_sparse_inputs_ = 0;
     nb_sparse_errors_ = 0;
     
     for( std::map<mem*,LazyVariable>::const_iterator it = out.dependances_.begin(); it != out.dependances_.end();it++)
@@ -119,7 +121,7 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
             }else
             {
                 unsigned int index2 = get_index_input(it->first);
-                nb_sparse_inputs_++;
+//                 nb_sparse_inputs_++;
                 coeff_inputs_.push_back(index2);
                 mem_index_input[index2] = index;
             }
@@ -129,14 +131,11 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
     coeff_errors_.sort();
     coeff_inputs_.sort();
     
-    kron_solver_inputs_ = new Kronecker(local_M_inverse_inputs_);
-    kron_solver_errors_ = new Kronecker(local_M_inverse_);
     kron_solver_errors_->prepare_line_product_interval(coeff_errors_);
-
-    sparse_coeff_errors_.resize(nb_sparse_errors_);
-  
-     nb_control_point_inputs_ = kron_solver_inputs_->get_nb_control_point();
     
+    sparse_coeff_errors_.resize(nb_sparse_errors_);
+    
+     // deal with input
     for (int i=0;i<nb_control_point_inputs_;i++)
     {
         LazyVariable out = 0;
@@ -145,16 +144,16 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
             double v = kron_solver_inputs_->get_value(i,*it);
             out += MCT_coeff_[mem_index_input[*it]]* v;
         }
-        LazyAddOutput(out,num_out_,nb_valid_coeff_++);
+        LazyAddOutput(out,num_out_,nb_valid_coeff++);
     }
     
     // deal with error
     for(std::list<unsigned int >::const_iterator it = coeff_errors_.begin(); it != coeff_errors_.end(); it++)
     {
-        LazyAddOutput(MCT_coeff_[*it],num_out_,nb_valid_coeff_++);
+        LazyAddOutput(MCT_coeff_[*it],num_out_,nb_valid_coeff++);
     }      
     
-    return nb_valid_coeff_;
+    return nb_valid_coeff;
 }
 
 Interval IntervalEstimator::update_from_inputs( )

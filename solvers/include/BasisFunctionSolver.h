@@ -11,11 +11,6 @@
 class BasisFunctionSolver: public AbstractSolver
 {
     public:
-//         BasisFunctionSolver(AbstractCSP* pb, AbstractBasisFunction* bf);
-//         virtual ~BasisFunctionSolver();
-        
-        
-
        
         virtual param_optim solve_optim(double eps=1e-3);
 

@@ -14,14 +14,14 @@ ChooseBasisFunction::ChooseBasisFunction()
 {
     uint cpt = 0;
     basis_functions_[cpt++] = "Bernstein";      // 0 
-    basis_functions_[cpt++] = "BSplines";       // 1
-    basis_functions_[cpt++] = "ApproxMinVo";    // 2 
-#ifdef IPOPT_FOUND
-    basis_functions_[cpt++] = "MinVo";          // 3 
-    basis_functions_[cpt++] = "MinNo";          // 4 
-    basis_functions_[cpt++] = "MinVariance";   // 5 
-#endif    
-    basis_functions_[cpt++] = "RecursiveBSplines";// 6 
+//     basis_functions_[cpt++] = "BSplines";       // 1
+//     basis_functions_[cpt++] = "ApproxMinVo";    // 2 
+// #ifdef IPOPT_FOUND
+//     basis_functions_[cpt++] = "MinVo";          // 3 
+//     basis_functions_[cpt++] = "MinNo";          // 4 
+//     basis_functions_[cpt++] = "MinVariance";   // 5 
+// #endif    
+//     basis_functions_[cpt++] = "RecursiveBSplines";// 6 
 }
 
 void ChooseBasisFunction::choose(AbstractBasisFunction** bf, 

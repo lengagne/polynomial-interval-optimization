@@ -42,17 +42,16 @@ class IntervalEstimator{
     std::vector<MogsInterval*> dep_inputs_;
     std::vector<unsigned int> order_inputs_,coefdep_inputs_;
     std::vector< Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> > local_M_inverse_inputs_;
-    unsigned int nb_coeff_inputs_;
 
     std::vector<mem*> all_dependancies_;
 
     Kronecker* kron_solver_inputs_;
     Kronecker* kron_solver_errors_;
 
-    Eigen::Matrix<LazyVariable,Eigen::Dynamic,1> sparse_coeff_inputs_;
+//     Eigen::Matrix<LazyVariable,Eigen::Dynamic,1> sparse_coeff_inputs_;
     Eigen::Matrix<Real,Eigen::Dynamic,1> sparse_coeff_errors_;
 //    Eigen::Matrix<unsigned int,Eigen::Dynamic,1> sparse_index_inputs_, sparse_index_errors_;
-    unsigned int nb_sparse_inputs_;
+//     unsigned int nb_sparse_inputs_;
     unsigned int nb_sparse_errors_;
 
     unsigned int nb_control_point_inputs_;

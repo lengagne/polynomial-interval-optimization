@@ -14,7 +14,6 @@ void ProblemPoly::init()
    input_.resize(nb_var_);
     for (int i=0;i<nb_var_;i++)
         input_[i] = Hull (-30,30);    
-//         input_[i] = Hull (-0.8,-0.7);    
 
     
     bound_.resize(nb_fun_);

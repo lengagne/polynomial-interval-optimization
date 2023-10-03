@@ -9,10 +9,6 @@ std::vector<double> steps = {2,1,0.5,0.1,0.01};
 
 int main( int argc, char** argv)
 {
-	// this application is required due to QXmlValidator in MOGS
-//     QCoreApplication a(argc, argv);
-// 
-//     setlocale(LC_ALL, "C");
 
 	double precision = 0.001;
 	if(argc > 1)

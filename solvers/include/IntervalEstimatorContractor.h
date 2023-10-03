@@ -3,11 +3,20 @@
 
 #include "IntervalEstimator.h"
 
+typedef struct contractor_input{
+    mem* dependancy;
+//    Eigen::Matrix<double,Eigen::Dynamic,1> X2;
+//    double value;
+    bool is_output;
+    unsigned int index;
+//    unsigned int index_value;
+}contractor_input;
 
 class IntervalEstimatorContractor : public IntervalEstimator{
     public:
 
-        IntervalEstimatorContractor(AbstractBasisFunction* bf);
+        IntervalEstimatorContractor(AbstractBasisFunction* bf,
+                                    const MogsInterval& b);
         
 //         ~IntervalEstimatorContractor();
         
@@ -15,6 +24,20 @@ class IntervalEstimatorContractor : public IntervalEstimator{
 
 //         virtual check_constraint update_from_inputs( Interval& out, Interval& bound);        
         virtual check_constraint update_from_inputs( Result& res, Interval& bound,uint index_ctr);
+        
+        void define_bound(const MogsInterval& b);
+        
+        
+// private:
+        MogsInterval bound_;
+        MogsInterval local_dual_;
+        
+
+        unsigned int contraction_mode_=0;
+        
+        std::vector<Kronecker*> specific_kron_solvers_;
+        
+        std::vector<contractor_input> contractors_;
 };
 
 
