@@ -165,6 +165,7 @@ unsigned int IntervalEstimatorContractor::prepare_coeffs( const MogsInterval& ou
 // check_constraint IntervalEstimatorContractor::update_from_inputs( Interval& out, Interval& bound)
 check_constraint IntervalEstimatorContractor::update_from_inputs( Result& res, Interval& bound,uint index_ctr)
 {  
+    std::cout<<"dealing with = "<< num_out_ <<std::endl;
     unsigned int cpt = 0;
     Eigen::Matrix<double,Eigen::Dynamic,1> dual(nb_control_point_inputs_);
     dual(0) = LazyUpdate(num_out_,cpt++);
@@ -185,8 +186,10 @@ check_constraint IntervalEstimatorContractor::update_from_inputs( Result& res, I
     check_constraint result = OVERLAP;
     for (int i=0;i<nb_c;i++)
     {
+        std::cout<<"i = "<< i <<std::endl;
         contractor_input& c = contractors_[i];
         double v =  LazyUpdate(num_out_,cpt++); 
+        std::cout<<"v = "<< v <<std::endl;
         Interval input = LazyUpdate(num_out_,cpt++); 
         for (int j=1;j<nb_control_point_inputs_;j++)
         {
@@ -194,6 +197,7 @@ check_constraint IntervalEstimatorContractor::update_from_inputs( Result& res, I
             input = Hull( input, val); 
         }
         input = input + error;
+        std::cout<<"input = "<< input <<std::endl;
         if (v !=0.0)
         {
             input = -input / v;//
