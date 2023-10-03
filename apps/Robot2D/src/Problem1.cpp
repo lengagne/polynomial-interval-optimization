@@ -11,6 +11,7 @@ void Problem1::init()
         input_[i] = Hull (-1.5,1.5);
     }
 
+//     input_[0] = Hull(0,1.5);
     width = 0.1;
 
     bound_.resize(nb_fun_);

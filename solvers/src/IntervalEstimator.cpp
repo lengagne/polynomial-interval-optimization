@@ -103,7 +103,6 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
     std::map<unsigned int, LazyVariable> MCT_coeff_;
 
     uint nb_valid_coeff = 0;
-//     nb_sparse_inputs_ = 0;
     nb_sparse_errors_ = 0;
     
     for( std::map<mem*,LazyVariable>::const_iterator it = out.dependances_.begin(); it != out.dependances_.end();it++)

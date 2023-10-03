@@ -80,7 +80,6 @@ void BasisFunctionSolver::set_next()
 {    
     current_value_ = current_vector_.back();
     current_vector_.pop_back();    
-    
     for (int i=0;i<nb_var_;i++)
     {
         input_Interval[i].update( current_value_.in[i]);
@@ -174,7 +173,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
                 }
             }
             update_input();
-            
+                        
             // check the optimal
             switch(type)
             {
