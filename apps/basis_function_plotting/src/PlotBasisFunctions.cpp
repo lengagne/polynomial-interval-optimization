@@ -22,13 +22,12 @@ int main( int argv, char** argc)
     uint min_order = 1;
     if (argv>1)
         min_order = atoi(argc[1]);    
-    uint max_order = 6;
+    uint max_order = 10;
     if (argv>2)
         max_order = atoi(argc[2]);
     
     uint min_bfi = 1;    
     uint max_bfi = choice.get_nb_basis_type();
-    
     std::vector<uint> vorder, vbf;
     for (int i=min_order;i<=max_order;i++)   vorder.push_back(i);
     for (int i=min_bfi;i<=max_bfi;i++)   vbf.push_back(i);
@@ -41,7 +40,6 @@ int main( int argv, char** argc)
         uint bfi = vbf[j];
         
         std::string basis_type = choice.get_basis_type(j);
-        std::cout<<"basis_type = "<< basis_type <<std::endl;
         choice.choose(&bf,j);
 
         Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> M(order+1,order+1),N(order+1,order+1);

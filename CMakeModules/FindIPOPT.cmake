@@ -15,14 +15,15 @@ find_path(IPOPT_INCLUDE_DIR NAMES IpNLP.hpp
 PATHS  "$ENV{IPOPT_HOME}/include/coin"
 	"/usr/include/coin"
 	"/usr/local/include/coin"
-
+	"~/devel/env/include/coin"
 )
 
 find_library( IPOPT_LIBRARY 
 		ipopt
 		PATHS "$ENV{IPOPT_HOME}/lib"
 		"/usr/lib"
-		"/usr/local/lib")   
+		"/usr/local/lib"
+		"~/devel/env/lib")   
 
 #wrong config under Debian workaround
 add_definitions( -DHAVE_CSTDDEF )
@@ -35,43 +36,50 @@ find_path(IPOPT_HSL_LIBRARY_DIR
 	PATHS "$ENV{IPOPT_HSL_LIBRARY_PATH}"
 		"$ENV{HOME}/opt/HSL/lib"
 		"/usr/local/lib"
+		"~/devel/env/lib"
 )
 
 find_library( IPOPT_ASL_LIBRARY 
 		coinasl
 		PATHS "$ENV{IPOPT_HOME}/lib"
 		"/usr/lib"
-		"/usr/local/lib")
+		"/usr/local/lib"
+		"~/devel/env/lib")
 		
 find_library( IPOPT_BLAS_LIBRARY 
 		coinblas
 		PATHS "$ENV{IPOPT_HOME}/lib"
 		"/usr/lib"
-		"/usr/local/lib")
+		"/usr/local/lib"
+		"~/devel/env/lib")
 		
 find_library( IPOPT_HSL_LIBRARY 
 		coinhsl
 		PATHS "$ENV{IPOPT_HOME}/lib"
 		"/usr/lib"
-		"/usr/local/lib")
+		"/usr/local/lib"
+		"~/devel/env/lib")
 		
 find_library( IPOPT_LAPACK_LIBRARY 
 		coinlapack
 		PATHS "$ENV{IPOPT_HOME}/lib"
 		"/usr/lib"
-		"/usr/local/lib")
+		"/usr/local/lib"
+		"~/devel/env/lib")
 		
 find_library( IPOPT_METIS_LIBRARY 
 		coinmetis
 		PATHS "$ENV{IPOPT_HOME}/lib"
 		"/usr/lib"
-		"/usr/local/lib")
+		"/usr/local/lib"
+		"~/devel/env/lib")
 		
 find_library( IPOPT_MUMPS_LIBRARY 
 		coinmumps
 		PATHS "$ENV{IPOPT_HOME}/lib"
 		"/usr/lib"
-		"/usr/local/lib")
+		"/usr/local/lib"
+		"~/devel/env/lib")
 
 set(IPOPT_INCLUDE_DIRS "${IPOPT_INCLUDE_DIR}" )
 set(IPOPT_LIBRARIES ${IPOPT_LIBRARY} ${IPOPT_ASL_LIBRARY} ${IPOPT_BLAS_LIBRARY} ${IPOPT_LAPACK_LIBRARY} ${IPOPT_MUMPS_LIBRARY} ${IPOPT_METIS_LIBRARY})

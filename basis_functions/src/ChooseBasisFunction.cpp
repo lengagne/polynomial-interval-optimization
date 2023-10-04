@@ -22,6 +22,7 @@ ChooseBasisFunction::ChooseBasisFunction()
     basis_functions_[cpt++] = "MinVariance";   // 5 
 #endif    
     basis_functions_[cpt++] = "RecursiveBSplines";// 6 
+    basis_functions_[cpt++] = "RecursiveBSplines2";// 7 
 }
 
 void ChooseBasisFunction::choose(AbstractBasisFunction** bf, 
@@ -72,6 +73,13 @@ void ChooseBasisFunction::choose(AbstractBasisFunction** bf,
         return;
     }
 
+
+    if (index == cpt ++)    //  6
+    {
+        std::cout<<"create Recursive 2"<<std::endl;
+        *bf = new RecursiveBSplinesFunction2(); 
+        return;
+    }    
         std::cerr<<"Error in FILE "<< __FILE__<<" at line "<< __LINE__<<" the index "<<index <<" is not defined yet"<<std::endl;
         exit(123);
 }

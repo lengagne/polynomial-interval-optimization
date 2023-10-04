@@ -132,7 +132,7 @@ TYPE BasisFunctionProblem<TYPE>::CostFunction(std::vector<TYPE>&  x)
         return A_.inverse().squaredNorm();        
     }
     
-    if (criteria_type_ == "MinVarianceB")
+    if (criteria_type_ == "MinVariance" || criteria_type_ == "MinVarianceB")
     {
         Eigen::Matrix<TYPE,Eigen::Dynamic,Eigen::Dynamic> B = A_.inverse();
         // we compute the mediane
