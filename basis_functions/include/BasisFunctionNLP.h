@@ -103,9 +103,6 @@ class BasisFunctionNLP:public TNLP
 	  BasisFunctionNLP & operator= (const BasisFunctionNLP &);
 	//@}
       
-      
-      
-      
       uint order_;
       uint nb_param_;
       
