@@ -1,151 +1,169 @@
-// #include <QFileDialog>
-// #include <QDebug>
+
+
+#include <vector>
 #include <QCoreApplication>
 #include <QFileDialog>
+#include <QDebug>
 
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include <string>
-#include <stdlib.h>
-#include <cstdlib>
-#include <string>
-#include <algorithm>
-#include <sstream>
+#include "data_format.h"
 
-bool is_double(const std::string& s)
-{
-    std::istringstream iss(s);
-    double d;
-    return iss >> d >> std::ws && iss.eof();
-}
+// #include <iostream>
+// #include <vector>
+// #include <fstream>
+// #include <string>
+// #include <stdlib.h>
+// #include <cstdlib>
+// #include <string>
+// #include <algorithm>
+// #include <sstream>
 
-struct data
-{
-    unsigned int nb_dof;
-    double precision;
-    unsigned int pb;
-    unsigned int solver;
-
-    unsigned int nb_iter;
-    double computation_time;
-    double total_time;
-    double preparation_time=-1.0;
-    double time_per_iter;
-    std::string filename;
-
-    double crit;
-
-    unsigned status;
-};
-
-std::vector<unsigned int> solveur = {1,2,3,4,21,22,23,24};
-std::vector<unsigned int> pb = {1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,17,18,19};
-std::vector<unsigned int> dof = {2,3,4,5,6,7,8,9,10};
-std::vector<double> precision = {0.01,0.001};
-
-unsigned int desired_precision = 0.01;
-unsigned int nb_pb;
-
-std::vector<data> all_datas;
-
-
-
-
-double toDouble(std::string s){
-    std::replace(s.begin(), s.end(), '.', ',');
-    return std::atof(s.c_str());
-}
-
-bool find_data(unsigned int solver_type,
-               unsigned int problem_type,
-               unsigned int dof,
-               double precision,
-               data& out)
-{
-	bool val = false;
-    for (int i=0;i<all_datas.size();i++)
-    {
-        const data& d = all_datas[i];
-        if(d.nb_dof == dof && d.precision == precision && d.solver == solver_type && d.pb == problem_type)
-        {
-            out = d;
-            val = true;
-        }
-    }
-    return val;
-}
-
-void create_normalize_file( const std::string filename,
-                            unsigned int solveur_current,
-                            unsigned int solveur_ref,
-                            unsigned id_precision)
-{
-    std::string temps = filename+"_temps.txt";
-    std::ofstream outtemps (temps);
-    std::string temps_total = filename+"_temps_total.txt";
-    std::ofstream outtemps_total (temps_total);
-    std::string iter = filename+"_iter.txt";
-    std::ofstream outiter (iter);
-
-    for (int k=0;k<dof.size();k++)
-    {
-        outtemps<< dof[k]<<"\t";
-        outtemps_total<< dof[k]<<"\t";
-        outiter<< dof[k]<<"\t";
-        for (int ii=0;ii<pb.size();ii++)
-        {
-                data d_ref, d;
-                if( find_data(solveur_ref,pb[ii],dof[k],precision[id_precision],d_ref) && find_data(solveur_current,pb[ii],dof[k],precision[id_precision],d))
-                {
-                    if(d_ref.status == 0 && d.status == 0)
-                    {
-                         outtemps<< 100.*d.computation_time /d_ref.computation_time<<"\t";
-                         outtemps_total<< 100.*d.total_time /d_ref.total_time<<"\t";
-                         outiter<< 100.*d.nb_iter /d_ref.nb_iter<<"\t";
-                    }
-                    else
-                    {
-                        outtemps<<"X\t";
-                        outtemps_total<<"X\t";
-                        outiter<<"X\t";
-                    }
-                }else
-                {
-                    outtemps<<"X\t";
-                    outtemps_total<<"X\t";
-                    outiter<<"X\t";
-                }
-
-        }
-        outtemps<<std::endl;
-        outtemps_total<<std::endl;
-        outiter<<std::endl;
-    }
-    outtemps.close();
-    outtemps_total.close();
-    outiter.close();
-}
-
-// return false if data is no suitable
-void read_data( const std::string &filename, data & d);
+// bool is_double(const std::string& s)
+// {
+//     std::istringstream iss(s);
+//     double d;
+//     return iss >> d >> std::ws && iss.eof();
+// }
+// 
+// struct data
+// {
+//     unsigned int nb_dof;
+//     double precision;
+//     unsigned int pb;
+//     unsigned int solver;
+// 
+//     unsigned int nb_iter;
+//     double computation_time;
+//     double total_time;
+//     double preparation_time=-1.0;
+//     double time_per_iter;
+//     std::string filename;
+// 
+//     double crit;
+// 
+//     unsigned status;
+// };
+// 
+// std::vector<unsigned int> solveur = {1,2,3,4,21,22,23,24};
+// std::vector<unsigned int> pb = {1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,17,18,19};
+// std::vector<unsigned int> dof = {2,3,4,5,6,7,8,9,10};
+// std::vector<double> precision = {0.01,0.001};
+// 
+// unsigned int desired_precision = 0.01;
+// unsigned int nb_pb;
+// 
+// std::vector<data> all_datas;
+// 
+// 
+// 
+// 
+// double toDouble(std::string s){
+//     std::replace(s.begin(), s.end(), '.', ',');
+//     return std::atof(s.c_str());
+// }
+// 
+// bool find_data(unsigned int solver_type,
+//                unsigned int problem_type,
+//                unsigned int dof,
+//                double precision,
+//                data& out)
+// {
+// 	bool val = false;
+//     for (int i=0;i<all_datas.size();i++)
+//     {
+//         const data& d = all_datas[i];
+//         if(d.nb_dof == dof && d.precision == precision && d.solver == solver_type && d.pb == problem_type)
+//         {
+//             out = d;
+//             val = true;
+//         }
+//     }
+//     return val;
+// }
+// 
+// void create_normalize_file( const std::string filename,
+//                             unsigned int solveur_current,
+//                             unsigned int solveur_ref,
+//                             unsigned id_precision)
+// {
+//     std::string temps = filename+"_temps.txt";
+//     std::ofstream outtemps (temps);
+//     std::string temps_total = filename+"_temps_total.txt";
+//     std::ofstream outtemps_total (temps_total);
+//     std::string iter = filename+"_iter.txt";
+//     std::ofstream outiter (iter);
+// 
+//     for (int k=0;k<dof.size();k++)
+//     {
+//         outtemps<< dof[k]<<"\t";
+//         outtemps_total<< dof[k]<<"\t";
+//         outiter<< dof[k]<<"\t";
+//         for (int ii=0;ii<pb.size();ii++)
+//         {
+//                 data d_ref, d;
+//                 if( find_data(solveur_ref,pb[ii],dof[k],precision[id_precision],d_ref) && find_data(solveur_current,pb[ii],dof[k],precision[id_precision],d))
+//                 {
+//                     if(d_ref.status == 0 && d.status == 0)
+//                     {
+//                          outtemps<< 100.*d.computation_time /d_ref.computation_time<<"\t";
+//                          outtemps_total<< 100.*d.total_time /d_ref.total_time<<"\t";
+//                          outiter<< 100.*d.nb_iter /d_ref.nb_iter<<"\t";
+//                     }
+//                     else
+//                     {
+//                         outtemps<<"X\t";
+//                         outtemps_total<<"X\t";
+//                         outiter<<"X\t";
+//                     }
+//                 }else
+//                 {
+//                     outtemps<<"X\t";
+//                     outtemps_total<<"X\t";
+//                     outiter<<"X\t";
+//                 }
+// 
+//         }
+//         outtemps<<std::endl;
+//         outtemps_total<<std::endl;
+//         outiter<<std::endl;
+//     }
+//     outtemps.close();
+//     outtemps_total.close();
+//     outiter.close();
+// }
+// 
+// // return false if data is no suitable
+// void read_data( const std::string &filename, data & d);
 
 int main(int argc, char *argv[])
 {
-    std::vector<std::string> fail_files_;
-    std::vector<std::string> rerun_command;
-    if (argc == 2)
-        desired_precision = atoi(argv[1]);
+//     std::vector<std::string> fail_files_;
+//     std::vector<std::string> rerun_command;
+//     if (argc == 2)
+//         desired_precision = atoi(argv[1]);
 
-    std::cout<<"desired_precision = "<<desired_precision<<std::endl;
+//     std::cout<<"desired_precision = "<<desired_precision<<std::endl;
     QCoreApplication a(argc, argv);
-	QDir directory("./");
+    
+    QString repo = ".";
+    if (argc == 2)
+    {
+        repo = argv[1];
+    }
+           
+    
+	QDir directory(repo);
 
     QStringList filesList = directory.entryList(QDir::Files);
     QString fileName;
 
+    std::vector<data_format*> datas_;
+    
     for (QStringList::iterator it = filesList.begin();it != filesList.end(); ++it) {
         QString current = *it;
+        datas_.push_back( new data_format(( repo  + current).toStdString()));
+
+        
+        /*
         data tmp;
         read_data(current.toStdString(),tmp);
         {
@@ -170,14 +188,21 @@ int main(int argc, char *argv[])
             std::cout<<"time_per_iter = "<< tmp.time_per_iter<<std::endl;
             std::cout<<"total_time = "<< tmp.total_time<<std::endl;
             std::cout<<"crit = "<< tmp.crit<<std::endl<<std::endl<<std::endl;
-            all_datas.push_back(tmp);
-        }
-//        else
+            all_datas.push_back(tmp);*/
+//         }
+// //        else
 //        {
 //            std::cout<<"File : "<< current.toStdString()<< " does not content computation info"<<std::endl;
 //        }
     }
-
+    
+    create_csv(datas_, "nb_iter", "ndof", "solver", "problem", repo.toStdString() + "problem");
+    create_csv(datas_, "nb_iter", "ndof", "problem", "solver", repo.toStdString() + "solver");
+    
+    create_csv(datas_, "total_time", "ndof", "solver", "problem", repo.toStdString() + "problem");
+    create_csv(datas_, "total_time", "ndof", "problem", "solver", repo.toStdString() + "solver");
+    
+/*
     std::ofstream outfile ("result.csv");
 //    // create the files
     for (int ii=0;ii<dof.size();ii++)   for (int i=0;i<precision.size();i++)   // 1 to nb-solver
@@ -548,9 +573,9 @@ int main(int argc, char *argv[])
     for (int i=0;i<rerun_command.size();i++)
     {
         std::cout<<rerun_command[i]<<std::endl;
-    }
+    }*/
 }
-
+/*
 void read_data( const std::string &filename, data & d)
 {
 //    std::cout<<"Reading data of file "<< filename <<std::endl;
@@ -702,4 +727,4 @@ void read_data( const std::string &filename, data & d)
         }
     }
 	return ;
-}
+}*/

@@ -7,7 +7,7 @@ do
     do
  	for pb in `seq 1 9`
         do
-            for solveur in `seq 1 17`
+            for solveur in `seq 0 17`
             do
 #                 sbatch .job.sh $dof $pb $precision $solveur
         sh  job.sh $dof $pb $precision $solveur
