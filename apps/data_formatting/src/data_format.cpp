@@ -90,9 +90,9 @@ void add (const std::string &in,
             test = false;
         }
     }
-    if (test){
+    if (test && in !=""){
         vec.push_back(in);    
-//         std::cout<<in<<std::endl;
+//         std::cout<<"adding "<< in<<std::endl;
     }
 }
 
@@ -229,18 +229,103 @@ void create_latex( const std::vector< data_format*> datas,
     std::cout<<"On a "<< columns.size() <<" colonnes "<<std::endl;
     uint cs = columns.size();
     
-    outfile <<"\\begin{tabular}{|";
-    for (int i=0;i<cs;i++)  outfile<< columns[i]<<"|";
+    outfile<<"% \\usepackage{longtable}"<<std::endl;
+    
+    outfile <<"\\begin{longtable}{|";
+    for (int i=0;i<cs;i++)  outfile<< "c|";
     outfile <<"}\n";
     
+    outfile<<"\\hline\n"; 
+    for (int i=0;i<cs-1;i++)  outfile<< columns[i]<<" & ";
+    outfile<< columns[cs-1]<<" \\\\ \\hline \n";    
+    
+    
+    std::cout<<"datas.size() = "<< datas.size()<<std::endl;
+    create_latex_subpart( outfile, 0, columns, datas);
     
     
     
-    outfile <<"\\end tabular\n";
+    outfile <<"\\end{longtable}\n";
     
     
     outfile.close();
     
+}
+
+void create_latex_subpart( std::ofstream& outfile,
+                           uint index,
+                           std::vector<std::string> & columns,
+                           const std::vector< data_format*> datas,
+                           const std::string& entete)
+{
+    if (index >= columns.size())
+    {
+        return;
+    }
+    
+    for (int i=0;i<index;i++)   std::cout<<"\t";
+    std::cout<<"looking for "<< columns[index]<<"  in "<< datas.size() <<std::endl;
+    
+    std::string ref = columns[index];
+    for (int i=0;i<index;i++)   std::cout<<"\t";
+    std::cout<<"ref = "<< ref <<std::endl;
+    std::list<std::string> type_data;
+    // get the common absciss
+    for (auto& d : datas)
+    {
+        std::string t  = d->infos[ref];
+//         std::cout<<"t = "<< t <<std::endl;
+        add( t, type_data);            
+        type_data.sort();            
+    }
+    
+    uint cpt = 0;
+    for (auto& t : type_data)
+    {
+        
+        std::vector< data_format*> local_data;
+        for (auto& d : datas)
+        {
+            if ( d->infos[ref] == t)
+            {
+                local_data.push_back(d);
+            }
+            
+        }
+
+        
+        if (cpt)
+            outfile<<entete;
+        
+        
+        if ( local_data.size() == 1)
+        {
+            data_format* d = local_data[0];
+            for (int i=index;i<columns.size()-1;i++)
+                outfile << d->infos[columns[i]]<<" & ";
+            outfile <<d->infos[columns[columns.size()-1]] <<"\\\\ "; 
+            
+             outfile <<" \\cline{"<< index+1 <<"-"<< columns.size() <<"}\n";   
+            
+        }else
+        {
+            if (entete == "")
+            {
+                outfile <<" \\hline \n";   
+            }
+//             else
+//             {
+//                 outfile <<" \\cline{"<< index <<"-"<< columns.size() <<"}\n";   
+//             }
+            
+            outfile<<"\\multirow{"<<local_data.size()<<"}{*}{"<< t <<"} & ";
+            create_latex_subpart ( outfile, index+1, columns, local_data, entete+" & ");
+            
+            outfile <<" \\cline{"<< index+1 <<"-"<< index+2 <<"}";   
+        }
+        
+        cpt ++;
+    }    
 }
 
 void init_order()

@@ -53,7 +53,11 @@ int main( int argc, char** argv)
         case(7): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"   ,"kuka_lwr_7_link",0.1,0,1);  break;
         
         // 10% torque, target (0.6,0.6,0.6), critere torque
-        case(8): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"   ,"kuka_lwr_7_link",0.1,1,1);  break;                
+        case(8): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"   ,"kuka_lwr_7_link",0.1,1,1);  break;  
+        
+        default: 
+            std::cerr<<"Error case "<< model <<" not defined"<<std::endl;
+            exit(0);
     }
     
     CompareSolver cp(pb);   

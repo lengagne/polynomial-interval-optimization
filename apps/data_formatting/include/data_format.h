@@ -46,6 +46,12 @@ void create_latex( const std::vector< data_format*> datas,
                    const std::string filename,
                    std::vector<std::string> & columns);
 
+void create_latex_subpart( std::ofstream& outfile,
+                           uint index,
+                           std::vector<std::string> & columns,
+                           const std::vector< data_format*> datas,
+                           const std::string& entete = "");
+
 void init_order();
 
 double toDouble(std::string s);
