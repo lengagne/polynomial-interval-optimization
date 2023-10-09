@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MultiBody scalable="no" base="fixed">
+<Robot_type> Manipulatorkuka_lwr </Robot_type>
+<Bodies>
+	<Body>
+		<Label>Base</Label>
+		<Mass unit="kg">10.0</Mass>
+		<CoM unit="m"> 0.0 0.0 0.0</CoM>
+		<Inertia unit="kg/s2"> 1 0 0 0 1 0 0 0 1</Inertia>
+		<Geometry>
+<!-- 			<File>	wrl/base.wrl  </File> -->
+		</Geometry>
+	</Body>
+	<Body>
+		<Label>kuka_lwr_1_link</Label>
+		<Mass unit="kg">2.7</Mass>
+		<CoM unit="m"> 0.001340 0.026220 0.112223 </CoM>
+		<Inertia unit="kg/s2"> 0.016340536683981 0.000000709016801 -0.000003026772299 0.000000709016801 0.016173076285877 0.003533064213839  -0.000003026772299 0.003533064213839 0.005026130247583 </Inertia>
+		<Geometry>
+<!-- 		  <File>	wrl/link1.wrl  </File> -->
+		</Geometry>
+	</Body>
+	<Body>
+		<Label>kuka_lwr_2_link</Label>
+		<Mass unit="kg">2.7</Mass>
+		<CoM unit="m"> 0.00134 -0.026220 0.087777</CoM>
+		<Inertia unit="kg/s2"> 0.016340543235640 -0.000000708736804 0.000003025958460 -0.000000708736804 0.016173082837536 0.003533229970806 0.000003025958460 0.003533229970806 0.005026130575166 </Inertia>
+		<Geometry>
+<!-- 		  <File>	wrl/link2.wrl  </File> -->
+		</Geometry>
+	</Body>
+	<Body>
+		<Label>kuka_lwr_3_link</Label>
+		<Mass unit="kg">2.7</Mass>
+		<CoM unit="m"> -0.00134 -0.026220 0.112223</CoM>
+		<Inertia unit="kg/s2"> 0.016340536683981 0.000000708435613 0.000003025038092 0.000000708435613 0.016173076285877 -0.003533064213839 0.000003025038092 -0.003533064213839 0.005026130247583  </Inertia>
+		<Geometry>
+<!-- 		  <File>	wrl/link3.wrl  </File> -->
+		</Geometry>
+	</Body>
+	<Body>
+		<Label>kuka_lwr_4_link</Label>
+		<Mass unit="kg">2.7</Mass>
+		<CoM unit="m">-0.00134 0.02622  0.087777</CoM>
+		<Inertia unit="kg/s2">0.016340536683981 -0.000000708770474 -0.000003026399929 -0.000000708770474 0.016173076285877 -0.003533064213839  -0.000003026399929 -0.003533064213839 0.005026130247583 </Inertia>
+		<Geometry>
+<!-- 		  <File>	wrl/link4.wrl  </File> -->
+		</Geometry>
+	</Body>
+	<Body>
+		<Label>kuka_lwr_5_link</Label>
+		<Mass unit="kg">1.7</Mass>
+		<CoM unit="m"> -0.000993 0.026958 0.08835 </CoM>
+		<Inertia unit="kg/s2"> 0.009818395861149 -0.000000761816372 0.000001329981455 -0.000000761816372 0.009092404844472 0.003093942172699 0.000001329981455 0.003093942172699 0.003708097004077 </Inertia>
+		<Geometry>
+<!-- 		  <File>	wrl/link5.wrl  </File> -->
+		</Geometry>
+	</Body>
+	<Body>
+		<Label>kuka_lwr_6_link</Label>
+		<Mass unit="kg">1.6</Mass>
+		<CoM unit="m"> -0.000259 -0.005956 -0.005328 </CoM>
+		<Inertia unit="kg/s2"> 0.003011683905727 0.000000005040330 -0.000000115610566 0.000000005040330 0.003022943456485 -0.000019307179987 -0.000000115610566 -0.000019307179987 0.003413632286504 </Inertia>
+		<Geometry>
+<!-- 		  <File>	wrl/link6.wrl  </File> -->
+		</Geometry>
+	</Body>
+	<Body>
+		<Label>kuka_lwr_7_link</Label>
+		<Mass unit="kg">0.3</Mass>
+		<CoM unit="m"> 0 0 0.008 </CoM>
+		<Inertia unit="kg/s2"> 0.00010171875 0.0 0.0 0.0 0.00010171875 0.0 0.0 0.0 0.0001584375 </Inertia>
+		<Geometry>
+<!--			<Cylinder>-->
+<!--			  <Color> 0 0 255	</Color>-->
+<!--		    <Radius unit="m"> 0.01</Radius>-->
+<!--		    <Height unit="m"> 0.1</Height>-->
+<!--		</Cylinder>-->
+<!-- 		  <File>	wrl/link7.wrl  </File> -->
+		</Geometry>
+	</Body>
+
+ </Bodies>
+ <Joints>
+
+	<Joint type="revolute" axis="z" innerId="Base" outerId="kuka_lwr_1_link">
+		<Label>kuka_lwr_0_joint</Label>
+		<StaticParameters unit_translation="m" unit_rotation="degree"> 0 0.0 0.11 0 0 0</StaticParameters>
+		<PositionMin unit="degree"> -170  </PositionMin>
+		<PositionMax unit="degree"> 170 </PositionMax>
+		<SpeedLimit unit="degree/s"> 110 </SpeedLimit>
+		<TorqueLimit unit="Nm"> 200 </TorqueLimit>
+	</Joint>
+<!--	<Joint type="revolute" axis="-y" innerId="kuka_lwr_1_link" outerId="kuka_lwr_2_link">-->
+    <Joint type="revolute" axis="y" innerId="kuka_lwr_1_link" outerId="kuka_lwr_2_link">
+		<Label>kuka_lwr_1_joint</Label>
+		<StaticParameters unit_translation="m" unit_rotation="degree"> 0 0.0 0.20 0 0 0</StaticParameters>
+		<PositionMin unit="degree"> -120  </PositionMin>
+		<PositionMax unit="degree"> 120 </PositionMax>
+		<SpeedLimit unit="degree/s"> 110 </SpeedLimit>
+		<TorqueLimit unit="Nm"> 200 </TorqueLimit>
+	</Joint>
+	<Joint type="revolute" axis="z" innerId="kuka_lwr_2_link" outerId="kuka_lwr_3_link">
+		<Label>kuka_lwr_2_joint</Label>
+		<StaticParameters unit_translation="m" unit_rotation="degree"> 0 0.0 0.20 0 0 0</StaticParameters>
+		<PositionMin unit="degree"> -170  </PositionMin>
+		<PositionMax unit="degree"> 170 </PositionMax>
+		<SpeedLimit unit="degree/s"> 130 </SpeedLimit>
+		<TorqueLimit unit="Nm"> 200 </TorqueLimit>
+	</Joint>
+	<Joint type="revolute" axis="y" innerId="kuka_lwr_3_link" outerId="kuka_lwr_4_link">
+		<Label>kuka_lwr_3_joint</Label>
+		<StaticParameters unit_translation="m" unit_rotation="degree"> 0 0.0 0.20 0 0 0</StaticParameters>
+		<PositionMin unit="degree"> -120  </PositionMin>
+		<PositionMax unit="degree"> 120 </PositionMax>
+		<SpeedLimit unit="degree/s"> 130 </SpeedLimit>
+		<TorqueLimit unit="Nm"> 200 </TorqueLimit>
+	</Joint>
+	<Joint type="revolute" axis="z" innerId="kuka_lwr_4_link" outerId="kuka_lwr_5_link">
+		<Label>kuka_lwr_4_joint</Label>
+		<StaticParameters unit_translation="m" unit_rotation="degree"> 0 0.0 0.20 0 0 0</StaticParameters>
+		<PositionMin unit="degree"> -170  </PositionMin>
+		<PositionMax unit="degree"> 170 </PositionMax>
+		<SpeedLimit unit="degree/s"> 130 </SpeedLimit>
+		<TorqueLimit unit="Nm"> 200 </TorqueLimit>
+	</Joint>
+<!--	<Joint type="revolute" axis="-y" innerId="kuka_lwr_5_link" outerId="kuka_lwr_6_link">-->
+    <Joint type="revolute" axis="y" innerId="kuka_lwr_5_link" outerId="kuka_lwr_6_link">
+		<Label>kuka_lwr_5_joint</Label>
+		<StaticParameters unit_translation="m" unit_rotation="degree"> 0 0.0 0.19 0 0 0</StaticParameters>
+		<PositionMin unit="degree"> -120  </PositionMin>
+		<PositionMax unit="degree"> 120 </PositionMax>
+		<SpeedLimit unit="degree/s"> 180 </SpeedLimit>
+		<TorqueLimit unit="Nm"> 200 </TorqueLimit>
+	</Joint>
+<!--	<Joint type="revolute" axis="z" innerId="kuka_lwr_6_link" outerId="kuka_lwr_7_link">-->
+	<Joint type="fixed" axis="z" innerId="kuka_lwr_6_link" outerId="kuka_lwr_7_link">
+		<Label>kuka_lwr_6_joint</Label>
+		<StaticParameters unit_translation="m" unit_rotation="degree"> 0 0.0 0.078 0 0 0</StaticParameters>
+		<PositionMin unit="degree"> -170  </PositionMin>
+		<PositionMax unit="degree"> 170 </PositionMax>
+		<SpeedLimit unit="degree/s"> 180 </SpeedLimit>
+		<TorqueLimit unit="Nm"> 200 </TorqueLimit>
+	</Joint>
+ </Joints>
+</MultiBody>
