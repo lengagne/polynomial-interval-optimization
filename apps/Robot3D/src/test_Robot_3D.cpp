@@ -31,25 +31,29 @@ int main( int argc, char** argv)
     AbstractCSP* pb;
     switch(model)
     {
-        case(0): pb = new Problem3D("../model/kuka_lwr.xml","kuka_lwr_7_link");  break;
-        case(1): pb = new Problem3D("../model/kuka_lwr_4dof.xml","kuka_lwr_7_link");  break;
-        case(10): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"        ,"kuka_lwr_7_link",1.0,0,0);  break;
-        case(11): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"        ,"kuka_lwr_7_link",0.1,0,0);  break;
-        case(12): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"        ,"kuka_lwr_7_link",1.0,1,0);  break;
-        case(13): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"        ,"kuka_lwr_7_link",0.1,1,0);  break;
-        case(14): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"       ,"kuka_lwr_7_link",1.0,0,1);  break;
-        case(15): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"       ,"kuka_lwr_7_link",0.1,0,1);  break;
-        case(16): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"       ,"kuka_lwr_7_link",1.0,1,1);  break;
-        case(17): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"       ,"kuka_lwr_7_link",0.1,1,1);  break;
+        // full torque, target (0.4,0.4,0.7), critere torque
+        case(1): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"   ,"kuka_lwr_7_link",1.0,0,1);  break;
+        
+        // full torque, target (0.6,0.6,0.6), critere torque
+        case(2): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"   ,"kuka_lwr_7_link",1.0,1,1);  break;
 
-        case(20): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"   ,"kuka_lwr_7_link",1.0,0,0);  break;
-        case(21): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"   ,"kuka_lwr_7_link",0.1,0,0);  break;
-        case(22): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"   ,"kuka_lwr_7_link",1.0,1,0);  break;
-        case(23): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"   ,"kuka_lwr_7_link",0.1,1,0);  break;
-        case(24): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"  ,"kuka_lwr_7_link",1.0,0,1);  break;
-        case(25): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"  ,"kuka_lwr_7_link",0.1,0,1);  break;
-        case(26): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"  ,"kuka_lwr_7_link",1.0,1,1);  break;
-        case(27): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"  ,"kuka_lwr_7_link",0.1,1,1);  break;
+        // 10% torque, target (0.4,0.4,0.7), critere torque
+        case(3): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"   ,"kuka_lwr_7_link",0.1,0,1);  break;
+        
+        // 10% torque, target (0.6,0.6,0.6), critere torque
+        case(4): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"   ,"kuka_lwr_7_link",0.1,1,1);  break;  
+        
+        // full torque, target (0.4,0.4,0.7), critere torque
+        case(5): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"   ,"kuka_lwr_7_link",1.0,0,1);  break;
+        
+        // full torque, target (0.6,0.6,0.6), critere torque
+        case(6): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"   ,"kuka_lwr_7_link",1.0,1,1);  break;
+
+        // 10% torque, target (0.4,0.4,0.7), critere torque
+        case(7): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"   ,"kuka_lwr_7_link",0.1,0,1);  break;
+        
+        // 10% torque, target (0.6,0.6,0.6), critere torque
+        case(8): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"   ,"kuka_lwr_7_link",0.1,1,1);  break;                
     }
     
     CompareSolver cp(pb);   
