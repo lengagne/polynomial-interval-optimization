@@ -72,6 +72,8 @@ class AbstractSolver
 
         bool print_ = false;
         
+        uint bissection_type_ = 0;
+        
     private:
 
         bool file_open = false;
@@ -82,6 +84,8 @@ class AbstractSolver
         double precision_gnuplot_ = 0.9e-3;
         std::string file_prefix_;
         unsigned int cpt_rec_input_, cpt_rec_output_;
+        
+        
 
         
 

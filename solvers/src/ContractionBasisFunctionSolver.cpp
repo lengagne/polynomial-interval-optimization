@@ -1,7 +1,9 @@
 #include "ContractionBasisFunctionSolver.h"
 #include <string.h>
 
-ContractionBasisFunctionSolver::ContractionBasisFunctionSolver(AbstractCSP* pb,  AbstractBasisFunction* bf)
+ContractionBasisFunctionSolver::ContractionBasisFunctionSolver(AbstractCSP* pb,  
+                                                               AbstractBasisFunction* bf,
+                                                               uint bissection_mode)
 {
     LazyReset();
     bf_ = bf;
@@ -11,6 +13,8 @@ ContractionBasisFunctionSolver::ContractionBasisFunctionSolver(AbstractCSP* pb, 
     pb_->init();
     nb_fun_ = pb_->get_nb_out();
     nb_var_ = pb_->get_nb_in();
+    
+    bissection_type_ = bissection_mode;
 //     std::cout<<"Creating ContractionBasisFunctionSolver for problem : "<< pb_->get_problem_name()<<std::endl;
 }
 

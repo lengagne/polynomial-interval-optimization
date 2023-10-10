@@ -27,6 +27,7 @@ int main( int argc, char** argv)
 	unsigned int ndof = 2;
     unsigned int npb = 1;
     double precision = 0.001;
+    uint bissection_mode = 0;
     int test = -1;
 	if(argc > 1)
         ndof = atoi(argv[1]);
@@ -35,7 +36,9 @@ int main( int argc, char** argv)
 	if(argc > 3)
         precision = atof(argv[3]);   
 	if(argc > 4)
-        test = atoi(argv[4]);   
+        bissection_mode = atoi(argv[4]);
+	if(argc > 5)
+        test = atoi(argv[5]);   
     
     std::cout<<"******************************" <<std::endl;
     std::cout<<"ndof = "<< ndof <<std::endl;
@@ -69,7 +72,7 @@ int main( int argc, char** argv)
     }
     
     CompareSolver cp(pb);   
-    cp.compare("Robot2D_"+std::to_string(ndof)+"_ndof_pb_"+std::to_string(npb),precision,test);
+    cp.compare("Robot2D_"+std::to_string(ndof)+"_ndof_pb_"+std::to_string(npb),precision,bissection_mode,test);
         
     delete pb;
     

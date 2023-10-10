@@ -10,7 +10,9 @@
 class ContractionBasisFunctionSolver: public BasisFunctionSolver
 {
     public:
-        ContractionBasisFunctionSolver(AbstractCSP* pb,  AbstractBasisFunction* bf);
+        ContractionBasisFunctionSolver(AbstractCSP* pb,  
+                                       AbstractBasisFunction* bf,
+                                       uint bissection_mode);
 
         virtual ~ContractionBasisFunctionSolver();
 

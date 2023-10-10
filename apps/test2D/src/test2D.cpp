@@ -14,10 +14,11 @@ int main( int argv, char** argc)
     AbstractSolver* solver;
     bool print=true;
     double precision = 0.001;
+    uint bissection_mode = 0;
     ProblemPoint2D* pb = new ProblemPoint2D();
     
     CompareSolver cp(pb);   
-    cp.compare("test2D",precision);
+    cp.compare("test2D",precision,bissection_mode);
         
     return 0;
 }

@@ -3,6 +3,7 @@
 
 void CompareSolver::compare(const std::string & filename,
                             double p,
+                            uint bissection_mode,
                             int id)
 {
     std::ofstream file;
@@ -20,7 +21,7 @@ void CompareSolver::compare(const std::string & filename,
         {
             AbstractSolver* solver;
             std::cout<<"\n\nsolver : "<< choice_solver_.get_solver_name(i)<<std::endl;
-            choice_solver_.choose(pb_,&solver,i);
+            choice_solver_.choose(pb_,&solver,i,bissection_mode);
             std::cout<<"solver number "<<i<< std::endl;
            
             param_optim result;
@@ -37,7 +38,7 @@ void CompareSolver::compare(const std::string & filename,
     {
         AbstractSolver* solver;
         std::cout<<"\n\nsolver : "<< choice_solver_.get_solver_name(id)<<std::endl;
-        choice_solver_.choose(pb_,&solver,id);
+        choice_solver_.choose(pb_,&solver,id,bissection_mode);
         std::cout<<"solver number "<<id<< std::endl;
         param_optim result;
         result = solver->solve_optim(precision);

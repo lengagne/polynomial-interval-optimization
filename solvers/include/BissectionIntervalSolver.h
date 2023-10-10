@@ -9,7 +9,8 @@
 class BissectionIntervalSolver: public AbstractSolver
 {
     public:
-        BissectionIntervalSolver(AbstractCSP* pb);
+        BissectionIntervalSolver(   AbstractCSP* pb,
+                                    uint bissection_mode);
 
         virtual ~BissectionIntervalSolver();
 

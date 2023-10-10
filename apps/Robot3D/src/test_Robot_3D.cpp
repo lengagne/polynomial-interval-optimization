@@ -15,15 +15,19 @@ int main( int argc, char** argv)
 
 	double precision = 0.001;
 	unsigned int model = 0;
-    uint basisfunction = 2;
+    uint basisfunction = 1;
+    uint bissection_mode = 0;    
     int test = -1;
+    
 	if(argc > 1)
         precision = atof(argv[1]);
 	if(argc > 2)
         model = atof(argv[2]);
 	if(argc > 3)
-        test = atoi(argv[3]);
-
+        bissection_mode = atoi(argv[3]);    
+	if(argc > 4)
+        test = atoi(argv[4]);
+    
     std::cout<<"precision = "<< precision <<std::endl;
     std::cout<<"model = "<< model <<std::endl;
     

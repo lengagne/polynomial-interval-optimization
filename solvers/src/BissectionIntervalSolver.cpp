@@ -1,15 +1,14 @@
 #include "BissectionIntervalSolver.h"
 #include <string.h>
 
-BissectionIntervalSolver::BissectionIntervalSolver(AbstractCSP* pb)
+BissectionIntervalSolver::BissectionIntervalSolver(AbstractCSP* pb,
+                                                    uint bissection_mode)
 {
-//     std::cout<<"GIT BRANCH = "<<  GIT_BRANCH <<std::endl;
-//     int dummy = system("date");
     pb_ = pb;
     pb_->init();
     nb_fun_ = pb_->get_nb_out();
     nb_var_ = pb_->get_nb_in();
-//     std::cout<<"Creating BissectionIntervalSolver for problem : "<< pb_->get_problem_name()<<std::endl;
+    bissection_type_ = bissection_mode;
 }
 
 BissectionIntervalSolver::~BissectionIntervalSolver()
@@ -113,6 +112,13 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
 
 
     double te = get_cpu_time();
+    switch(bissection_type_)
+    {
+        case(0):    std::cout<<"Bissection : MinFirst"<<std::endl;  break;
+        case(1):    std::cout<<"Bissection : MaxFirst"<<std::endl;  break;
+        default :   std::cerr<<"Bissection type not defined "<<std::endl;   std::exit(63);  break;
+    }
+    
     std::cout<<"Number of Bissections : "<< cpt_iter_ <<std::endl;
     std::cout<<"Number of valid boxes : "<< nb_valid_box_ <<std::endl;
     std::cout<<"Number of possible boxes : "<< nb_maybe_box_<<std::endl;

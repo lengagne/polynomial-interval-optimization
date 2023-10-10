@@ -11,7 +11,8 @@ public:
     
     void choose(AbstractCSP* pb,
                 AbstractSolver** solver, 
-                uint index);
+                uint index,
+                uint bissection_mode);
     
     std::string get_solver_name(uint index)
     {

@@ -31,11 +31,13 @@ ChooseSolver::ChooseSolver()
 
 void ChooseSolver::choose( AbstractCSP* pb,
                             AbstractSolver** solver, 
-                            uint index)
+                            uint index,
+                            uint bissection_mode
+                         )
 {
     if (index == 0)
     {
-        *solver = new BissectionIntervalSolver(pb);
+        *solver = new BissectionIntervalSolver(pb,bissection_mode);
         return;
     }
 
@@ -47,7 +49,7 @@ void ChooseSolver::choose( AbstractCSP* pb,
     {
         uint bf_index = index - 1;
         choice_.choose(&bf,bf_index);
-        * solver = new BissectionBasisFunctionSolver(pb,bf);             
+        * solver = new BissectionBasisFunctionSolver(pb,bf,bissection_mode);
         return;
     }
 
@@ -55,13 +57,13 @@ void ChooseSolver::choose( AbstractCSP* pb,
     {
         uint bf_index = index - 1-nb;
         choice_.choose(&bf,bf_index);
-        *solver = new ContractionBasisFunctionSolver(pb,bf);        
+        *solver = new ContractionBasisFunctionSolver(pb,bf,bissection_mode);
         return;
     }    
     
     if (index == 2*nb+1)
     {
-        *solver = new ContractionIntervalSolver(pb);
+        *solver = new ContractionIntervalSolver(pb,bissection_mode);
         return;
     }        
     std::cerr<<"Error in FILE "<< __FILE__<<" at line "<< __LINE__<<" the index "<< index <<" is not defined yet"<<std::endl;

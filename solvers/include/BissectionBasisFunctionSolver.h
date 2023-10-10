@@ -10,7 +10,9 @@
 class BissectionBasisFunctionSolver: public BasisFunctionSolver
 {
     public:
-        BissectionBasisFunctionSolver(AbstractCSP* pb, AbstractBasisFunction* bf);
+        BissectionBasisFunctionSolver(AbstractCSP* pb, 
+                                      AbstractBasisFunction* bf,
+                                      uint bissection_mode);
 
         virtual ~BissectionBasisFunctionSolver();
 

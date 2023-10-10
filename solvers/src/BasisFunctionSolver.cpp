@@ -98,6 +98,14 @@ void BasisFunctionSolver::set_next()
 param_optim BasisFunctionSolver::set_results    ()
 {
     double te = get_cpu_time();
+    switch(bissection_type_)
+    {
+        case(0):    std::cout<<"Bissection : MinFirst"<<std::endl;  break;
+        case(1):    std::cout<<"Bissection : MaxFirst"<<std::endl;  break;
+        default :   std::cerr<<"Bissection type not defined "<<std::endl;   std::exit(63);  break;
+    }
+    
+    
     std::cout<<"Number of Bissections : "<< cpt_iter_ <<std::endl;
     std::cout<<"Number of valid boxes : "<< nb_valid_box_ <<std::endl;
     std::cout<<"Number of possible boxes : "<< nb_maybe_box_<<std::endl;

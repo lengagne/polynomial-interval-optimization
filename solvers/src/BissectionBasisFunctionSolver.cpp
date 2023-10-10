@@ -3,7 +3,10 @@
 #include <time.h>
 
 
-BissectionBasisFunctionSolver::BissectionBasisFunctionSolver(AbstractCSP* pb, AbstractBasisFunction*bf )
+BissectionBasisFunctionSolver::BissectionBasisFunctionSolver(AbstractCSP* pb, 
+                                                             AbstractBasisFunction*bf,
+                                                            uint bissection_mode
+                                                            )
 {
     LazyReset();
     bf_ = bf;
@@ -13,6 +16,8 @@ BissectionBasisFunctionSolver::BissectionBasisFunctionSolver(AbstractCSP* pb, Ab
     pb_->init();
     nb_fun_ = pb_->get_nb_out();
     nb_var_ = pb_->get_nb_in();
+    
+    bissection_type_ = bissection_mode;
 }
 
 BissectionBasisFunctionSolver::~BissectionBasisFunctionSolver()

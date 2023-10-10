@@ -9,7 +9,8 @@
 class ContractionIntervalSolver: public AbstractSolver
 {
     public:
-        ContractionIntervalSolver(AbstractCSP* pb);
+        ContractionIntervalSolver(  AbstractCSP* pb,
+                                    uint bissection_mode);
 
         virtual ~ContractionIntervalSolver();
 

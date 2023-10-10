@@ -1,7 +1,8 @@
 #include "ContractionIntervalSolver.h"
 #include <string.h>
 
-ContractionIntervalSolver::ContractionIntervalSolver(AbstractCSP* pb)
+ContractionIntervalSolver::ContractionIntervalSolver(   AbstractCSP* pb,
+                                                        uint bissection_mode)
 {
     std::cout<<"GIT BRANCH = "<<  GIT_BRANCH <<std::endl;
     int dummy = system("date");
@@ -9,6 +10,8 @@ ContractionIntervalSolver::ContractionIntervalSolver(AbstractCSP* pb)
     pb_->init();
     nb_fun_ = pb_->get_nb_out();
     nb_var_ = pb_->get_nb_in();
+    
+    bissection_type_ = bissection_mode;
     std::cout<<"Creating ContractionIntervalSolver for problem : "<< pb_->get_problem_name()<<std::endl;
 }
 
@@ -163,6 +166,14 @@ param_optim ContractionIntervalSolver::solve_optim(double eps)
         if(current.size() == 0) test = false;
     }while(test);
     double te = get_cpu_time();
+    
+    switch(bissection_type_)
+    {
+        case(0):    std::cout<<"Bissection : MinFirst"<<std::endl;  break;
+        case(1):    std::cout<<"Bissection : MaxFirst"<<std::endl;  break;
+        default :   std::cerr<<"Bissection type not defined "<<std::endl;   std::exit(63);  break;
+    }
+    
     std::cout<<"Number of Bissections : "<< cpt_iter_ <<std::endl;
     std::cout<<"Number of valid boxes : "<< nb_valid_box_ <<std::endl;
     std::cout<<"Number of possible boxes : "<< nb_maybe_box_<<std::endl;

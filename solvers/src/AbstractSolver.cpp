@@ -26,13 +26,12 @@ bool AbstractSolver::bissect(   const Result& in,
 {
     out1 = in;
     out2 = in;
+
+    // check precision
     unsigned int id = 0;
     double w = 0.;
     for (unsigned int i=0;i<nb_var_;i++)
     {
-//         std::cout<<"nb_var_ = "<< nb_var_<<std::endl;
-//         std::cout<<"i = "<< i<<std::endl;
-//         std::cout<<"size = "<< in.in.size()<<std::endl;
         double t = Diam(in.in[i]);
         if (t>w)
         {
@@ -42,10 +41,25 @@ bool AbstractSolver::bissect(   const Result& in,
     }
 
     if (w < precision_)
-        return false;
+        return false;    
+    
+    switch (bissection_type_)
+    {
+        case(0): 
+            out1.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
+            out2.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
+            break;
+        case(1):
+            out1.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
+            out2.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));            
+            break;            
+        default:
+            std::cerr<<"Case not planned for the moment "<<std::endl;
+    }
+    
 
-    out1.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
-    out2.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
+
+
     
     return true;
 }

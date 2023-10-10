@@ -7,6 +7,7 @@
 #SBATCH --ntasks-per-core=1
 #SBATCH --exclusive
 #SBATCH --constraint=ivy 
+#SBATCH --partition=long
 
-../build/apps/Robot2D/Robot2D $1 $2 $3 $4
+../build/apps/Robot2D/Robot2D $1 $2 $3 $4 $5
 exit 0

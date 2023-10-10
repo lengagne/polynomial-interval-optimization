@@ -24,11 +24,6 @@ class BasisFunctionSolver: public AbstractSolver
         
         virtual param_optim set_results();
         
-//         void set_max_iter( uint m)
-//         {
-//             max_iter_ = m;
-//         }
-        
         virtual void update_input() = 0;
 
         bool solve_optim_ = false;
