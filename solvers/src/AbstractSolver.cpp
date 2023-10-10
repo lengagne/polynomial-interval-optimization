@@ -24,42 +24,62 @@ bool AbstractSolver::bissect(   const Result& in,
                                 Result &out1, 
                                 Result &out2)
 {
+    // check precision
     out1 = in;
     out2 = in;
-
-    // check precision
-    unsigned int id = 0;
+    
+    if (bissection_type_ < 2 || in.mode ==0)
+    {        
+        for (int i=0;i<nb_var_;i++)
+            out1.bissect_weight[i] = 1.0;
+    }
+    int id = -1;
     double w = 0.;
     for (unsigned int i=0;i<nb_var_;i++)
     {
-        double t = Diam(in.in[i]);
-        if (t>w)
+//         std::cout<<"IN("<<i<<") = "<< in.in[i]<<std::endl;
+//         std::cout<<"bissect_weight("<<i<<") = "<< out1.bissect_weight[i]<<std::endl;
+        double t = Diam(in.in[i]) * out1.bissect_weight[i];
+        if (Diam(in.in[i]) > precision_ && t >w)
         {
             w = t;
             id = i;
         }
-    }
+    }      
+    if (id == -1)
+        return false;
+    
+//     std::cout<<"id = "<< id <<std::endl;
 
-    if (w < precision_)
-        return false;    
     
     switch (bissection_type_)
     {
-        case(0): 
+        case(0):         
             out1.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
             out2.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
             break;
+            
         case(1):
             out1.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
-            out2.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));            
-            break;            
+            out2.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
+            break;
+            
+        case(2):            
+            if(in.bissect_inf_sup ^ in.bissect_bool[id])
+            {
+                out1.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
+                out2.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));                
+            }else
+            {
+                out1.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
+                out2.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));                
+            }
+            break;
         default:
-            std::cerr<<"Case not planned for the moment "<<std::endl;
-    }
-    
-
-
-
+                std::cerr<<"File : "<< __FILE__<<" at line "<< __LINE__ <<std::endl;
+                std::cerr<<"Case not planned for the moment "<<std::endl;
+                exit(123);
+    }                
     
     return true;
 }

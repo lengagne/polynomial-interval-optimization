@@ -15,7 +15,7 @@ class Kronecker
         Kronecker( const std::vector< Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> >& mats);
         
         uint get_nb_control_point()const;
-        
+               
         double get_value(uint lin, uint col) const;
         
         Interval line_product(Eigen::Matrix<double,Eigen::Dynamic,1> & vec);

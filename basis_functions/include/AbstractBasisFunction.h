@@ -28,9 +28,12 @@ class AbstractBasisFunction
         
     
         void get_basis_coeff_matrix( const Interval& inter,
-                                                    uint order,
-                                                    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat,
-                                                    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat_inverse);
+                                    uint order,
+                                    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat,
+                                    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat_inverse);
+        
+        void get_time_max( const Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat,
+                           Eigen::Matrix<double,Eigen::Dynamic,1>& tmax);
     
     protected:
         
@@ -46,6 +49,8 @@ class AbstractBasisFunction
         std::map< uint, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> > mat_inverse_order_;
         
         bool re_order_ = false;
+        uint order_;
+        Interval inter_;
 };
 
 #endif // AbstractBasisFunction_H

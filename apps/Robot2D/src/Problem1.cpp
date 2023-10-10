@@ -11,7 +11,11 @@ void Problem1::init()
         input_[i] = Hull (-1.5,1.5);
     }
 
-//     input_[0] = Hull(0,1.5);
+//     input_[0] = Hull(0.38,0.39);
+//     input_[1] = Hull(-0.90,-0.89);
+
+//     input_[0] = Hull(0.29,0.30);
+//     input_[1] = Hull(-0.76,-0.75);
     width = 0.1;
 
     bound_.resize(nb_fun_);

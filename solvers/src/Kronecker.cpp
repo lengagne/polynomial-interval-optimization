@@ -24,7 +24,6 @@ Kronecker::Kronecker( const std::vector< Eigen::Matrix<double,Eigen::Dynamic,Eig
     nb_control_points_ = 1;
     for (int i=0;i<nb_basis_;i++)
         nb_control_points_ *= size_matrices_[i];
-    
 }
 
 uint Kronecker::get_nb_control_point()const

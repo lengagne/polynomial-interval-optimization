@@ -48,6 +48,29 @@ unsigned int IntervalEstimator::get_index(mem* m) const
     return index;
 }
 
+void IntervalEstimator::guess_next_bissection( uint i,
+                                                Result& res,
+                                                bool inf_first) const
+{
+//     std::cout<<"nb_in = "<< local_M_inverse_inputs_.size()<< " \t nb control point = " << nb_control_point_inputs_<<std::endl;
+    if (local_M_inverse_inputs_.size() == 2 && nb_control_point_inputs_ == 4)
+    {
+//         std::cout<<"mode = 1 "<< std::endl;
+        res.bissect_weight = cut_direction_[i];
+        res.bissect_inf_sup =  inf_first;
+        res.mode = 1;
+        res.bissect_bool = cut_inf_[i];
+        
+        
+//         for (int i=0;i<res.bissect_weight.size();i++)
+//             std::cout<<"RES BISSECT("<<i<<") = "<< res.bissect_weight[i]<<std::endl;
+    }else
+    {
+//         std::cout<<"mode = 0 "<< std::endl;
+        res.mode = 0;
+    }
+}
+
 unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigned int num_out)
 {      
     num_out_ = num_out;
@@ -71,10 +94,13 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
     for (int j=0;j<nb_in_;j++)
         local_M_[nb_in_-j-1].resize(order_[j]+1,order_[j]+1);
 
+    
+    t_max_.resize(nb_in_);
     for( int i=0;i<nb_in_;i++)
     {
         Interval val = dep_[i]->value_;
         bf_->get_basis_coeff_matrix(val, order_[i],local_M_[nb_in_-i-1],local_M_inverse_[nb_in_-i-1]);
+        bf_->get_time_max( local_M_[nb_in_-i-1], t_max_[i]);
     }
     
     for (int i=0;i<nb_in_;i++)  if(! dep_[nb_in_-i-1]->rely_on_error())
@@ -83,7 +109,7 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
     kron_solver_inputs_ = new Kronecker(local_M_inverse_inputs_);
     kron_solver_errors_ = new Kronecker(local_M_inverse_);
 
-     nb_control_point_inputs_ = kron_solver_inputs_->get_nb_control_point();
+    nb_control_point_inputs_ = kron_solver_inputs_->get_nb_control_point();
 
     coefdep_inputs_.push_back(1);
     for (int i=0;i<nb_in_;i++)  if(! dep_[i]->rely_on_error())
@@ -150,27 +176,67 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
         LazyAddOutput(MCT_coeff_[*it],num_out_,nb_valid_coeff++);
     }      
     
+    
+    // prepare smart bissection process
+    cut_direction_.resize(nb_control_point_inputs_);
+    cut_inf_.resize(nb_control_point_inputs_);
+    
+    for (int i=0;i<nb_control_point_inputs_;i++)
+    {
+        cut_direction_[i].resize(local_M_inverse_inputs_.size());
+        cut_inf_[i].resize(local_M_inverse_inputs_.size());
+        
+    }
+    
+    double ratio = 1.0;
+    if (local_M_inverse_inputs_.size() == 2 && nb_control_point_inputs_ == 4)
+    {
+        cut_direction_[0][0] = 1.0;    // ne devrait pas servir
+        cut_direction_[0][1] = 1.0;
+        
+        cut_inf_[0][0] = true;
+        cut_inf_[0][1] = true;
+        
+        cut_direction_[1][0] = 1;       // il vaut mieux couper la deuxième variable
+        cut_direction_[1][1] = ratio;   // de préférences on coupe la deuxième variable
+//         cut_direction_[1][1] = 1.0;   // de préférences on coupe la deuxième variable
+
+        cut_inf_[1][0] = true;
+        cut_inf_[1][1] = false;
+
+        
+        cut_direction_[2][0] = ratio;   // il vaut mieux couper la première variable
+//         cut_direction_[2][0] = 1.0;   // il vaut mieux couper la première variable
+        cut_direction_[2][1] = 1;       // 
+        
+        cut_inf_[2][0] = false;
+        cut_inf_[2][1] = true;        
+        
+        cut_direction_[3][0] = 1;   // pas de préférence (donc la plus grande)
+        cut_direction_[3][1] = 1;   // pas de préférence (donc la plus grande)
+
+        cut_inf_[3][0] = false;
+        cut_inf_[3][1] = false;
+        
+    }
+    
+
+    
     return nb_valid_coeff;
 }
 
 Interval IntervalEstimator::update_from_inputs( )
 {
     unsigned int cpt = 0;  
-//     std::cout<<"error = "<< error<<std::endl;
     Interval out = LazyUpdate(num_out_,cpt++);
-//     std::cout<<"value = "<< out<<std::endl;
     for (int i=1;i<nb_control_point_inputs_;i++)
     {
         Interval value = LazyUpdate(num_out_,cpt++);
-//         std::cout<<"value = "<< value<<std::endl;
         out = Hull(out,value);
     }
-//     std::cout<<"return = "<< out + error<<std::endl;
 
     for (unsigned int i=0;i<nb_sparse_errors_;i++)
         sparse_coeff_errors_(i) = LazyUpdate(num_out_,cpt++);
-//     std::cout<<"num_out_ = " << num_out_ <<std::endl;
-//     std::cout<<"sparse_coeff_errors_ = " << sparse_coeff_errors_ <<std::endl;
     
     Interval error = kron_solver_errors_->line_product(sparse_coeff_errors_);
     return out + error;
@@ -179,7 +245,6 @@ Interval IntervalEstimator::update_from_inputs( )
 // check_constraint IntervalEstimator::update_from_inputs( Interval& out, Interval& bound)
 check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& bound,uint index_ctr)
 {  
-//     std::cout<<"output_infos::update_from_inputs"<<std::endl;
     Interval& out = res.out[index_ctr];
     double MAX =  std::numeric_limits<double>::max();
     double MIN = -std::numeric_limits<double>::max();
@@ -202,13 +267,15 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
         if ( inf_inside != sup_inside || both_side)
         {
             out = Iv;
+            guess_next_bissection( i , res , inf_inside );
+//             std::cout<<"on overlap avec info de bissection" <<std::endl;
+//             std::cout<<"OVERLAP inside = "<< inf_inside<< "  outside = "<< sup_inside <<" both side = "<< both_side <<std::endl;
             return OVERLAP;            
         }
     }
-//     std::cout<<"res.error["<<num_out_<<"] = "<< res.error[num_out_]<<"("<<  Diam( res.error[num_out_])  <<") seuil : "<< OFFSET_ERROR_TH <<std::endl;
+
     if ( Diam( res.error[num_out_]) >= OFFSET_ERROR_TH)
     {
-//         std::cout<<"Recompute error for "<< num_out_<<std::endl;
         // deal with error   
         for (unsigned int i=0;i<nb_sparse_errors_;i++)
             sparse_coeff_errors_(i) = LazyUpdate(num_out_,cpt++);
@@ -216,18 +283,17 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
         Interval error = kron_solver_errors_->line_product(sparse_coeff_errors_);
         res.error[num_out_] = error;
     }
-//     else
-//     {
-//         std::cout<<"Do not recompute error for "<< num_out_<<std::endl;
-//     }
-    
+
     out = Iv + res.error[num_out_];
     if (Intersection(out,bound))
     {
         if (inf_inside)
             return INSIDE;
         else 
+        {
+//             std::cout<<"OVERLAP FINAL"<<std::endl;
             return OVERLAP;
+        }
     }
     
     return OUTSIDE;

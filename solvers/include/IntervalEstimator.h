@@ -26,6 +26,10 @@ class IntervalEstimator{
         unsigned int get_index(mem*m ) const;
 
         unsigned int get_index_input(mem* m) const;
+        
+        void guess_next_bissection( uint i,
+                                    Result& res,
+                                    bool inf_first) const;
 
         virtual unsigned int  prepare_coeffs( const MogsInterval& out, unsigned int num_out);
 
@@ -38,6 +42,8 @@ class IntervalEstimator{
     std::vector<unsigned int> order_,coefdep_;
     std::vector< Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> > local_M_;
     std::vector< Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> > local_M_inverse_;
+    
+    std::vector< Eigen::Matrix<double,Eigen::Dynamic,1> > t_max_;
 
     std::vector<MogsInterval*> dep_inputs_;
     std::vector<unsigned int> order_inputs_,coefdep_inputs_;
@@ -62,6 +68,9 @@ class IntervalEstimator{
     bool avoid_error_computation_ = false;
     // use to compute the coefficients of the basis functions
     AbstractBasisFunction* bf_;       
+    
+    std::vector< std::vector<double> > cut_direction_;
+    std::vector< std::vector< bool > > cut_inf_;
 
 };
 

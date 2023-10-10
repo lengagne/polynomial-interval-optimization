@@ -102,6 +102,7 @@ param_optim BasisFunctionSolver::set_results    ()
     {
         case(0):    std::cout<<"Bissection : MinFirst"<<std::endl;  break;
         case(1):    std::cout<<"Bissection : MaxFirst"<<std::endl;  break;
+        case(2):    std::cout<<"Bissection : Smart"<<std::endl;  break;
         default :   std::cerr<<"Bissection type not defined "<<std::endl;   std::exit(63);  break;
     }
     
@@ -144,6 +145,9 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
     find_one_feasible_ =false;
     cpt_iter_ = 0;
     bool test;
+    
+    std::vector<double> bissect_weight(nb_var_);
+    
     do{
         cpt_iter_++;
         test = true;
@@ -189,7 +193,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
                         break;
                 }
             }
-            update_input();
+            update_input();               
                         
             // check the optimal
             switch(type)

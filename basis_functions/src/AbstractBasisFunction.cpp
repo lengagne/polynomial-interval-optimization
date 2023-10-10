@@ -1,29 +1,67 @@
 #include "AbstractBasisFunction.h"
        
 void AbstractBasisFunction::get_basis_coeff_matrix( const Interval& inter,
-                                            uint order,
-                                            Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat,
-                                            Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat_inverse)
+                                                    uint order,
+                                                    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat,
+                                                    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat_inverse
+                                                  )
 {
-
+    inter_ = inter;
     std::map<uint, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> >::iterator it ;
     
 //     std::cout<<"looking for order "<< order <<" if already asked. "<<std::endl;
     it = mat_order_.find(order);      
     if(it == mat_order_.end())
     {
-//         std::cout<<"order "<< order<<" must be computed"<<std::endl;
         compute_basis_coeff_matrix(inter, order,mat,mat_inverse);        
         mat_order_[order] = mat;
         mat_inverse_order_[order] = mat_inverse;
     }
     else
     {
-//         std::cout<<"order "<< order<<" already computed, used the previous one"<<std::endl;
         mat = mat_order_[order];
-        mat = re_order(mat);
         mat_inverse = mat_inverse_order_[order];
     }
+    
+    
+    
+}
+
+void AbstractBasisFunction::get_time_max( const Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat,
+                                          Eigen::Matrix<double,Eigen::Dynamic,1>& tmax)
+{
+    uint s = mat.rows();
+    tmax.resize(s);      
+    double inf = Inf(inter_);
+    double diam = Diam (inter_);
+    
+    int nb = 11;
+    double delta = diam / (nb-1);
+//     std::cout<<"mat = "<< mat <<std::endl;
+//     std::cout<<"s = "<< s <<std::endl;
+    for (int i=0;i<s;i++)
+    {
+        // compute each value
+        double max = 0;
+        double maxt = inf;
+        for (int j=0;j<nb;j++)
+        {
+            double t = inf + j *delta;
+            
+            double val = 0;
+            for (int k=0;k<s;k++)
+                val += mat (k,i) * pow (t,k);
+            
+            if (val > max)
+            {
+                max = val;
+                maxt = t;
+            }          
+        }
+        tmax(i) = maxt;
+    }
+//     std::cout<<"tmax = "<< tmax.transpose() <<std::endl;
+    
 }
 
 Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> AbstractBasisFunction::re_order(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& M)
