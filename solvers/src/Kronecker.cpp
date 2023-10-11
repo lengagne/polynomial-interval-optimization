@@ -31,6 +31,19 @@ uint Kronecker::get_nb_control_point()const
     return nb_control_points_;
 }
 
+double Kronecker::get_pos(uint id, uint p) const
+{
+//     std::cout<<std::endl;
+//     std::cout<<"id = "<< id <<std::endl;
+//     std::cout<<"p = "<< p <<std::endl;
+//     std::cout<<"pos_max_.size() = "<< pos_max_.size() <<std::endl;
+//     std::cout<<"pos_max_[id].size() = "<< pos_max_[id].size() <<std::endl;
+//     std::cout<<"offsets_[id] = "<< offsets_[id] <<std::endl;
+//     std::cout<<"size_matrices_[id] = "<< size_matrices_[id] <<std::endl;
+//     std::cout<<"it = "<< (p/offsets_[id])%size_matrices_[id] <<std::endl;
+    return  pos_max_[id]((p/offsets_[id])%size_matrices_[id]);
+}
+
 double Kronecker::get_value(uint lin, uint col) const
 {
     double out = 1;
@@ -39,6 +52,43 @@ double Kronecker::get_value(uint lin, uint col) const
         out *= basis_matrices_[i]((lin/offsets_[i])%size_matrices_[i], (col/offsets_[i])%size_matrices_[i]);
     }
     return out;
+}
+
+void Kronecker::help_bissection(uint id,Result& res, bool inf_sup) const
+{
+//     std::cout<<"update the res infos "<< id <<std::endl;
+    if (!res.info_defined)
+    {
+        res.bissect_weight.resize(nb_basis_);
+        res.inf_sup_proba.resize(nb_basis_);
+        for (int i=0;i<nb_basis_;i++)
+        {
+            res.bissect_weight[i] =  1;
+            res.inf_sup_proba[i] = 0.0;
+        }
+        res.nb_info = 0;
+    }
+    
+    
+    res.nb_info++;
+    
+    for (int i=0;i<nb_basis_;i++)
+    {
+        res.bissect_weight[i] *= 1+0.2*(1.0*(id%offsets_[i]))/(1.0*offsets_[i]);
+        res.inf_sup_proba[i] += pos_inf_[id][i] ^ inf_sup;
+    }
+    
+//     for (int i=0;i<nb_basis_;i++)
+//         std::cout<<"weight["<<i<<"] = "<< 1+0.5*(1.0*( offsets_[i] - id%offsets_[i]))/(1.0*offsets_[i]) <<std::endl;    
+    
+//     for (int i=0;i<nb_basis_;i++)
+//         std::cout<<"vec["<<i<<"] = "<< pos_inf_[id][i] <<std::endl;    
+//     for (int i=0;i<nb_basis_;i++)
+//         std::cout<<"res.inf_sup_proba["<<i<<"] = "<< res.inf_sup_proba[i] <<std::endl;        
+//     std::cout<<"res.nb_info = "<< res.nb_info <<std::endl;
+//     std::cout <<std::endl;
+    
+    res.info_defined = true;
 }
 
 Interval Kronecker::line_product(Eigen::Matrix<double,Eigen::Dynamic,1> & vec)
@@ -80,5 +130,27 @@ void Kronecker::prepare_line_product_interval(const std::list<unsigned int > & v
             
         }
         col++;
+    }
+}
+
+void Kronecker::set_maximum_position(std::vector< Eigen::Matrix<double,Eigen::Dynamic,1> >& max)
+{
+    pos_max_ = max;
+//     for (int i=0;i<pos_max_.size();i++)
+//         std::cout<<"pos_max_("<<i<<") = "<< pos_max_[i].transpose()<<std::endl;
+    
+    pos_.resize(nb_control_points_);   
+    pos_inf_.clear();
+    for (int i=0;i<nb_control_points_;i++)
+    {
+        std::vector<bool> tmp_inf;
+        pos_[i].resize(nb_basis_);
+        for (int j=0;j<nb_basis_;j++)
+        {
+            pos_[i](j) = get_pos(j,i);
+//             tmp_inf.push_back( pos_[i](j) <= 0);
+            tmp_inf.push_back(false);
+        }
+        pos_inf_.push_back(tmp_inf);
     }
 }

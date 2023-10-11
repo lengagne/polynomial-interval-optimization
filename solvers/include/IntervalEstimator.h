@@ -43,7 +43,7 @@ class IntervalEstimator{
     std::vector< Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> > local_M_;
     std::vector< Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> > local_M_inverse_;
     
-    std::vector< Eigen::Matrix<double,Eigen::Dynamic,1> > t_max_;
+    std::vector< Eigen::Matrix<double,Eigen::Dynamic,1> > pos_max_;
 
     std::vector<MogsInterval*> dep_inputs_;
     std::vector<unsigned int> order_inputs_,coefdep_inputs_;
@@ -69,8 +69,8 @@ class IntervalEstimator{
     // use to compute the coefficients of the basis functions
     AbstractBasisFunction* bf_;       
     
-    std::vector< std::vector<double> > cut_direction_;
-    std::vector< std::vector< bool > > cut_inf_;
+//     std::vector< std::vector<double> > cut_direction_;
+//     std::vector< std::vector< bool > > cut_inf_;
 
 };
 

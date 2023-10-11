@@ -24,22 +24,22 @@ bool AbstractSolver::bissect(   const Result& in,
                                 Result &out1, 
                                 Result &out2)
 {
+//     std::cout<<"on bissect"<<std::endl;
     // check precision
     out1 = in;
     out2 = in;
     
-    if (bissection_type_ < 2 || in.mode ==0)
-    {        
-        for (int i=0;i<nb_var_;i++)
-            out1.bissect_weight[i] = 1.0;
-    }
     int id = -1;
     double w = 0.;
     for (unsigned int i=0;i<nb_var_;i++)
     {
-//         std::cout<<"IN("<<i<<") = "<< in.in[i]<<std::endl;
-//         std::cout<<"bissect_weight("<<i<<") = "<< out1.bissect_weight[i]<<std::endl;
-        double t = Diam(in.in[i]) * out1.bissect_weight[i];
+        double t = Diam(in.in[i]);
+        if (bissection_type_ ==2)
+        {
+//             std::cout<<"weigh("<<i<<") = "<< in.bissect_weight[i] <<std::endl;
+//             std::cout<<"inf_sup_proba("<<i<<") = "<< in.inf_sup_proba[i]/in.nb_info <<std::endl;
+            t*= in.bissect_weight[i]; 
+        }
         if (Diam(in.in[i]) > precision_ && t >w)
         {
             w = t;
@@ -48,13 +48,12 @@ bool AbstractSolver::bissect(   const Result& in,
     }      
     if (id == -1)
         return false;
-    
-//     std::cout<<"id = "<< id <<std::endl;
-
-    
+//     std::cout<<"we will cut "<< id ;
+       
     switch (bissection_type_)
     {
-        case(0):         
+        case(0):
+//             std::cout<<"  First inferior part"<<std::endl;
             out1.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
             out2.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
             break;
@@ -64,13 +63,16 @@ bool AbstractSolver::bissect(   const Result& in,
             out2.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
             break;
             
-        case(2):            
-            if(in.bissect_inf_sup ^ in.bissect_bool[id])
+        case(2):   
+
+            if(in.inf_sup_proba[id] /in.nb_info > 0.5 )
             {
+//                 std::cout<<"  First inferior part"<<std::endl;
                 out1.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
                 out2.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));                
             }else
             {
+//                 std::cout<<"  First superior part"<<std::endl;
                 out1.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
                 out2.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));                
             }

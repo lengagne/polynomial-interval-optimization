@@ -8,7 +8,7 @@ Result::Result()
     error.clear();
     ctr_ok.clear();
     error_ok.clear();
-    mode = 0;
+    info_defined = false;
 }
     
 Result::Result( const std::vector<Interval> &input,
@@ -31,9 +31,7 @@ Result::Result( const std::vector<Interval> &input,
         error[i] = Hull(-42.0,42.42);   // 
         error_ok[i] = false;
     }  
-    
-    bissect_weight.resize( input.size());
-    mode = 0;
+    info_defined = false;
 }
  
 void Result::operator=( const Result& res)
@@ -44,9 +42,7 @@ void Result::operator=( const Result& res)
     error = res.error;
     ctr_ok = res.ctr_ok;
     error_ok = res.error_ok;
-    
-    bissect_weight = res.bissect_weight;
-    mode = res.mode;
+    info_defined = false;
 }
  
     

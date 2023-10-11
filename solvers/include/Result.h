@@ -24,10 +24,11 @@ public:
     std::vector<bool> error_ok;
     
     std::vector<double> bissect_weight;
-    std::vector<bool> bissect_bool;
-    bool bissect_inf_sup;
+    std::vector<double> inf_sup_proba;
     
-    uint mode = 0;  // 0 normal , 1 smart bissection (considering weight)
+    bool info_defined = false;
+    uint nb_info;
+    
     
     friend std::ostream& operator<< (std::ostream& stream, const Result& res);
 };

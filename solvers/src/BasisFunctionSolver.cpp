@@ -147,7 +147,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
     bool test;
     
     std::vector<double> bissect_weight(nb_var_);
-    
+    uint max_iter = 1e3;
     do{
         cpt_iter_++;
         test = true;
@@ -190,6 +190,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
                                             break;
                     }
                     if(type==OUTSIDE)
+//                     if(type==OUTSIDE || type ==OVERLAP)
                         break;
                 }
             }
@@ -210,11 +211,11 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
 //                                         optim_crit_ =  Sup(tmp_crit);
                                         optim_crit_ =  Sup(current_value_.out[nb_fun_]);
                                         optim_ = current_value_;
-                                        Result low, high;
-                                        if(bissect(current_value_, low,high))
+                                        Result result1, result2;
+                                        if(bissect(current_value_, result1,result2))
                                         {
-                                            current_vector_.push_back(low);
-                                            current_vector_.push_back(high);
+                                            current_vector_.push_back(result2);
+                                            current_vector_.push_back(result1);
                                         }
 //                                         else
 //                                         {
@@ -224,11 +225,11 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
 
                                     }else  if (type_optim == OVERLAP)//if (Inf(tmp_crit) < optim_crit_)
                                     {
-                                        Result low, high;
-                                        if(bissect(current_value_, low,high))
+                                        Result result1, result2;
+                                        if(bissect(current_value_, result1,result2))
                                         {
-                                            current_vector_.push_back(low);
-                                            current_vector_.push_back(high);
+                                            current_vector_.push_back(result2);
+                                            current_vector_.push_back(result1);
                                         }
 //                                         else
 //                                         {
@@ -238,11 +239,11 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
                                     }
                                     break;
                 case(OVERLAP)   :   
-                                    Result low, high;
-                                    if(bissect(current_value_, low,high))
+                                    Result result1, result2;
+                                    if(bissect(current_value_, result1,result2))
                                     {
-                                        current_vector_.push_back(low);
-                                        current_vector_.push_back(high);
+                                        current_vector_.push_back(result2);
+                                        current_vector_.push_back(result1);
                                     }
 //                                     else
 //                                     {
@@ -254,6 +255,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
         }
         if(current_vector_.size() == 0) test = false;
     }while(test ); // && cpt_iter_ < max_iter_ );
+//     }while(test && cpt_iter_ < max_iter );
 
     return set_results();
 }
