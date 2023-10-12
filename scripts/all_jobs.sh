@@ -12,7 +12,8 @@ do
 #                 echo $pbname;
                 for solveur in `seq 0 17`
                 do
-                    for bissection_type in `seq 0 2`
+#                     for bissection_type in `seq 0 2`
+                    for bissection_type in `seq 0 1`
                     do
                             sbatch job.sh $dof $pbname $precision $bissection_type $solveur
 #                     sh  job.sh $dof $pbname $precision $bissection_type $solveur
