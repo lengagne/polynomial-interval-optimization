@@ -2,7 +2,7 @@
 
 for precision in 0.001 # for precision in  0.1 0.01 0.001
 do
-    for dof in `seq 2 4`
+    for dof in `seq 2 6`
     do
         for pb10 in `seq 0 1`
         do
