@@ -1,6 +1,4 @@
-
 #include "data_format.h"
-
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -10,6 +8,7 @@
 
 std::list<std::string> solver_order_;
 std::list<std::string> bissect_order_;
+std::list<std::string> pb_order_;
 
 data_format::data_format( const std::string& filename)
 {
@@ -32,7 +31,7 @@ data_format::data_format( const std::string& filename)
             add_data(line,"comput_time", "computation time (wo prep):");
             add_data(line,"time_per_iter", "Time per iteration :");
             add_data(line,"total_time", "total time :");
-            add_data(line,"bissection", "Bissection :");
+            add_data(line,"bissection", "Bissection : ");
             
             if (loof_for(line,"DUE TO TIME LIMIT"))
             {
@@ -107,8 +106,6 @@ void create_csv(const std::vector< data_format*> datas,
                 bool ratio
                )
 {
-//     std::cout<<"create files for "<< filetype <<std::endl;
-    
     std::list<std::string> type_inputs;
     
     for (auto& d : datas)
@@ -186,15 +183,8 @@ void create_csv(const std::vector< data_format*> datas,
                                 coeff = toDouble ( d->infos[ordonnee]) ;
                             }                            
                         }
-//                         if (d->infos.find(ordonnee) != d->infos.end()) {
-//                             outfile<< d->infos[ordonnee]<<"\t";
-//                         } else {
-//                             outfile<< "?\t";
-//                         }                        
                     }
                 }
-                
-                
                 
                 for (auto& d : local_data)
                 {
@@ -227,31 +217,19 @@ void create_latex( const std::vector< data_format*> datas,
 {
     std::cout<<"CREATE LATEX With "<< filename <<std::endl;
     std::ofstream outfile (filename+".tex");
-    
     std::cout<<"On a "<< columns.size() <<" colonnes "<<std::endl;
     uint cs = columns.size();
-    
     outfile<<"% \\usepackage{longtable}"<<std::endl;
-    
     outfile <<"\\begin{longtable}{|";
     for (int i=0;i<cs;i++)  outfile<< "c|";
     outfile <<"}\n";
-    
     outfile<<"\\hline\n"; 
     for (int i=0;i<cs-1;i++)  outfile<< columns[i]<<" & ";
     outfile<< columns[cs-1]<<" \\\\ \\hline \n";    
-    
-    
     std::cout<<"datas.size() = "<< datas.size()<<std::endl;
     create_latex_subpart( outfile, 0, columns, datas);
-    
-    
-    
     outfile <<"\n\\end{longtable}\n";
-    
-    
     outfile.close();
-    
 }
 
 void create_latex_subpart( std::ofstream& outfile,
@@ -287,6 +265,9 @@ void create_latex_subpart( std::ofstream& outfile,
     if (ref == "bissection")
         type_data = re_order( type_data,bissect_order_);
     
+    if (ref == "problem")
+        type_data = re_order( type_data,pb_order_);
+    
     uint cpt = 0;
     for (auto& t : type_data)
     {
@@ -300,11 +281,9 @@ void create_latex_subpart( std::ofstream& outfile,
             }
             
         }
-
         
         if (cpt)
-            outfile<<entete;
-        
+            outfile<<entete;       
         
         if ( local_data.size() == 1)
         {
@@ -312,26 +291,17 @@ void create_latex_subpart( std::ofstream& outfile,
             for (int i=index;i<columns.size()-1;i++)
                 outfile << d->infos[columns[i]]<<" & ";
             outfile <<d->infos[columns[columns.size()-1]] <<"\\\\ "; 
-            
-             outfile <<" \\cline{"<< index+1 <<"-"<< columns.size() <<"}\n";   
-            
+            outfile <<" \\cline{"<< index+1 <<"-"<< columns.size() <<"}\n";               
         }else
         {
             if (entete == "")
             {
                 outfile <<" \\hline \n";   
             }
-//             else
-//             {
-//                 outfile <<" \\cline{"<< index <<"-"<< columns.size() <<"}\n";   
-//             }
-            
             outfile<<"\\multirow{"<<local_data.size()<<"}{*}{"<< t <<"} & ";
             create_latex_subpart ( outfile, index+1, columns, local_data, entete+" & ");
-            
             outfile <<" \\cline{"<< index+1 <<"-"<< index+2 <<"}";   
         }
-        
         cpt ++;
     }    
 }
@@ -361,6 +331,9 @@ void init_order()
     bissect_order_.push_back("MinFirst");
     bissect_order_.push_back("MaxFirst");
     bissect_order_.push_back("Smart");
+    
+    for (int i=0;i<30;i++)
+        pb_order_.push_back(std::to_string(i));
 }
 
 std::list<std::string> re_order(const std::list<std::string>& input, 
@@ -368,17 +341,27 @@ std::list<std::string> re_order(const std::list<std::string>& input,
 {
     std::list<std::string> out;
     
+    for (auto& j:input)
+        std::cout<<"in = "<< j <<"!"<<std::endl;
+    
+    for (auto& j:dic)
+        std::cout<<"dic = "<< j <<"!"<<std::endl;    
+    
     for (auto& i: dic)
     {
         for (auto& j:input)
         {
+            std::cout<<"test egalite ("<< i<<"==" << j<<")"  <<std::endl;
             if (i == j)
             {
+                std::cout<<"egalite "<< i<< " " << j <<std::endl;
                 out.push_back(i);
-                break;
             }
         }
     }
+    
+    for (auto& j:out)
+        std::cout<<"out = "<< j <<std::endl;    
     return out;
 }
 
