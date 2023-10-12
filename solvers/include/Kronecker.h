@@ -42,10 +42,10 @@ private:
         
         std::vector< Eigen::Matrix<double,Eigen::Dynamic,1> > pos_max_;
         
+        std::vector< Eigen::Matrix<double,Eigen::Dynamic,1> > proba_;
+        
         
         std::vector< Eigen::Matrix<double,Eigen::Dynamic,1> > pos_;
-        
-        std::vector< std::vector<bool> > pos_inf_;
 };
 
 #endif // KRONECKER_H

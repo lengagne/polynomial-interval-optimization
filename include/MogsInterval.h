@@ -326,7 +326,7 @@ T1 approx_taylor_cos( const T1& value, const T2& middle)
     T1 a = value - middle;
     return  cos( middle)
             - a*  sin(middle);
-//             - a*a*  cos(middle) /2
+//             - a*a*  cos(middle) /2;
 //            + a*a*a*  sin(middle) /6;
 //            + a*a*a*a*  cos(middle) /24
 //            - a*a*a*a*a*  sin(middle) /120;
@@ -338,7 +338,7 @@ T1 approx_taylor_sin( const T1& value, const T2& middle)
     T1 a = value - middle;
     return  sin( middle)
             + a*  cos(middle);
-//             - a*a* sin(middle) /2
+//             - a*a* sin(middle) /2;
 //             - a*a*a* cos(middle) /6;
 //            + a*a*a*a* sin(middle) /24
 //            + a*a*a*a*a*  cos(middle) /120;

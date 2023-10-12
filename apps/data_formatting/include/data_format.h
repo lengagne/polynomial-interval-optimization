@@ -54,6 +54,9 @@ void create_latex_subpart( std::ofstream& outfile,
 
 void init_order();
 
+std::list<std::string> re_order(const std::list<std::string>& input, 
+                                const std::list<std::string>& dic);
+
 double toDouble(std::string s);
 
 

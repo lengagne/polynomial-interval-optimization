@@ -9,6 +9,7 @@
 #include <functional>
 
 std::list<std::string> solver_order_;
+std::list<std::string> bissect_order_;
 
 data_format::data_format( const std::string& filename)
 {
@@ -31,6 +32,7 @@ data_format::data_format( const std::string& filename)
             add_data(line,"comput_time", "computation time (wo prep):");
             add_data(line,"time_per_iter", "Time per iteration :");
             add_data(line,"total_time", "total time :");
+            add_data(line,"bissection", "Bissection :");
             
             if (loof_for(line,"DUE TO TIME LIMIT"))
             {
@@ -245,7 +247,7 @@ void create_latex( const std::vector< data_format*> datas,
     
     
     
-    outfile <<"\\end{longtable}\n";
+    outfile <<"\n\\end{longtable}\n";
     
     
     outfile.close();
@@ -278,6 +280,12 @@ void create_latex_subpart( std::ofstream& outfile,
         add( t, type_data);            
         type_data.sort();            
     }
+    
+    if (ref == "solver")
+        type_data = re_order( type_data,solver_order_);
+    
+    if (ref == "bissection")
+        type_data = re_order( type_data,bissect_order_);
     
     uint cpt = 0;
     for (auto& t : type_data)
@@ -348,6 +356,30 @@ void init_order()
     solver_order_.push_back("ContractionBasis_MinVo");
     solver_order_.push_back("ContractionBasis_RecursiveBSplines");
     solver_order_.push_back("ContractionBasis_RecursiveBSplines2");        
+    
+    bissect_order_.clear();
+    bissect_order_.push_back("MinFirst");
+    bissect_order_.push_back("MaxFirst");
+    bissect_order_.push_back("Smart");
+}
+
+std::list<std::string> re_order(const std::list<std::string>& input, 
+                                const std::list<std::string>& dic)
+{
+    std::list<std::string> out;
+    
+    for (auto& i: dic)
+    {
+        for (auto& j:input)
+        {
+            if (i == j)
+            {
+                out.push_back(i);
+                break;
+            }
+        }
+    }
+    return out;
 }
 
 double toDouble(std::string s){

@@ -35,7 +35,9 @@ class IntervalEstimator{
 
         virtual Interval update_from_inputs( );
 //         virtual check_constraint update_from_inputs( Interval& out, Interval& bound);
-        virtual check_constraint update_from_inputs( Result& res, Interval& bound,uint index_ctr);
+        virtual check_constraint update_from_inputs( Result& res, 
+                                                     Interval& bound,
+                                                     uint index_ctr);
 
     unsigned int nb_in_;
     std::vector<MogsInterval*> dep_;

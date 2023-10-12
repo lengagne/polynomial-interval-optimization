@@ -33,14 +33,6 @@ uint Kronecker::get_nb_control_point()const
 
 double Kronecker::get_pos(uint id, uint p) const
 {
-//     std::cout<<std::endl;
-//     std::cout<<"id = "<< id <<std::endl;
-//     std::cout<<"p = "<< p <<std::endl;
-//     std::cout<<"pos_max_.size() = "<< pos_max_.size() <<std::endl;
-//     std::cout<<"pos_max_[id].size() = "<< pos_max_[id].size() <<std::endl;
-//     std::cout<<"offsets_[id] = "<< offsets_[id] <<std::endl;
-//     std::cout<<"size_matrices_[id] = "<< size_matrices_[id] <<std::endl;
-//     std::cout<<"it = "<< (p/offsets_[id])%size_matrices_[id] <<std::endl;
     return  pos_max_[id]((p/offsets_[id])%size_matrices_[id]);
 }
 
@@ -56,9 +48,9 @@ double Kronecker::get_value(uint lin, uint col) const
 
 void Kronecker::help_bissection(uint id,Result& res, bool inf_sup) const
 {
-//     std::cout<<"update the res infos "<< id <<std::endl;
     if (!res.info_defined)
     {
+        
         res.bissect_weight.resize(nb_basis_);
         res.inf_sup_proba.resize(nb_basis_);
         for (int i=0;i<nb_basis_;i++)
@@ -68,26 +60,20 @@ void Kronecker::help_bissection(uint id,Result& res, bool inf_sup) const
         }
         res.nb_info = 0;
     }
-    
-    
     res.nb_info++;
     
     for (int i=0;i<nb_basis_;i++)
     {
-        res.bissect_weight[i] *= 1+0.2*(1.0*(id%offsets_[i]))/(1.0*offsets_[i]);
-        res.inf_sup_proba[i] += pos_inf_[id][i] ^ inf_sup;
+        res.bissect_weight[i] *= proba_[id](i);
+        if (inf_sup)
+        {
+            res.inf_sup_proba[i] += 1.0; //get_pos(i,id) ; //^ inf_sup;
+        }
+        else
+        {
+            res.inf_sup_proba[i] -= 1.0; //get_pos(i,id); // ^ inf_sup;
+        }
     }
-    
-//     for (int i=0;i<nb_basis_;i++)
-//         std::cout<<"weight["<<i<<"] = "<< 1+0.5*(1.0*( offsets_[i] - id%offsets_[i]))/(1.0*offsets_[i]) <<std::endl;    
-    
-//     for (int i=0;i<nb_basis_;i++)
-//         std::cout<<"vec["<<i<<"] = "<< pos_inf_[id][i] <<std::endl;    
-//     for (int i=0;i<nb_basis_;i++)
-//         std::cout<<"res.inf_sup_proba["<<i<<"] = "<< res.inf_sup_proba[i] <<std::endl;        
-//     std::cout<<"res.nb_info = "<< res.nb_info <<std::endl;
-//     std::cout <<std::endl;
-    
     res.info_defined = true;
 }
 
@@ -140,7 +126,6 @@ void Kronecker::set_maximum_position(std::vector< Eigen::Matrix<double,Eigen::Dy
 //         std::cout<<"pos_max_("<<i<<") = "<< pos_max_[i].transpose()<<std::endl;
     
     pos_.resize(nb_control_points_);   
-    pos_inf_.clear();
     for (int i=0;i<nb_control_points_;i++)
     {
         std::vector<bool> tmp_inf;
@@ -148,9 +133,37 @@ void Kronecker::set_maximum_position(std::vector< Eigen::Matrix<double,Eigen::Dy
         for (int j=0;j<nb_basis_;j++)
         {
             pos_[i](j) = get_pos(j,i);
-//             tmp_inf.push_back( pos_[i](j) <= 0);
-            tmp_inf.push_back(false);
         }
-        pos_inf_.push_back(tmp_inf);
+//         std::cout<<"pos_["<<i<<"] = "<< pos_[i].transpose()<<std::endl;
+        
+        double dmin = 10.0;
+        uint cpt = 0;
+        Eigen::Matrix<double,Eigen::Dynamic,1> tmp, pmax = (1.0/nb_basis_)* Eigen::Matrix<double,Eigen::Dynamic,1>::Ones(nb_basis_);
+        // calcul de distance
+        for (int k=0;k<i;k++)
+        {
+            tmp = pos_[i] - pos_[k];
+            double d = (tmp.norm());
+            if (d == dmin)
+            {
+                pmax += tmp;
+                cpt ++;
+            }
+            if (d< dmin)
+            {
+                dmin = d;
+                pmax = tmp;
+                cpt = 1;
+            }
+        }
+        if (cpt)
+            pmax /= cpt;
+        
+        pmax += Eigen::Matrix<double,Eigen::Dynamic,1>::Ones(nb_basis_) * 10.0;
+        pmax.normalize();
+        
+        proba_.push_back(pmax);        
     }
+//     for (int i=0;i<nb_control_points_;i++)
+//         std::cout<<"proba_["<<i<<"] = "<< proba_[i].transpose()<<std::endl;
 }

@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
     order_latex.push_back("problem");
     order_latex.push_back("ndof");
     order_latex.push_back("solver");
+    order_latex.push_back("bissection");
     order_latex.push_back("prep_time");
     order_latex.push_back("comput_time");
     order_latex.push_back("total_time");

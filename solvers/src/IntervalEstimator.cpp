@@ -198,10 +198,15 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
     unsigned int cpt = 0;
     bool inf_inside,sup_inside, both_side;
     Interval Iv = LazyUpdate(num_out_,cpt++);
+    bool before_in = Intersection(Iv,bound);
+    
+//     std::cout<<"Iv = "<< Iv <<" bound = "<< bound <<" before_in  = "<< before_in <<std::endl;
     for (int i=1;i<nb_control_point_inputs_;i++)
     {
         Interval value = LazyUpdate(num_out_,cpt++);
         Iv = Hull(Iv,value);
+//         std::cout<<"Iv = "<< Iv <<" bound = "<< bound <<" before_in  = "<< before_in <<std::endl;        
+        
         double iv = Inf(Iv);
         double sv = Sup(Iv);
 
@@ -211,7 +216,8 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
         if ( inf_inside != sup_inside || both_side)
         {
             out = Iv;
-            guess_next_bissection( i , res , inf_inside );
+            guess_next_bissection( i , res , before_in );
+//             std::cout<<"out = "<< out <<" bound = "<< bound <<" before_in  = "<< before_in <<std::endl;        
 //             std::cout<<"on overlap avec info de bissection" <<std::endl;
 //             std::cout<<"OVERLAP inside = "<< inf_inside<< "  outside = "<< sup_inside <<" both side = "<< both_side <<std::endl;
             return OVERLAP;            
