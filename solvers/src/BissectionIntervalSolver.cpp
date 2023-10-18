@@ -49,6 +49,14 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     bool find_one_feasible =false;
     std::cout<<"preparation time : "<< get_cpu_time() - ts <<" seconds."<<std::endl;
     
+    switch(bissection_type_)
+    {
+        case(0):    std::cout<<"Bissection : MinFirst"<<std::endl;  break;
+        case(1):    std::cout<<"Bissection : MaxFirst"<<std::endl;  break;
+        case(2):    std::cout<<"Bissection : Smart"<<std::endl;  break;
+        default :   std::cerr<<"Bissection type not defined "<<std::endl;   std::exit(63);  break;
+    }    
+    
 //     std::cout<<"il y a "<< nb_fun_ <<" contraintes."<<std::endl;
     cpt_iter_ = 0;
     do{

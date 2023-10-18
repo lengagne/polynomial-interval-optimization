@@ -36,13 +36,19 @@ data_format::data_format( const std::string& filename)
             if (loof_for(line,"DUE TO TIME LIMIT"))
             {
                 time_out_ = true;
-                std::cout<<filename<<" : TIMEOUT"<<std::endl;
+                
             }
         }        
     }else
     {
         std::cerr<<"error cannot found "<< filename <<std::endl;
-    }   																			
+    }   		
+    
+    if (time_out_)
+    {
+        std::cout<<"rm -frv "<< filename<<std::endl;
+        std::cout<<"sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << infos["bissection"]<<" "<<infos["solver"]<<std::endl;
+    }
 }
 
 void data_format::add_data( const std::string& line, const std::string& name, const std::string& pattern)
@@ -57,7 +63,7 @@ void data_format::add_data( const std::string& line, const std::string& name, co
     if (pos != std::string::npos)
         sub = sub.substr( 0,pos);
     
-//     std::cout<<name <<" : "<< sub <<std::endl;
+    sub.erase(std::remove(sub.begin(), sub.end(), ' '), sub.end());
     infos[name] = sub;
     
     return;
@@ -243,12 +249,12 @@ void create_latex_subpart( std::ofstream& outfile,
         return;
     }
     
-    for (int i=0;i<index;i++)   std::cout<<"\t";
-    std::cout<<"looking for "<< columns[index]<<"  in "<< datas.size() <<std::endl;
+//     for (int i=0;i<index;i++)   std::cout<<"\t";
+//     std::cout<<"looking for "<< columns[index]<<"  in "<< datas.size() <<std::endl;
     
     std::string ref = columns[index];
     for (int i=0;i<index;i++)   std::cout<<"\t";
-    std::cout<<"ref = "<< ref <<std::endl;
+//     std::cout<<"ref = "<< ref <<std::endl;
     std::list<std::string> type_data;
     // get the common absciss
     for (auto& d : datas)
@@ -278,8 +284,7 @@ void create_latex_subpart( std::ofstream& outfile,
             if ( d->infos[ref] == t)
             {
                 local_data.push_back(d);
-            }
-            
+            }            
         }
         
         if (cpt)
@@ -341,27 +346,27 @@ std::list<std::string> re_order(const std::list<std::string>& input,
 {
     std::list<std::string> out;
     
-    for (auto& j:input)
-        std::cout<<"in = "<< j <<"!"<<std::endl;
-    
-    for (auto& j:dic)
-        std::cout<<"dic = "<< j <<"!"<<std::endl;    
+//     for (auto& j:input)
+//         std::cout<<"in = "<< j <<"!"<<std::endl;
+//     
+//     for (auto& j:dic)
+//         std::cout<<"dic = "<< j <<"!"<<std::endl;    
     
     for (auto& i: dic)
     {
         for (auto& j:input)
         {
-            std::cout<<"test egalite ("<< i<<"==" << j<<")"  <<std::endl;
+//             std::cout<<"test egalite ("<< i<<"=="<< j<<")"  <<std::endl;
             if (i == j)
             {
-                std::cout<<"egalite "<< i<< " " << j <<std::endl;
+//                 std::cout<<"egalite "<< i<< " " << j <<std::endl;
                 out.push_back(i);
             }
         }
     }
     
-    for (auto& j:out)
-        std::cout<<"out = "<< j <<std::endl;    
+/*    for (auto& j:out)
+        std::cout<<"out = "<< j <<std::endl;   */ 
     return out;
 }
 

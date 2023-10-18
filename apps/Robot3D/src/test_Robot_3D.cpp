@@ -30,6 +30,8 @@ int main( int argc, char** argv)
     
     std::cout<<"precision = "<< precision <<std::endl;
     std::cout<<"model = "<< model <<std::endl;
+    std::cout<<"bissection_mode = "<< bissection_mode <<std::endl;
+    std::cout<<"test = "<< test <<std::endl;
     
 	bool print=false;;
     AbstractCSP* pb;
@@ -65,7 +67,7 @@ int main( int argc, char** argv)
     }
     
     CompareSolver cp(pb);   
-    cp.compare("Robot3D_model_"+std::to_string(model),precision,test);
+    cp.compare("Robot3D_model_"+std::to_string(model),precision,bissection_mode,test);
     delete pb;
     return 0;
 }
