@@ -28,7 +28,7 @@ Problem3D_with_torque_limit::Problem3D_with_torque_limit(   const mogs_string &f
 
     nb_dof_ = dkin_->getNDof();
     eff_id_ = robot_->GetBodyId(eff_name_);
-    std::cout<<"eff_id_ = "<< eff_id_ <<std::endl;
+//     std::cout<<"eff_id_ = "<< eff_id_ <<std::endl;
     width = 0.01;
     switch(target)
     {

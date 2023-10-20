@@ -14,6 +14,7 @@
 
 int main( int argc, char** argv)
 {
+    std::cout<<"type_of_problem : 2D"<<std::endl;
     if (argc == 2 )
     {
         std::string com = argv[1];

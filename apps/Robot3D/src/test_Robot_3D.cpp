@@ -8,6 +8,7 @@
 
 int main( int argc, char** argv)
 {
+    std::cout<<"type_of_problem : 3D"<<std::endl;
 	// this application is required due to QXmlValidator in MOGS
     QCoreApplication a(argc, argv);
 

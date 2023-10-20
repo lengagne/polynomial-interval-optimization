@@ -10,7 +10,9 @@ void Problem3D::functions(   std::vector<T> & in,
     for (unsigned int i=0;i<nb_dof_;i++)
         q(i) = in[i];
 
+    std::cout<<"debut updatekin"<<std::endl;
     kin->UpdateKinematicsCustom(&q);
+    std::cout<<"fin updatekin"<<std::endl;
     Eigen::Matrix<T,3,1> eff,com;
     eff = kin->getPosition(eff_id_,Eigen::Matrix<double,3,1>::Zero());
 

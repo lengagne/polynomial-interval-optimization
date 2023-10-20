@@ -29,22 +29,17 @@ void Problem3D_with_torque_limit::functions(   std::vector<T> & in,
     // criteria
 
     out[cpt] = 0;
+    
     if(crit_ == 0)  // min of q²
     {
         for (int i=0;i<nb_dof_;i++)
             out[cpt] += in[i]*in[i];
     }else if (crit_ == 1)
     {
-
          for (int i=0;i<nb_dof_;i++)
          {
-//             std::cout<<"torque("<<i<<") = "<< torque(i)<<std::endl;
             out[cpt] += torque(i)*torque(i);
          }
 
     }
-
-
-//    for (int i=0;i<6;i++)
-//        std::cout<<"out["<<i<<"] = "<< out[i]<<std::endl;
 }

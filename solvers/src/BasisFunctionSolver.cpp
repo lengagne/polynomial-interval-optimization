@@ -28,7 +28,6 @@ void BasisFunctionSolver::init(double eps)
     }
     pb_->prepare_non_linear(input_Interval);
     pb_->function(input_Interval,output_Interval);
-    
     nb_intermediate_ = MogsInterval::get_nb_intermediate();
     
     Result tmp(pb_->get_input(), nb_fun_+nb_intermediate_, pb_->get_criteria());
@@ -44,14 +43,12 @@ void BasisFunctionSolver::init(double eps)
     
     infos_intermediate_update.resize(nb_intermediate_);
     
-//     std::cout<<"nb_intermediate_ = "<< nb_intermediate_ <<std::endl;
+    std::cout<<"nb_intermediate_ = "<< nb_intermediate_ <<std::endl;
     for (int i=0;i<nb_intermediate_;i++)
     {
         infos_intermediate_update[i] = new IntervalEstimator( bf_);
         infos_intermediate_update[i]->prepare_coeffs(Intermediate_to_compute[i], i);
     }
-    
-
 }
 
 void BasisFunctionSolver::init_end()

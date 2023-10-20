@@ -64,8 +64,6 @@ check_constraint mem::contract(const Interval& in)
 //    else
     {
         MogsInterval* inter = sons.front();
-//        std::cout<<"contracting : "<< *this <<std::endl;
-//        std::cout<<"inter->value = "<< inter->value_ <<"  in = "<< in <<std::endl;
         if(! inter->intersection(in))
         {
             return OUTSIDE;
@@ -204,22 +202,6 @@ MogsInterval::MogsInterval()
     dependances_.clear();
     the_sons_.clear();
 }
-
-// MogsInterval::MogsInterval(const LazyVariable & in) //:value_(in.value_)
-// {
-//     id_ = nb_mogs_intervals_++;
-// //     middle_.set_name("MogsLazyVariable("+in.get_name()+")");
-//     middle_ = LazyVariable("MiddleOf"+in.get_name());
-//     middle_ = in;
-//     diam_ = 0.;
-// 
-// //    value_ = in.eval();
-//     mem* tmp = interval_chief_.get_double();
-//     value_ = 0;
-//     dependances_.clear();
-//     dependances_[tmp] = in;
-//     the_sons_.clear();
-// }
 
 MogsInterval::MogsInterval(const LazyVariable & in) //:value_(in.value_)
 {
@@ -368,7 +350,6 @@ MogsInterval MogsInterval::dual ( const MogsInterval& I) const
 
 void MogsInterval::get_dependancies_with_order(std::vector<MogsInterval*> &dep, std::vector<unsigned int> & order ) const
 {
-//    std::cout<<"get_dependancies_with_order : "<< *this <<std::endl;
     dep.clear();
     for(std::map<mem*,LazyVariable>::const_iterator itmem = dependances_.begin(); itmem != dependances_.end(); itmem++)
     {
@@ -395,7 +376,6 @@ void MogsInterval::get_reference( MogsInterval** ref) const
     assert(dep.size() == 1);
     assert(order[0] == 1);
     *ref = dep[0];
-    std::cout<<"MogsInterval::get_reference ref = " << ** ref <<std::endl;
 }
 
 bool MogsInterval::get_contract_from_ref(std::vector<Real>& v,
@@ -528,7 +508,6 @@ void MogsInterval::init(const Interval& val,
     *this = *ref_ * diam_/2. + middle_;
     is_input_ = true;
     name_ = name;    
-//     std::cout<<"Init Diam = "<< diam_<<std::endl;
 }
 
 bool MogsInterval::intersection(const Interval& in, bool contract_son)
@@ -601,13 +580,9 @@ bool MogsInterval::rely_on_error()const
 // void MogsInterval::update(const Interval & in, std::vector<Real>& v)
 void MogsInterval::update(const Interval & in)
 {
-//     std::cout<<"update : in "<< in <<std::endl;
     value_.update(in);
     middle_ = Mid(in);
     diam_ = Diam(in);
-//     std::cout<<"update Diam = "<< diam_<<std::endl;
-//     middle_.set_input_vector(Mid(in)); // ,v);
-//     diam_.set_input_vector(Diam(in)); // ,v);
     
     ref_->value_ = Hull(-1,1);
     for (int i=0;i<the_sons_.size();i++)
@@ -638,8 +613,6 @@ void MogsInterval::update(const Interval & in)
                         exit(0);
         }
     }
-//     LazyUpdateAll();
-//     std::cout<<"update : "<< *this <<std::endl;
 }
 
 // void MogsInterval::update_vector_from_ref(std::vector<Real>& v)
@@ -651,7 +624,29 @@ void MogsInterval::update(const Interval & in)
 //     ref_->value_ = Hull(-1,1);
 // }
 
-bool MogsInterval::operator== (const MogsInterval& I)
+bool MogsInterval::operator== (const double& in) const
+{
+    if (dependances_.size() == 0) 
+    {
+        if (in == 0)
+            return true;
+        return false;
+    }
+    
+    if (dependances_.size() > 1) 
+    {
+        return false;
+    }
+    
+    std::map<mem*,LazyVariable>::const_iterator it1 = dependances_.begin();
+    if (it1->first->is_double() && it1->second == in)
+    {
+        return true;
+    }
+    return false;    
+}
+
+bool MogsInterval::operator== (const MogsInterval& I) const
 {
     if (dependances_.size() != I.dependances_.size())    return false;
     std::map<mem*,LazyVariable>::const_iterator it1 = dependances_.begin();
@@ -759,6 +754,13 @@ void MogsInterval::operator-= (const MogsInterval& I)
 
 MogsInterval MogsInterval::operator* (const double& d) const
 {
+    if (d==0)
+    {
+        return 0.0;        
+    }
+    if (d==1.0)
+        return *this;
+    
     MogsInterval out = *this;
     out.value_ *= d;
     for(std::map<mem*,LazyVariable>::iterator itmem = out.dependances_.begin(); itmem != out.dependances_.end(); itmem++)
@@ -781,8 +783,23 @@ MogsInterval MogsInterval::operator* (const LazyVariable& d) const
 
 MogsInterval MogsInterval::operator* (const MogsInterval& in) const
 {
-//     std::cout<<" operator * : A = "<< *this<<std::endl;
-//     std::cout<<" operator * : B = "<< in <<std::endl;
+    if (in == 0.0)
+    {
+        return 0.0;
+    }
+    if (in == 1.0)
+    {
+        return *this;    
+    }
+    if (*this == 0.0)
+    {
+        return 0.0;
+    }
+    if (*this == 1.0)
+    {
+        return in;        
+    }
+   
     if(guess_size() > MAXSIZE && in.guess_size() > MAXSIZE)
     {
         MogsInterval i1 = add_intermediate(*this);
@@ -832,14 +849,11 @@ MogsInterval MogsInterval::operator* (const MogsInterval& in) const
         //if(out.get_nb_value() > MAXMUL)
         if(out.guess_size() > MAXSIZE)
         {
-//        std::cout<<"operator *2 out MAXSIZE out.guess_size()  =" << out.guess_size()  <<std::endl;
             MogsInterval new_intermediate = add_intermediate(out);
-//        std::cout<<"new_intermediate = "<< new_intermediate<<std::endl;
             return new_intermediate;
         }
         return out;
     }
-//    std::cout<<"product"<<std::endl;
     unsigned int cpt = 0;
     for(std::map<mem*,LazyVariable>::const_iterator it1 = dependances_.begin(); it1 != dependances_.end(); it1++)
     {
@@ -898,11 +912,7 @@ void MogsInterval::update_error_cos(const Interval  & in) //, std::vector<Real>&
 
 void MogsInterval::update_error_division(const Interval & in) //, std::vector<Real>& v)
 {
-//     std::cout<<"update_error_division"<<std::endl;
-//     std::cout<<"in  = "<<in <<std::endl;
     value_ = Hull(1.0,1.0) /in;
-//     std::cout<<"val = "<< value_ <<std::endl<<std::endl;
-//     update(value_); // ,v);
 }
 
 void MogsInterval::update_error_sin(const Interval  & in) //, std::vector<Real>& v)

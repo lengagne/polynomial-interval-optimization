@@ -11,7 +11,7 @@
 #include "Kronecker.h"
 
 
-#define MAXSIZE 1e5
+#define MAXSIZE 1e4
 
 #define LazyVariable LazyVariable
 
@@ -56,6 +56,11 @@ public:
     bool contains_error() const;
     
     void remove_one_ref( MogsInterval*ref);
+    
+    bool is_double()
+    {
+        return sons.size();
+    }
 
 //    LazyVariable value;
     std::list<MogsInterval*> sons;
@@ -228,6 +233,8 @@ class MogsInterval
         void update_error_division(const Interval & in);        
 
         bool operator== (const MogsInterval& I);
+        
+        bool operator== (const double in);
 
         MogsInterval operator= (const MogsInterval& I);
         MogsInterval operator+ (const MogsInterval& I) const;
@@ -257,11 +264,12 @@ class MogsInterval
             return *this * (1./d);
         }
         
-        bool operator== (const MogsInterval &a) const
-        {
-            std::cout<<"operator==  \n value_ = "<< value_<<"\t a.value_ = "<< a.value_<<" result = "<< (value_ == a.value_) <<std::endl;
-            return value_ == a.value_;
-        }
+        bool operator== (const double &a) const;
+        
+        bool operator== (const MogsInterval &a) const;
+//         {
+//             return value_ == a.value_;
+//         }
 
         friend MogsInterval cos(const MogsInterval& in);
         friend MogsInterval sin(const MogsInterval& in);
