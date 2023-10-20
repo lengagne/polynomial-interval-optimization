@@ -15,7 +15,7 @@ int main( int argc, char** argv)
     setlocale(LC_ALL, "C");
 
 	double precision = 0.001;
-	unsigned int model = 0;
+	unsigned int problem = 0;
     uint basisfunction = 1;
     uint bissection_mode = 0;    
     int test = -1;
@@ -23,52 +23,108 @@ int main( int argc, char** argv)
 	if(argc > 1)
         precision = atof(argv[1]);
 	if(argc > 2)
-        model = atof(argv[2]);
+        problem = atof(argv[2]);
 	if(argc > 3)
         bissection_mode = atoi(argv[3]);    
 	if(argc > 4)
         test = atoi(argv[4]);
     
     std::cout<<"precision = "<< precision <<std::endl;
-    std::cout<<"model = "<< model <<std::endl;
+    std::cout<<"problem = "<< problem <<std::endl;
     std::cout<<"bissection_mode = "<< bissection_mode <<std::endl;
     std::cout<<"test = "<< test <<std::endl;
     
 	bool print=false;;
+    
+    uint critere = 0;
+    uint target = 0;
+    double coeff_torque = 1.0;
+    std::string robot_file;
+    
     AbstractCSP* pb;
-    switch(model)
+    
+    if (problem>=10)
+        critere = 0;
+    else
+        critere = 1;
+    
+    switch(problem)
     {
         // full torque, target (0.4,0.4,0.7), critere torque
-        case(1): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"   ,"kuka_lwr_7_link",1.0,0,1);  break;
-        
+        case(1):
+        case(11):
+                coeff_torque = 1.0;
+                target = 0;
+                robot_file = "../model/kuka_lwr_4dof.xml";
+                break;
         // full torque, target (0.6,0.6,0.6), critere torque
-        case(2): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"   ,"kuka_lwr_7_link",1.0,1,1);  break;
-
+        case(2):
+        case(12):    
+                coeff_torque = 1.0;
+                target = 1;
+                robot_file = "../model/kuka_lwr_4dof.xml"; 
+                break;
         // 10% torque, target (0.4,0.4,0.7), critere torque
-        case(3): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"   ,"kuka_lwr_7_link",0.1,0,1);  break;
+        case(3):
+        case(13):
+                coeff_torque = 0.1;
+                target = 0;
+                robot_file = "../model/kuka_lwr_4dof.xml";
+                break;
         
         // 10% torque, target (0.6,0.6,0.6), critere torque
-        case(4): pb = new Problem3D_with_torque_limit("../model/kuka_lwr_4dof.xml"   ,"kuka_lwr_7_link",0.1,1,1);  break;  
+        case(4):
+        case(14):
+                coeff_torque = 0.1;
+                target = 1;
+                robot_file = "../model/kuka_lwr_4dof.xml";
+                break;
         
         // full torque, target (0.4,0.4,0.7), critere torque
-        case(5): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"   ,"kuka_lwr_7_link",1.0,0,1);  break;
+        case(5):
+        case(15):
+                coeff_torque = 1.0;
+                target = 0;
+                robot_file = "../model/kuka_lwr.xml";
+                break;
         
         // full torque, target (0.6,0.6,0.6), critere torque
-        case(6): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"   ,"kuka_lwr_7_link",1.0,1,1);  break;
+        case(6):
+        case(16):
+                coeff_torque = 1.0;
+                target = 1;
+                robot_file = "../model/kuka_lwr.xml";
+                break;
 
         // 10% torque, target (0.4,0.4,0.7), critere torque
-        case(7): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"   ,"kuka_lwr_7_link",0.1,0,1);  break;
+        case(7):
+        case(17):
+                coeff_torque = 0.1;
+                target = 0;
+                robot_file = "../model/kuka_lwr.xml";
+                break;
         
         // 10% torque, target (0.6,0.6,0.6), critere torque
-        case(8): pb = new Problem3D_with_torque_limit("../model/kuka_lwr.xml"   ,"kuka_lwr_7_link",0.1,1,1);  break;  
+        case(8):
+        case(18):
+                coeff_torque = 0.1;
+                target = 1;
+                robot_file = "../model/kuka_lwr.xml";
+                break;
         
         default: 
-            std::cerr<<"Error case "<< model <<" not defined"<<std::endl;
+            std::cerr<<"Error case "<< problem <<" not defined"<<std::endl;
             exit(0);
     }
+    std::cout<<"robot_file = "<< robot_file <<std::endl;
+    std::cout<<"coeff_torque = "<< coeff_torque <<std::endl;
+    std::cout<<"target = "<< target <<std::endl;
+    std::cout<<"critere = "<< critere <<std::endl;
+    
+    pb = new Problem3D_with_torque_limit( mogs_string(robot_file.c_str()) ,"kuka_lwr_7_link",coeff_torque,target,critere);        
     
     CompareSolver cp(pb);   
-    cp.compare("Robot3D_model_"+std::to_string(model),precision,bissection_mode,test);
+    cp.compare("Robot3D_model_"+std::to_string(problem),precision,bissection_mode,test);
     delete pb;
     return 0;
 }

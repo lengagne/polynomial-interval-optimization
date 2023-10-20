@@ -11,7 +11,7 @@
 #include "Kronecker.h"
 
 
-#define MAXSIZE 1e4
+#define MAXSIZE 1e3
 
 #define LazyVariable LazyVariable
 

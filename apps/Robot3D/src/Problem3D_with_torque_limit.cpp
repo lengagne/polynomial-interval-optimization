@@ -7,9 +7,6 @@ Problem3D_with_torque_limit::Problem3D_with_torque_limit(   const mogs_string &f
                                                             unsigned int crit)
 {
     std::cout<<"Problem3D_with_torque_limit "<< std::endl;
-    std::cout<<"coeff_torque =  "<< coeff_torque << std::endl;
-    std::cout<<"target =  "<< target<< std::endl;
-    std::cout<<"crit =  "<< crit<< std::endl;
 
     filename_ = filename;
     eff_name_ = effector;
