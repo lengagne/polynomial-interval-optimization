@@ -194,11 +194,9 @@ Interval IntervalEstimator::update_from_inputs( )
     for (unsigned int i=0;i<nb_sparse_errors_;i++)
     {
         sparse_coeff_errors_(i) = LazyUpdate(num_out_,cpt++);
-//         std::cout<<"sparse_coeff_errors_("<<i<<")["<<cpt<<"] = "<< sparse_coeff_errors_(i) <<std::endl;
     }
     
     Interval error = kron_solver_errors_->line_product(sparse_coeff_errors_);
-//     std::cout<<"A_error = "<< error <<std::endl;
     return out + error;
 }
 
