@@ -25,6 +25,12 @@ int main( int argc, char** argv)
         }
     }    
     
+    if (argc ==2 && (std::string( argv[1]) == "h" || std::string( argv[1]) =="help"))
+    {
+        std::cout<<"Call ./Robot2D ndof problem precision bissection_mode basis_function"<<std::endl;
+        exit(0);
+    }    
+    
 	unsigned int ndof = 2;
     unsigned int npb = 1;
     double precision = 0.001;

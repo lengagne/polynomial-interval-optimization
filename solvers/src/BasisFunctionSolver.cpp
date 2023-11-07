@@ -46,9 +46,10 @@ void BasisFunctionSolver::init(double eps)
     std::cout<<"nb_intermediate_ = "<< nb_intermediate_ <<std::endl;
     for (int i=0;i<nb_intermediate_;i++)
     {
-        infos_intermediate_update[i] = new IntervalEstimator( bf_);
+        infos_intermediate_update[i] = new IntervalEstimator( bf_);        
         infos_intermediate_update[i]->prepare_coeffs(Intermediate_to_compute[i], i);
     }
+    std::cout<<"on a prepare les intermediares "<<std::endl;
 }
 
 void BasisFunctionSolver::init_end()
@@ -61,14 +62,15 @@ void BasisFunctionSolver::init_end()
     {
         info_crit_->prepare_coeffs(output_Interval[nb_fun_], nb_intermediate_+ nb_fun_);
     }
+       
+    double before_compil = get_cpu_time() ;
     
-    double before_prepa_coeff = get_cpu_time() - ts;    
-    
-    double before_compil = get_cpu_time() - ts;
     LazyPrepare();
-
-    preparation_time_ = get_cpu_time() - ts;
+    double actual_time = get_cpu_time();
+    preparation_time_ = actual_time - ts;
     std::cout<<"preparation time : "<< preparation_time_ <<" seconds."<<std::endl;
+    
+    std::cout<<"Compilation time : "<< actual_time -before_compil  <<" seconds."<<std::endl;
     ts  = get_cpu_time();
 
     init_done = true;
@@ -149,11 +151,12 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
         test = true;
         set_next();        
 //         if (print_ ) //&& cpt_iter_ %100 == 0)
+           if (cpt_iter_ %100000 == 0)
 //         {
 //             std::cout<<"**************************" <<std::endl;
 //             std::cout<<"**************************" <<std::endl;
 //             std::cout<<"**************************" <<std::endl;
-//             std::cout<<cpt_iter_<<" "<< optim_crit_ <<std::endl;
+            std::cout<<cpt_iter_/1000<<" 000 : crit "<< optim_crit_ <<std::endl;
 //             for (int i=0;i<nb_var_;i++)
 //             {
 //                 std::cout<<"\t in["<<i<<"] = "<<  current_value_.in[i]<<std::endl;

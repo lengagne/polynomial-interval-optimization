@@ -19,6 +19,12 @@ int main( int argc, char** argv)
     uint basisfunction = 1;
     uint bissection_mode = 0;    
     int test = -1;
+       
+    if (argc ==2 && (std::string( argv[1]) == "h" || std::string( argv[1]) =="help"))
+    {
+        std::cout<<"Call ./Robot3D precision problem bissection_mode basis_function"<<std::endl;
+        exit(0);
+    }
     
 	if(argc > 1)
         precision = atof(argv[1]);

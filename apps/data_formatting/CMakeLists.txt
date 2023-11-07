@@ -9,15 +9,19 @@ include_directories(include
 add_definitions(${QT_DEFINITIONS} -DQT_NO_KEYWORDS)
 
 add_executable (Synthetize 
-                    src/create_files.cpp
-                    src/data_format.cpp)
-                    
+                src/create_files.cpp
+                src/data_format.cpp)
+
+add_executable (Synthetize3D
+                src/create_files_3D.cpp
+                src/data_format.cpp
+                src/data_format3D.cpp)
+                                        
 target_link_libraries(	Synthetize
                         PIO
                         ${QT_LIBRARIES})
-
-# add_executable (Synthetize3D src/create_files_robot_3D.cpp)
-# target_link_libraries(	Synthetize3D
-#                         PIO
-#                         ${QT_LIBRARIES})
+                    
+target_link_libraries(	Synthetize3D
+                        PIO
+                        ${QT_LIBRARIES})
 

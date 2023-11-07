@@ -10,12 +10,21 @@
 class data_format
 {
 public:
+    data_format()
+    {
+        
+    }
+    
     data_format( const std::string& filename);
     
-    ~data_format();
+    data_format( const data_format& f);
     
-    void add_data( const std::string& line, const std::string& name, const std::string& pattern);
+    ~data_format()
+    {
+        infos.clear();
+    }
     
+    void add_data( const std::string& line, const std::string& name, const std::string& pattern);    
     
     bool loof_for(const std::string& line, const std::string& pattern);
     

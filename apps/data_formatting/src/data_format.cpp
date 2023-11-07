@@ -47,8 +47,14 @@ data_format::data_format( const std::string& filename)
     if (time_out_)
     {
         std::cout<<"rm -frv "<< filename<<std::endl;
-        std::cout<<"sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << infos["bissection"]<<" "<<infos["solver"]<<std::endl;
+//         std::cout<<"sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << infos["bissection"]<<" "<<infos["solver"]<<std::endl;
     }
+}
+
+data_format::data_format( const data_format& f)
+{
+    filename_ = f.filename_;
+    infos = f.infos;
 }
 
 void data_format::add_data( const std::string& line, const std::string& name, const std::string& pattern)
@@ -277,7 +283,6 @@ void create_latex_subpart( std::ofstream& outfile,
     uint cpt = 0;
     for (auto& t : type_data)
     {
-        
         std::vector< data_format*> local_data;
         for (auto& d : datas)
         {
@@ -286,7 +291,7 @@ void create_latex_subpart( std::ofstream& outfile,
                 local_data.push_back(d);
             }            
         }
-        
+       
         if (cpt)
             outfile<<entete;       
         

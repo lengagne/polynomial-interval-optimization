@@ -58,6 +58,7 @@ void IntervalEstimator::guess_next_bissection( uint i,
 
 unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigned int num_out)
 {      
+//     std::cout<<"prepare_coeffs ("<<num_out<<") " << out <<std::endl;
     num_out_ = num_out;
     out.get_dependancies_with_order(dep_,order_);
     nb_in_ = dep_.size();
@@ -148,6 +149,9 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
     
     sparse_coeff_errors_.resize(nb_sparse_errors_);
     
+//     std::cout<<"TAILLE "<< coeff_inputs_.size() <<std::endl;
+    if (coeff_inputs_.size() == 0)
+        nb_control_point_inputs_ = 0;
      // deal with input
     for (int i=0;i<nb_control_point_inputs_;i++)
     {
@@ -157,12 +161,14 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
             double v = kron_solver_inputs_->get_value(i,*it);
             out += MCT_coeff_[mem_index_input[*it]]* v;
         }
+//         std::cout<<"on ajoute("<< num_out<<") : "<< out <<std::endl; 
         LazyAddOutput(out,num_out_,nb_valid_coeff++);
     }
     
     // deal with error
     for(std::list<unsigned int >::const_iterator it = coeff_errors_.begin(); it != coeff_errors_.end(); it++)
     {
+//         std::cout<<"on erreur("<< num_out<<") : "<< MCT_coeff_[*it] <<std::endl;
         LazyAddOutput(MCT_coeff_[*it],num_out_,nb_valid_coeff++);
     }      
 
@@ -217,6 +223,7 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
         {
             out = Iv;
             guess_next_bissection( i , res , before_in );
+            std::cout<<"OVERLAP "<<i<<" / "<< nb_control_point_inputs_<<" sans erreur"<<std::endl;
 //             std::cout<<"out = "<< out <<" bound = "<< bound <<" before_in  = "<< before_in <<std::endl;        
 //             std::cout<<"on overlap avec info de bissection" <<std::endl;
 //             std::cout<<"OVERLAP inside = "<< inf_inside<< "  outside = "<< sup_inside <<" both side = "<< both_side <<std::endl;
@@ -241,7 +248,7 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
             return INSIDE;
         else 
         {
-//             std::cout<<"OVERLAP FINAL"<<std::endl;
+            std::cout<<"OVERLAP avec erreur"<<std::endl;
             return OVERLAP;
         }
     }
