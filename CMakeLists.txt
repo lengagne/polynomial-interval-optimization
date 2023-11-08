@@ -91,6 +91,7 @@ target_link_libraries(	PIO_BasisFunctions
 
 target_link_libraries(	PIO_Solvers
                         PIO_BasisFunctions
+                        ${TCMALLOC_LIBRARIES}
                         ${LazyCPP_LIBRARIES}
                         )                        
 
@@ -98,6 +99,7 @@ target_link_libraries(	PIO_Solvers
 target_link_libraries(	PIO
                         PIO_BasisFunctions
                         PIO_Solvers
+                        ${TCMALLOC_LIBRARIES}
                         )
 #                         
 # 
