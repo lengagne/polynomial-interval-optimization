@@ -163,17 +163,17 @@ check_constraint IntervalEstimatorContractor::update_from_inputs( Result& res, I
     bound_.update(bound);
     unsigned int cpt = 0;
     Eigen::Matrix<double,Eigen::Dynamic,1> dual(nb_control_point_inputs_);
-    dual(0) = LazyUpdate(num_out_,cpt++);
+    dual(0) = LazyUpdateOutput(num_out_,cpt++);
     Interval out = dual(0);
     for (int i=1;i<nb_control_point_inputs_;i++)
     {
-        dual(i) = LazyUpdate(num_out_,cpt++);
+        dual(i) = LazyUpdateOutput(num_out_,cpt++);
 //         std::cout<<"dual("<<i<<") : ["<<num_out_<<"/"<< cpt<<"] "<<dual(i)<<std::endl;
         out = Hull(out,dual(i));
     }    
     
     for (unsigned int i=0;i<nb_sparse_errors_;i++)
-        sparse_coeff_errors_(i) = LazyUpdate(num_out_,cpt++);    
+        sparse_coeff_errors_(i) = LazyUpdateOutput(num_out_,cpt++);    
 
     Interval error = kron_solver_errors_->line_product(sparse_coeff_errors_);
    
@@ -183,11 +183,11 @@ check_constraint IntervalEstimatorContractor::update_from_inputs( Result& res, I
     for (int i=0;i<nb_c;i++)
     {
         contractor_input& c = contractors_[i];
-        double v =  LazyUpdate(num_out_,cpt++); 
-        Interval input = LazyUpdate(num_out_,cpt++); 
+        double v =  LazyUpdateOutput(num_out_,cpt++); 
+        Interval input = LazyUpdateOutput(num_out_,cpt++); 
         for (int j=1;j<nb_control_point_inputs_;j++)
         {
-            double  val = LazyUpdate(num_out_,cpt++);
+            double  val = LazyUpdateOutput(num_out_,cpt++);
             input = Hull( input, val); 
         }
         input = input + error;

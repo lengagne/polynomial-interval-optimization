@@ -20,14 +20,13 @@ bool AbstractSolver::check_size(   const Result& in)
     return true;
 }
 
-bool AbstractSolver::bissect(   const Result& in,
-                                Result &out1, 
-                                Result &out2)
+bool AbstractSolver::bissect( const Result& in,
+                                        std::vector<Result>& Pile)
 {
 //     std::cout<<"on bissect"<<std::endl;
     // check precision
-    out1 = in;
-    out2 = in;
+    Result out1 = in;
+    Result out2 = in;
     
     int id = -1;
     double w = 0.;
@@ -64,37 +63,41 @@ bool AbstractSolver::bissect(   const Result& in,
     {
         case(0):
 //             std::cout<<"  First inferior part"<<std::endl;
-            out1.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
-            out2.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
+            out2.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
+            out1.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
             break;
             
         case(1):
-            out1.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
-            out2.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
+            out2.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
+            out1.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
             break;
             
-        case(2):   
-
-            if(in.inf_sup_proba[id] /in.nb_info <= 0.0 )
-            {
-//                 std::cout<<"  First inferior part"<<std::endl<<std::endl;
-                out1.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
-                out2.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));                
-            }else
-            {
-//                 std::cout<<"  First superior part"<<std::endl<<std::endl;
-                out1.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
-                out2.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));                
-            }
-            break;
+//         case(2):   
+// 
+//             if(in.inf_sup_proba[id] /in.nb_info <= 0.0 )
+//             {
+// //                 std::cout<<"  First inferior part"<<std::endl<<std::endl;
+//                 out1.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
+//                 out2.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));                
+//             }else
+//             {
+// //                 std::cout<<"  First superior part"<<std::endl<<std::endl;
+//                 out1.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
+//                 out2.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));                
+//             }
+//             break;
         default:
                 std::cerr<<"File : "<< __FILE__<<" at line "<< __LINE__ <<std::endl;
                 std::cerr<<"Case not planned for the moment "<<std::endl;
                 exit(123);
-    }                
+    }     
+    
+    Pile.push_back(out1);
+    Pile.push_back(out2);
     
     return true;
 }
+
 
 void AbstractSolver::close_files()
 {

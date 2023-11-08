@@ -24,9 +24,12 @@ typedef struct param_optim
 class AbstractSolver
 {
     public:
+//         bool bissect(   const Result& in,
+//                         Result &out1, 
+//                         Result& out2);
         bool bissect(   const Result& in,
-                        Result &out1, 
-                        Result& out2);
+                        std::vector<Result>& Pile)     ;
+        
 
         bool check_size(   const Result& in);
 

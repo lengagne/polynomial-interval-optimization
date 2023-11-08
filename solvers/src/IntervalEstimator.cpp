@@ -185,25 +185,25 @@ Interval IntervalEstimator::update_from_inputs( )
     
     for (unsigned int i=0;i<nb_sparse_errors_;i++)
     {
-        sparse_coeff_errors_(i) = LazyUpdate(num_out_,cpt++);
+        sparse_coeff_errors_(i) = LazyUpdateOutput(num_out_,cpt++);
     }
     
     Interval error = kron_solver_errors_->line_product(sparse_coeff_errors_);    
     
     if (nb_control_point_inputs_ != 0)
     {
-        out = LazyUpdate(num_out_,cpt++);
+        out = LazyUpdateOutput(num_out_,cpt++);
     }
     
     for (int i=1;i<nb_control_point_inputs_;i++)
     {
-        Interval value = LazyUpdate(num_out_,cpt++);
+        Interval value = LazyUpdateOutput(num_out_,cpt++);
         out = Hull(out,value);
     }
 
 //     for (unsigned int i=0;i<nb_sparse_errors_;i++)
 //     {
-//         sparse_coeff_errors_(i) = LazyUpdate(num_out_,cpt++);
+//         sparse_coeff_errors_(i) = LazyUpdateOutput(num_out_,cpt++);
 //     }
 //     
 //     Interval error = kron_solver_errors_->line_product(sparse_coeff_errors_);
@@ -228,18 +228,18 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
     {
         // deal with error   
         for (unsigned int i=0;i<nb_sparse_errors_;i++)
-            sparse_coeff_errors_(i) = LazyUpdate(num_out_,cpt++);
+            sparse_coeff_errors_(i) = LazyUpdateOutput(num_out_,cpt++);
         
         error = kron_solver_errors_->line_product(sparse_coeff_errors_);
         res.error[num_out_] = error;
     }
 //     std::cout<<"error = "<< error <<std::endl;    
     
-    Interval Iv;// = LazyUpdate(num_out_,cpt++);
+    Interval Iv;// = LazyUpdateOutput(num_out_,cpt++);
     
 //     if (nb_control_point_inputs_ != 0)
 //     {
-//         Iv = LazyUpdate(num_out_,cpt++);
+//         Iv = LazyUpdateOutput(num_out_,cpt++);
 //         std::cout<<"value = "<< Iv <<std::endl;
 //     }
     
@@ -249,7 +249,7 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
     for (int i=0;i<nb_control_point_inputs_;i++)
     {
 //         std::cout<<"i = "<< i <<std::endl;        
-        Interval value = LazyUpdate(num_out_,cpt++);
+        Interval value = LazyUpdateOutput(num_out_,cpt++);
 //         std::cout<<"value = "<< value <<std::endl;
         if (i==0)
             Iv = value;

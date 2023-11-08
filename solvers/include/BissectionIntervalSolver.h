@@ -13,6 +13,7 @@ class BissectionIntervalSolver: public AbstractSolver
                                     uint bissection_mode);
 
         virtual ~BissectionIntervalSolver();
+        
 
         virtual void evaluate( const std::vector<Interval> &in,
                                std::vector<Interval> &out);

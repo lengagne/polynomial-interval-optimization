@@ -17,6 +17,8 @@ BissectionIntervalSolver::~BissectionIntervalSolver()
     results.clear();
 }
 
+
+
 void BissectionIntervalSolver::evaluate(const std::vector<Interval> &in,
                                         std::vector<Interval> &out)
 {
@@ -106,11 +108,13 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
                                     }
                 case(OVERLAP)   :   
                                     Result low, high;
+                                    bissect(current_value, current);/*
+                                    
                                     if(bissect(current_value, low,high))
                                     {
                                         current.push_back(low);
                                         current.push_back(high);
-                                    }                    
+                                    }                    */
                                     break;
             }
         }

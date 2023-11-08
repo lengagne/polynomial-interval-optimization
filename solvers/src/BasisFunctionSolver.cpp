@@ -79,19 +79,23 @@ void BasisFunctionSolver::set_next()
 {    
     current_value_ = current_vector_.back();
     current_vector_.pop_back();    
+    
+    
     for (int i=0;i<nb_var_;i++)
     {
-        input_Interval[i].update( current_value_.in[i]);
+        input_Interval[i].update( current_value_.in[i]);        
     }
    
 //     std::cout<<"current_value_ = "<< current_value_<<std::endl;
-    
+
     for (int i=0;i<nb_intermediate_;i++)
     {
+        LazyUpdateInput();
         Interval v = infos_intermediate_update[i]->update_from_inputs();
 //         std::cout<<"intermediate("<<i<<") = "<< v <<std::endl;
         Intermediate_to_update[i].update( v);
     }         
+    LazyUpdateInput();    
 }
 
 param_optim BasisFunctionSolver::set_results    ()
@@ -140,7 +144,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
     {
         case(0):    std::cout<<"Bissection : MinFirst"<<std::endl;  break;
         case(1):    std::cout<<"Bissection : MaxFirst"<<std::endl;  break;
-        case(2):    std::cout<<"Bissection : Smart"<<std::endl;  break;
+//         case(2):    std::cout<<"Bissection : Smart"<<std::endl;  break;
         default :   std::cerr<<"Bissection type not defined "<<std::endl;   std::exit(63);  break;
     }    
     
@@ -221,12 +225,14 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
 //                                         optim_crit_ =  Sup(tmp_crit);
                                         optim_crit_ =  Sup(current_value_.out[nb_fun_]);
                                         optim_ = current_value_;
-                                        Result result1, result2;
-                                        if(bissect(current_value_, result1,result2))
-                                        {
-                                            current_vector_.push_back(result2);
-                                            current_vector_.push_back(result1);
-                                        }
+//                                         Result result1, result2;
+                                        bissect(current_value_,current_vector_);
+//                                         if()
+//                                         {
+//                                             current_vector_.push_back(result1);
+//                                             current_vector_.push_back(result2);
+//                                             
+//                                         }
 //                                         else
 //                                         {
 //                                             nb_maybe_box_++;
@@ -235,12 +241,14 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
 
                                     }else  if (type_optim == OVERLAP)//if (Inf(tmp_crit) < optim_crit_)
                                     {
-                                        Result result1, result2;
-                                        if(bissect(current_value_, result1,result2))
-                                        {
-                                            current_vector_.push_back(result2);
-                                            current_vector_.push_back(result1);
-                                        }
+//                                         Result result1, result2;
+                                        bissect(current_value_,current_vector_);
+//                                         if(bissect(current_value_, result1,result2))
+//                                         {
+//                                             current_vector_.push_back(result1);
+//                                             current_vector_.push_back(result2);
+//                                             
+//                                         }
 //                                         else
 //                                         {
 //                                             nb_maybe_box_++;
@@ -249,12 +257,13 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
                                     }
                                     break;
                 case(OVERLAP)   :   
-                                    Result result1, result2;
+//                                     Result result1, result2;
+                                    bissect(current_value_,current_vector_);/*
                                     if(bissect(current_value_, result1,result2))
                                     {
-                                        current_vector_.push_back(result2);
                                         current_vector_.push_back(result1);
-                                    }
+                                        current_vector_.push_back(result2);
+                                    }*/
 //                                     else
 //                                     {
 //                                         nb_maybe_box_++;

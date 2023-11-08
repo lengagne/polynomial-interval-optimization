@@ -135,31 +135,39 @@ param_optim ContractionIntervalSolver::solve_optim(double eps)
                                     {
                                         find_one_feasible = true;
                                         optim_crit =  Sup(tmp_crit);
-                                        Result low, high;
-                                        if(bissect(current_value, low,high))
+                                        if(! bissect(current_value,current))
                                         {
-                                            current.push_back(low);
-                                            current.push_back(high);
-                                        }                         
-                                        else
                                             optim = current_value;
-
+                                        }
+//                                         Result low, high;
+//                                         if(bissect(current_value, low,high))
+//                                         {
+//                                             current.push_back(low);
+//                                             current.push_back(high);
+//                                         }                         
+//                                         else
+//                                             optim = current_value;
+// 
                                     }else if (Inf(tmp_crit) < optim_crit)
                                     {
-                                        Result low, high;
-                                        if(bissect(current_value, low,high))
-                                        {
-                                            current.push_back(low);
-                                            current.push_back(high);
-                                        }                                                  }
+                                        bissect(current_value,current);
+//                                         Result low, high;
+//                                         if(bissect(current_value, low,high))
+//                                         {
+//                                             current.push_back(low);
+//                                             current.push_back(high);
+//                                         }        
+                                        
+                                    }
                                     break;
                 case(OVERLAP)   :   //std::cout<<"OVERLAP"<<std::endl<<std::endl;
+                                    bissect(current_value,current);/*
                                     Result low, high;
                                     if(bissect(current_value, low,high))
                                     {
                                         current.push_back(low);
                                         current.push_back(high);
-                                    }              
+                                    }              */
                                     break;
             }
         }
