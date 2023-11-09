@@ -20,9 +20,7 @@ class Kronecker
         double get_pos(uint id, uint p) const;
                
         double get_value(uint lin, uint col) const;
-        
-        void help_bissection(uint i,Result& res, bool inf_sup) const;
-        
+               
         Interval line_product(Eigen::Matrix<double,Eigen::Dynamic,1> & vec);
         
         void prepare_line_product_interval(const std::list<unsigned int > & vec);       

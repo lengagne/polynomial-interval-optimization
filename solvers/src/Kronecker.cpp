@@ -46,37 +46,6 @@ double Kronecker::get_value(uint lin, uint col) const
     return out;
 }
 
-void Kronecker::help_bissection(uint id,Result& res, bool inf_sup) const
-{
-    if (!res.info_defined)
-    {
-        
-        res.bissect_weight.resize(nb_basis_);
-        res.inf_sup_proba.resize(nb_basis_);
-        for (int i=0;i<nb_basis_;i++)
-        {
-            res.bissect_weight[i] =  1;
-            res.inf_sup_proba[i] = 0.0;
-        }
-        res.nb_info = 0;
-    }
-    res.nb_info++;
-    
-    for (int i=0;i<nb_basis_;i++)
-    {
-        res.bissect_weight[i] *= proba_[id](i);
-        if (inf_sup)
-        {
-            res.inf_sup_proba[i] += 1.0; //get_pos(i,id) ; //^ inf_sup;
-        }
-        else
-        {
-            res.inf_sup_proba[i] -= 1.0; //get_pos(i,id); // ^ inf_sup;
-        }
-    }
-    res.info_defined = true;
-}
-
 Interval Kronecker::line_product(Eigen::Matrix<double,Eigen::Dynamic,1> & vec)
 {
     if (vec.size() != line_products_interval_.size())

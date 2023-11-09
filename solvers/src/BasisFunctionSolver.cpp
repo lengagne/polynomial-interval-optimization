@@ -152,18 +152,6 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
         cpt_iter_++;
         test = true;
         set_next();        
-//         if (print_ ) //&& cpt_iter_ %100 == 0)
-//            if (cpt_iter_ %100000 == 0)
-//         {
-//             std::cout<<"**************************" <<std::endl;
-//             std::cout<<"**************************" <<std::endl;
-//             std::cout<<"**************************" <<std::endl;
-//             std::cout<<cpt_iter_/1000<<" 000 : crit "<< optim_crit_ <<std::endl;
-//             for (int i=0;i<nb_var_;i++)
-//             {
-//                 std::cout<<"\t in["<<i<<"] = "<<  current_value_.in[i]<<std::endl;
-//             }
-//         }
         check_constraint type_optim = OVERLAP;
         Interval tmp_crit = Hull(-std::numeric_limits<double>::max(),optim_crit_);
         if(find_one_feasible_)  // if one solution found check if we can found better
@@ -225,48 +213,14 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
                                         optim_ = current_value_;
 //                                         Result result1, result2;
                                         bissect(current_value_,current_vector_);
-//                                         if()
-//                                         {
-//                                             current_vector_.push_back(result1);
-//                                             current_vector_.push_back(result2);
-//                                             
-//                                         }
-//                                         else
-//                                         {
-//                                             nb_maybe_box_++;
-//                                             ignored_space_ += current_value_.get_volume();
-//                                         }
 
                                     }else  if (type_optim == OVERLAP)//if (Inf(tmp_crit) < optim_crit_)
                                     {
-//                                         Result result1, result2;
                                         bissect(current_value_,current_vector_);
-//                                         if(bissect(current_value_, result1,result2))
-//                                         {
-//                                             current_vector_.push_back(result1);
-//                                             current_vector_.push_back(result2);
-//                                             
-//                                         }
-//                                         else
-//                                         {
-//                                             nb_maybe_box_++;
-//                                             ignored_space_ += current_value_.get_volume();
-//                                         }
                                     }
                                     break;
                 case(OVERLAP)   :   
-//                                     Result result1, result2;
-                                    bissect(current_value_,current_vector_);/*
-                                    if(bissect(current_value_, result1,result2))
-                                    {
-                                        current_vector_.push_back(result1);
-                                        current_vector_.push_back(result2);
-                                    }*/
-//                                     else
-//                                     {
-//                                         nb_maybe_box_++;
-//                                         ignored_space_ += current_value_.get_volume();
-//                                     }
+                                    bissect(current_value_,current_vector_);
                                     break;
             }
         }

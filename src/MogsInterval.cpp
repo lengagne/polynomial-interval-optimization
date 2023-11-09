@@ -617,15 +617,6 @@ void MogsInterval::update(const Interval & in)
     }
 }
 
-// void MogsInterval::update_vector_from_ref(std::vector<Real>& v)
-// {
-// //     Interval tmp =  ref_->value_ * diam_.get_double_from_vector(v)/2. +  middle_.get_double_from_vector(v);
-//     Interval tmp =  ref_->value_ * diam_.get_value()/2. +  middle_.get_value();
-//     value_.update(tmp);
-//     update(tmp); // ,v);
-//     ref_->value_ = Hull(-1,1);
-// }
-
 bool MogsInterval::operator== (const double& in) const
 {
     if (dependances_.size() == 0) 
