@@ -582,7 +582,9 @@ void MogsInterval::update(const Interval & in)
 {
     value_.update(in);
     middle_ = Mid(in);
+    LazyUpdateInput( middle_.ref_->id_, Mid(in));    
     diam_ = Diam(in);
+    LazyUpdateInput( diam_.ref_->id_, Diam(in));
     
     ref_->value_ = Hull(-1,1);
     for (int i=0;i<the_sons_.size();i++)

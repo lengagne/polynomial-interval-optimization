@@ -90,12 +90,10 @@ void BasisFunctionSolver::set_next()
 
     for (int i=0;i<nb_intermediate_;i++)
     {
-        LazyUpdateInput();
         Interval v = infos_intermediate_update[i]->update_from_inputs();
 //         std::cout<<"intermediate("<<i<<") = "<< v <<std::endl;
         Intermediate_to_update[i].update( v);
     }         
-    LazyUpdateInput();    
 }
 
 param_optim BasisFunctionSolver::set_results    ()
@@ -155,12 +153,12 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
         test = true;
         set_next();        
 //         if (print_ ) //&& cpt_iter_ %100 == 0)
-           if (cpt_iter_ %100000 == 0)
+//            if (cpt_iter_ %100000 == 0)
 //         {
 //             std::cout<<"**************************" <<std::endl;
 //             std::cout<<"**************************" <<std::endl;
 //             std::cout<<"**************************" <<std::endl;
-            std::cout<<cpt_iter_/1000<<" 000 : crit "<< optim_crit_ <<std::endl;
+//             std::cout<<cpt_iter_/1000<<" 000 : crit "<< optim_crit_ <<std::endl;
 //             for (int i=0;i<nb_var_;i++)
 //             {
 //                 std::cout<<"\t in["<<i<<"] = "<<  current_value_.in[i]<<std::endl;

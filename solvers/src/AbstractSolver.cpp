@@ -23,32 +23,18 @@ bool AbstractSolver::check_size(   const Result& in)
 bool AbstractSolver::bissect( const Result& in,
                                         std::vector<Result>& Pile)
 {
-//     std::cout<<"on bissect"<<std::endl;
-    // check precision
     Result out1 = in;
     Result out2 = in;
     
     int id = -1;
     double w = 0.;
-    
-//     for (unsigned int i=0;i<nb_var_;i++)
-//         std::cout<<"inf_sup_proba("<<i<<") = "<< in.inf_sup_proba[i]/in.nb_info <<std::endl;
-//     
-//     for (unsigned int i=0;i<nb_var_;i++)
-//         std::cout<<"bissect_weight("<<i<<") = "<< in.bissect_weight[i] <<std::endl;
-    
     for (unsigned int i=0;i<nb_var_;i++)
     {
         double t = Diam(in.in[i]);
-        if (bissection_type_ ==2)
-        {
-//             std::cout<<"weight("<<i<<") = "<< in.bissect_weight[i] <<std::endl;
-//             std::cout<<"in.nb_info = "<< in.nb_info <<std::endl;
-//             std::cout<<"inf_sup_proba("<<i<<") = "<< in.inf_sup_proba[i]/in.nb_info <<std::endl;
-//             std::cout<<"bissect_weight("<<i<<") = "<< in.bissect_weight[i] <<std::endl;
-            t*= in.bissect_weight[i]; 
-//             t*= fabs(in.inf_sup_proba[i])/in.nb_info; 
-        }
+//         if (bissection_type_ ==2)
+//         {
+//             t*= in.bissect_weight[i]; 
+//         }
         if (Diam(in.in[i]) > precision_ && t >w)
         {
             w = t;
@@ -57,12 +43,10 @@ bool AbstractSolver::bissect( const Result& in,
     }      
     if (id == -1)
         return false;
-//     std::cout<<"we will cut "<< id ;
        
     switch (bissection_type_)
     {
         case(0):
-//             std::cout<<"  First inferior part"<<std::endl;
             out2.in[id] = Hull( Inf(in.in[id]), Mid(in.in[id]));
             out1.in[id] = Hull( Mid(in.in[id]), Sup(in.in[id]));
             break;
