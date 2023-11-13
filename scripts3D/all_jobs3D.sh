@@ -3,7 +3,8 @@
 
 for precision in 0.001 # for precision in  0.1 0.01 0.001
 do
-for pb10 in `seq 0 1`
+# for pb10 in `seq 0 1`
+for pb10 in `seq 0 `
 do
     for pb in `seq 1 8`
         do

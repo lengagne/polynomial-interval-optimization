@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
     order_latex.push_back("comput_time");
     order_latex.push_back("total_time");
     order_latex.push_back("nb_iter");
+    order_latex.push_back("criteria");
     
     create_latex( datas_, "recap3D", order_latex);
     

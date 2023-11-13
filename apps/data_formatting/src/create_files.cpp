@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
         QString current = *it;
         {
             data_format* d = new data_format(( repo  + current).toStdString());
-            if ( !d->time_out_)
+//             if ( !d->time_out_)
             {
                 datas_.push_back(d);
             }
@@ -48,14 +48,15 @@ int main(int argc, char *argv[])
 
     
     std::vector<std::string> order_latex;
+    order_latex.push_back("bissection");
     order_latex.push_back("problem");
     order_latex.push_back("ndof");
-    order_latex.push_back("solver");
-    order_latex.push_back("bissection");
+    order_latex.push_back("solver");    
     order_latex.push_back("prep_time");
     order_latex.push_back("comput_time");
     order_latex.push_back("total_time");
     order_latex.push_back("nb_iter");
+    order_latex.push_back("criteria");
     
     
     create_latex( datas_, "recap", order_latex);

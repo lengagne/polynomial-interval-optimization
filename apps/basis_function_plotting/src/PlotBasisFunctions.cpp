@@ -40,6 +40,8 @@ int main( int argv, char** argc)
         uint bfi = vbf[j];
         
         std::string basis_type = choice.get_basis_type(j);
+        std::cout<<std::endl<<"basis = "<< basis_type <<std::endl;
+        std::cout<<"order = "<< order <<std::endl;
         choice.choose(&bf,j);
 
         Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> M(order+1,order+1),N(order+1,order+1);
@@ -58,8 +60,10 @@ int main( int argv, char** argc)
     //     cpoint.open("control_point.txt");
         gnuplot.open("gnuplot.txt");
 
-        gnuplot<<"set terminal png size 1200,900 enhanced font \"Helvetica\" 14 "<<std::endl;
-        gnuplot<<"set output '"<<basis_type<<"_"<< order<<".png"<<std::endl;
+//         gnuplot<<"set terminal png size 1200,900 enhanced font \"Helvetica\" 14 "<<std::endl;
+//         gnuplot<<"set output '"<<basis_type<<"_"<< order<<".png"<<std::endl;
+        gnuplot<<"set term postscript color eps level3 "<<std::endl;
+        gnuplot<<"set output '"<<basis_type<<"_"<< order<<".eps"<<std::endl;
         gnuplot<<"plot ";
         for (int j=0;j<order+1;j++)
         {

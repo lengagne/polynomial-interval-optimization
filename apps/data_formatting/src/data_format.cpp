@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <array>
 #include <functional>
+#include <regex>
 
 std::list<std::string> solver_order_;
 std::list<std::string> bissect_order_;
@@ -16,7 +17,7 @@ data_format::data_format( const std::string& filename)
     std::string line;
     std::ifstream file;
     file.open(filename);
-    
+    infos["filename"] = filename;
     if(file.is_open())
     {
 //         std::cout<<" reading "<< filename_ <<std::endl;
@@ -32,6 +33,7 @@ data_format::data_format( const std::string& filename)
             add_data(line,"time_per_iter", "Time per iteration :");
             add_data(line,"total_time", "total time :");
             add_data(line,"bissection", "Bissection : ");
+            add_data(line,"criteria", "crit = ");
             
             if (loof_for(line,"DUE TO TIME LIMIT"))
             {
@@ -47,7 +49,14 @@ data_format::data_format( const std::string& filename)
     if (time_out_)
     {
         std::cout<<"rm -frv "<< filename<<std::endl;
-//         std::cout<<"sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << infos["bissection"]<<" "<<infos["solver"]<<std::endl;
+        std::cout<<"sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["bissection"]) <<" "<< get_solver(infos["solver"])<<std::endl;
+        infos["prep_time"] = "TIMEOUT";
+        infos["nb_iter"] = "TIMEOUT";
+        infos["comput_time"] = "TIMEOUT";
+        infos["time_per_iter"] = "TIMEOUT";
+        infos["total_time"] = "TIMEOUT";
+        
+        infos["criteria"] = filename;
     }
 }
 
@@ -236,8 +245,13 @@ void create_latex( const std::vector< data_format*> datas,
     for (int i=0;i<cs;i++)  outfile<< "c|";
     outfile <<"}\n";
     outfile<<"\\hline\n"; 
-    for (int i=0;i<cs-1;i++)  outfile<< columns[i]<<" & ";
-    outfile<< columns[cs-1]<<" \\\\ \\hline \n";    
+    
+    for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
+    outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\endfirsthead \\hline \n";    
+
+    for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
+    outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\endhead \\hline \n";        
+    
     std::cout<<"datas.size() = "<< datas.size()<<std::endl;
     create_latex_subpart( outfile, 0, columns, datas);
     outfile <<"\n\\end{longtable}\n";
@@ -293,14 +307,14 @@ void create_latex_subpart( std::ofstream& outfile,
         }
        
         if (cpt)
-            outfile<<entete;       
+            outfile<<replace(entete);
         
         if ( local_data.size() == 1)
         {
             data_format* d = local_data[0];
             for (int i=index;i<columns.size()-1;i++)
-                outfile << d->infos[columns[i]]<<" & ";
-            outfile <<d->infos[columns[columns.size()-1]] <<"\\\\ "; 
+                outfile << replace(d->infos[columns[i]])<<" & ";
+            outfile << replace(d->infos[columns[columns.size()-1]]) <<"\\\\ "; 
             outfile <<" \\cline{"<< index+1 <<"-"<< columns.size() <<"}\n";               
         }else
         {
@@ -314,6 +328,28 @@ void create_latex_subpart( std::ofstream& outfile,
         }
         cpt ++;
     }    
+}
+
+std::string get_bissection( const std::string in)
+{
+    if (in == "MinFirst")
+        return std::string("0");
+    if (in == "MaxFirst")
+        return std::string("1");
+    return in;
+}
+
+std::string get_solver( const std::string in)
+{
+    uint cpt = 0;
+    for (auto& s : solver_order_)
+//     for (int i=0;i<solver_order_.size();i++)
+    {
+        if (in == s)
+            return std::to_string(cpt);
+        cpt++;
+    }
+    return in;
 }
 
 void init_order()
@@ -331,6 +367,7 @@ void init_order()
     solver_order_.push_back("ContractionInterval");
     solver_order_.push_back("ContractionBasis_Bernstein");
     solver_order_.push_back("ContractionBasis_MinVariance");
+    solver_order_.push_back("ContractionBasis_BSplines");
     solver_order_.push_back("ContractionBasis_MinNo");
     solver_order_.push_back("ContractionBasis_ApproxMinVo");
     solver_order_.push_back("ContractionBasis_MinVo");
@@ -380,3 +417,11 @@ double toDouble(std::string s){
     return std::atof(s.c_str());
 }
 
+std::string replace (const std::string in)
+{
+    std::string out =  std::regex_replace(in, std::regex("_"), "\\textunderscore ");
+    out =  std::regex_replace(out, std::regex("BissectionBasis"), "Bis");
+    out =  std::regex_replace(out, std::regex("ContractionBasis"), "Cont");
+    
+    return out;
+}

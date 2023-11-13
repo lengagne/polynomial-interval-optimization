@@ -61,12 +61,18 @@ void create_latex_subpart( std::ofstream& outfile,
                            const std::vector< data_format*> datas,
                            const std::string& entete = "");
 
+std::string get_bissection( const std::string in);
+
+std::string get_solver( const std::string in);
+
 void init_order();
 
 std::list<std::string> re_order(const std::list<std::string>& input, 
                                 const std::list<std::string>& dic);
 
 double toDouble(std::string s);
+
+std::string replace (const std::string in);
 
 
 #endif
