@@ -181,13 +181,6 @@ Interval IntervalEstimator::update_from_inputs( )
     
     Interval out = 0.0;    
     
-//     for (unsigned int i=0;i<nb_sparse_errors_;i++)
-//     {
-//         sparse_coeff_errors_(i) = LazyUpdateOutput(num_out_,cpt++);
-//     }
-    
-    Interval error = kron_solver_errors_->line_product(sparse_coeff_errors_);    
-    
     if (nb_control_point_inputs_ != 0)
     {
         out = LazyUpdateOutput(num_out_,cpt++);
@@ -203,8 +196,8 @@ Interval IntervalEstimator::update_from_inputs( )
     {
         sparse_coeff_errors_(i) = LazyUpdateOutput(num_out_,cpt++);
     }
-//     
-//     Interval error = kron_solver_errors_->line_product(sparse_coeff_errors_);
+
+    Interval error = kron_solver_errors_->line_product(sparse_coeff_errors_);
     return out + error;
 }
 
@@ -222,9 +215,11 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
     bool inf_inside,sup_inside, both_side;
     
     Interval Iv = LazyUpdateOutput(num_out_,cpt++);
+//     std::cout<<"value(0) = "<< Iv <<std::endl;
     for (int i=1;i<nb_control_point_inputs_;i++)
     {
         Interval value = LazyUpdateOutput(num_out_,cpt++);
+//         std::cout<<"value("<<0<<") = "<< value <<std::endl;
         if (i==0)
             Iv = value;
         else
@@ -261,6 +256,7 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
 
 //     std::cout<<"B_error = "<< res.error[num_out_] <<std::endl;
     out = Iv + res.error[num_out_];
+//     std::cout<<"out final = "<< out <<std::endl;
     if (Intersection(out,bound))
     {
         if (inf_inside)

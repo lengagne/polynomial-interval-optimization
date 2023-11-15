@@ -53,7 +53,14 @@ void create_csv(const std::vector< data_format*> datas,
 
 void create_latex( const std::vector< data_format*> datas,
                    const std::string filename,
-                   std::vector<std::string> & columns);
+                   std::vector<std::string> & columns,
+                   std::vector<std::string> & common);
+
+void create_latex( const std::vector< data_format*> datas,
+                   const std::string filename,
+                   std::vector<std::string> & columns,
+                   const std::string &titre =""
+                 );
 
 void create_latex_subpart( std::ofstream& outfile,
                            uint index,

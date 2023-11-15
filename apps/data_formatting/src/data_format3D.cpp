@@ -16,7 +16,7 @@ data_format3D::data_format3D( const std::string& filename)
     std::string line;
     std::ifstream file;
     file.open(filename);
-    
+    infos["filename"] = filename;
     if(file.is_open())
     {
 //         std::cout<<" reading "<< filename_ <<std::endl;

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=job1
+#SBATCH --job-name=job1_normal
 #SBATCH --mail-user=sebastien.lengagne@uca.fr
 #SBATCH --mail-type=FAIL
 #SBATCH --ntasks=1

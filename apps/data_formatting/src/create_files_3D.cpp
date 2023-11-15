@@ -48,15 +48,20 @@ int main(int argc, char *argv[])
 
     
     std::vector<std::string> order_latex;
-    order_latex.push_back("problem");
+//     order_latex.push_back("problem");
     order_latex.push_back("solver");
-    order_latex.push_back("bissection");
+//     order_latex.push_back("bissection");
     order_latex.push_back("prep_time");
     order_latex.push_back("comput_time");
     order_latex.push_back("total_time");
     order_latex.push_back("nb_iter");
     order_latex.push_back("criteria");
+    order_latex.push_back("filename");
     
-    create_latex( datas_, "recap3D", order_latex);
+    std::vector<std::string> common;
+    common.push_back("bissection");
+    common.push_back("problem");
+    
+    create_latex( datas_, "recap3D", order_latex,common);
     
 }

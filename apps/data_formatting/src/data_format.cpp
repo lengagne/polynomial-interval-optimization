@@ -232,15 +232,16 @@ void create_csv(const std::vector< data_format*> datas,
     }
 }
 
-void create_latex( const std::vector< data_format*> datas,
-                   const std::string filename,
-                   std::vector<std::string> & columns)
+void create_latex( std::ofstream& outfile,
+                   const std::vector< data_format*> datas,
+                   std::vector<std::string> & columns,
+                   const std::string &titre
+                 )
 {
-    std::cout<<"CREATE LATEX With "<< filename <<std::endl;
-    std::ofstream outfile (filename+".tex");
+    
+    std::cout<<"create table"<<std::endl;
     std::cout<<"On a "<< columns.size() <<" colonnes "<<std::endl;
     uint cs = columns.size();
-    outfile<<"% \\usepackage{longtable}"<<std::endl;
     outfile <<"\\begin{longtable}{|";
     for (int i=0;i<cs;i++)  outfile<< "c|";
     outfile <<"}\n";
@@ -254,9 +255,92 @@ void create_latex( const std::vector< data_format*> datas,
     
     std::cout<<"datas.size() = "<< datas.size()<<std::endl;
     create_latex_subpart( outfile, 0, columns, datas);
-    outfile <<"\n\\end{longtable}\n";
-    outfile.close();
+    
+    if (titre != "")
+    {
+        outfile<<"\n \\caption\{"<< titre<<"\}"<<std::endl;
+    }
+    
+    outfile <<"\\end{longtable}\n\n";
+    std::cout<<"end of table"<<std::endl;
+    
 }
+
+void create_latex( const std::vector< data_format*> datas,
+                   const std::string filename,
+                   std::vector<std::string> & columns,
+                   std::vector<std::string> & common)
+{
+    std::cout<<"CREATE LATEX With "<< filename <<std::endl;
+    std::vector< std::vector< std::string > > differences;
+    for (auto& d : datas)
+    {
+        std::vector<std::string> local_diff;
+        for (int i=0;i<common.size();i++)
+        {
+            local_diff.push_back( d->infos[common[i]]);
+        }
+        
+        bool add = true;
+        for (int i=0;i<differences.size();i++)
+        {
+            bool mem = true;
+            for (int j=0;j<common.size();j++)
+            {
+                if ( local_diff[j] != differences[i][j])
+                    mem = false;
+            }
+            
+            if (mem)
+            {
+                add = false;
+            }
+        }
+        if (add)
+            differences.push_back(local_diff);
+    }
+    
+    std::cout<<"on a va générer "<< differences.size()<<" tableaux pour "<<std::endl;
+    std::ofstream outfile (filename+".tex");
+    outfile<<"% \\usepackage{longtable}"<<std::endl;
+    
+    for (int i=0;i<differences.size();i++)
+    {
+        for (int j=0;j<common.size();j++)
+        {
+            std::cout<<"\t"<< common[j]<<":"<< differences[i][j];
+        }
+        std::cout<<std::endl;
+        
+        
+        // on trie
+        std::vector< data_format*> local_datas;
+        for (auto& d : datas)
+        {
+            bool test = true;
+            for (int j=0;j<common.size();j++)
+            {
+                if (differences[i][j] != d->infos[common[j]])
+                {
+                    test = false;
+                    break;
+                }
+            }
+            if (test)
+                local_datas.push_back(d);
+        }
+        
+        std::string caption ="";
+        for (int j=0;j<common.size();j++)
+            caption += common[j] + ":" + differences[i][j]+ "  ";
+        
+        create_latex( outfile, local_datas, columns, caption);
+    }
+    outfile.close();
+    
+    
+}
+
 
 void create_latex_subpart( std::ofstream& outfile,
                            uint index,
