@@ -8,9 +8,9 @@ do
         do
             for pb10 in `seq 0 1`
             do         
-                for pb in `seq 1 9`
-                pbname=$(($((10*$pb10))+$pb));
+                for pb in `seq 1 9`               
                 do
+                    pbname=$(($((10*$pb10))+$pb));
                     for solveur in `seq 0 17`                    
                     do
                             sbatch job.sh $dof $pbname $precision $bissection_type $solveur
@@ -30,9 +30,9 @@ do
         do
             for pb10 in `seq 0 1`
             do         
-                for pb in `seq 1 9`
-                pbname=$(($((10*$pb10))+$pb));
+                for pb in `seq 1 9`                
                 do
+                    pbname=$(($((10*$pb10))+$pb));
                     for solveur in `seq 0 17`                    
                     do
                             sbatch job_long.sh $dof $pbname $precision $bissection_type $solveur
