@@ -15,6 +15,9 @@ class BissectionBasisFunctionSolver: public BasisFunctionSolver
                                       uint bissection_mode);
 
         virtual ~BissectionBasisFunctionSolver();
+        
+        virtual void evaluate( const std::vector<Interval> &in,
+                               std::vector<Interval> &out);        
 
     protected:
     private:

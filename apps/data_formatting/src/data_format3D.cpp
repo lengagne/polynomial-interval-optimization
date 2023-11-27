@@ -30,17 +30,31 @@ data_format3D::data_format3D( const std::string& filename)
             add_data(line,"comput_time", "computation time (wo prep):");
             add_data(line,"time_per_iter", "Time per iteration :");
             add_data(line,"total_time", "total time :");
+            add_data(line,"(D-H:M:S)", "total time :");
             add_data(line,"bissection", "Bissection :");
             add_data(line,"criteria", "crit = ");
+            add_data(line,"bissection_mode", "bissection_mode =");
             
             if (loof_for(line,"DUE TO TIME LIMIT"))
             {
-                time_out_ = true;                
+                time_out_ = true;      
+                infos["prep_time"] = "TIMEOUT";
+                infos["nb_iter"] = "TIMEOUT";
+                infos["comput_time"] = "TIMEOUT";
+                infos["time_per_iter"] = "TIMEOUT";
+                infos["total_time"] = "TIMEOUT";                   
+                std::cout<<"TIMEOUT: ";
             }
             if (loof_for(line,"CANCELLED AT"))
             {
                 time_out_ = true;                
-            }            
+                infos["prep_time"] = "CANCELLED";
+                infos["nb_iter"] = "CANCELLED";
+                infos["comput_time"] = "CANCELLED";
+                infos["time_per_iter"] = "CANCELLED";
+                infos["total_time"] = "CANCELLED";      
+                std::cout<<"CANCELLED: ";
+            }          
         }        
     }else
     {
@@ -49,7 +63,12 @@ data_format3D::data_format3D( const std::string& filename)
     
     if (time_out_)
     {
+        std::cout<<"Problem "<<  infos["problem"]<< "  solver = "<< infos["solver"] <<" Bissection = "<< infos["bissection_mode"] <<std::endl;
+        
         std::cout<<"rm -frv "<< filename<<std::endl;
 //         std::cout<<"sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << infos["bissection"]<<" "<<infos["solver"]<<std::endl;
+        std::cout<<"sbatch job3D_long.sh "<< infos["precision"]<<" "<< infos["problem"]<<" " << infos["bissection_mode"] <<" "<< get_solver(infos["solver"])<<std::endl;        
+        std::cout<<std::endl;     
+        infos["criteria"] = filename;
     }
 }

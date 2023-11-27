@@ -78,16 +78,15 @@ void BasisFunctionSolver::init_end()
 void BasisFunctionSolver::set_next()
 {    
     current_value_ = current_vector_.back();
-    current_vector_.pop_back();    
-    
-    
+    current_vector_.pop_back();         
+    std::cout<<"input_Interval.size() = "<< input_Interval.size()<<std::endl;
+    std::cout<<"current_value_.in.size() = "<< current_value_.in.size()<<std::endl;
     for (int i=0;i<nb_var_;i++)
     {
+        std::cout<<"current_value_["<<i<<"] = "<< current_value_.in[i]<<std::endl;
         input_Interval[i].update( current_value_.in[i]);        
-    }
-   
+    }   
 //     std::cout<<"current_value_ = "<< current_value_<<std::endl;
-
     for (int i=0;i<nb_intermediate_;i++)
     {
         Interval v = infos_intermediate_update[i]->update_from_inputs();

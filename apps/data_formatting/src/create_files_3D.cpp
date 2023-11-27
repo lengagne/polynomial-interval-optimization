@@ -54,9 +54,10 @@ int main(int argc, char *argv[])
     order_latex.push_back("prep_time");
     order_latex.push_back("comput_time");
     order_latex.push_back("total_time");
+    order_latex.push_back("(D-H:M:S)");
     order_latex.push_back("nb_iter");
     order_latex.push_back("criteria");
-    order_latex.push_back("filename");
+//     order_latex.push_back("filename");
     
     std::vector<std::string> common;
     common.push_back("bissection");

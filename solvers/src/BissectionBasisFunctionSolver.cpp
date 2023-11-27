@@ -26,6 +26,21 @@ BissectionBasisFunctionSolver::~BissectionBasisFunctionSolver()
     results.clear();
 }
 
+void BissectionBasisFunctionSolver::evaluate(   const std::vector<Interval> &in,
+                                                std::vector<Interval> &out)
+{
+    init(1e-3);
+    out.resize(nb_fun_);
+    Result tmp;
+    tmp.in = in;   
+    current_vector_.push_back(tmp);
+    set_next();
+    
+    for (int i=0;i<nb_fun_;i++)
+    {
+        out[i] = infos[i]->update_from_inputs();
+    }
+}
 
 void BissectionBasisFunctionSolver::init(double eps)
 {

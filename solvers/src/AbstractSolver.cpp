@@ -1,8 +1,6 @@
 #include "AbstractSolver.h"
 #include <string.h>
 
-
-
 bool AbstractSolver::check_size(   const Result& in)
 {
     double w = 0.;

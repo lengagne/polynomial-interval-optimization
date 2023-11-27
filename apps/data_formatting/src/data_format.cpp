@@ -32,14 +32,28 @@ data_format::data_format( const std::string& filename)
             add_data(line,"comput_time", "computation time (wo prep):");
             add_data(line,"time_per_iter", "Time per iteration :");
             add_data(line,"total_time", "total time :");
+            add_data(line,"(D-H:M:S)", "total time :");
             add_data(line,"bissection", "Bissection : ");
-            add_data(line,"criteria", "crit = ");
+            add_data(line,"criteria", "crit = ");            
             
             if (loof_for(line,"DUE TO TIME LIMIT"))
             {
-                time_out_ = true;
-                
+                time_out_ = true;      
+                infos["prep_time"] = "TIMEOUT";
+                infos["nb_iter"] = "TIMEOUT";
+                infos["comput_time"] = "TIMEOUT";
+                infos["time_per_iter"] = "TIMEOUT";
+                infos["total_time"] = "TIMEOUT";                   
             }
+            if (loof_for(line,"CANCELLED AT"))
+            {
+                time_out_ = true;                
+                infos["prep_time"] = "CANCELLED";
+                infos["nb_iter"] = "CANCELLED";
+                infos["comput_time"] = "CANCELLED";
+                infos["time_per_iter"] = "CANCELLED";
+                infos["total_time"] = "CANCELLED";                   
+            }                   
         }        
     }else
     {
@@ -49,13 +63,12 @@ data_format::data_format( const std::string& filename)
     if (time_out_)
     {
         std::cout<<"rm -frv "<< filename<<std::endl;
-        std::cout<<"sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["bissection"]) <<" "<< get_solver(infos["solver"])<<std::endl;
+        std::cout<<"sbatch job_long.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["bissection"]) <<" "<< get_solver(infos["solver"])<<std::endl;
         infos["prep_time"] = "TIMEOUT";
         infos["nb_iter"] = "TIMEOUT";
         infos["comput_time"] = "TIMEOUT";
         infos["time_per_iter"] = "TIMEOUT";
-        infos["total_time"] = "TIMEOUT";
-        
+        infos["total_time"] = "TIMEOUT";        
         infos["criteria"] = filename;
     }
 }
@@ -79,7 +92,14 @@ void data_format::add_data( const std::string& line, const std::string& name, co
         sub = sub.substr( 0,pos);
     
     sub.erase(std::remove(sub.begin(), sub.end(), ' '), sub.end());
-    infos[name] = sub;
+    
+    if (name == "(D-H:M:S)")
+    {
+        infos[name] = time_format( sub);
+    }else
+    {
+        infos[name] = sub;
+    }
     
     return;
 }
@@ -239,8 +259,8 @@ void create_latex( std::ofstream& outfile,
                  )
 {
     
-    std::cout<<"create table"<<std::endl;
-    std::cout<<"On a "<< columns.size() <<" colonnes "<<std::endl;
+//     std::cout<<"create table"<<std::endl;
+//     std::cout<<"On a "<< columns.size() <<" colonnes "<<std::endl;
     uint cs = columns.size();
     outfile <<"\\begin{longtable}{|";
     for (int i=0;i<cs;i++)  outfile<< "c|";
@@ -253,7 +273,7 @@ void create_latex( std::ofstream& outfile,
     for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
     outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\endhead \\hline \n";        
     
-    std::cout<<"datas.size() = "<< datas.size()<<std::endl;
+//     std::cout<<"datas.size() = "<< datas.size()<<std::endl;
     create_latex_subpart( outfile, 0, columns, datas);
     
     if (titre != "")
@@ -262,7 +282,7 @@ void create_latex( std::ofstream& outfile,
     }
     
     outfile <<"\\end{longtable}\n\n";
-    std::cout<<"end of table"<<std::endl;
+//     std::cout<<"end of table"<<std::endl;
     
 }
 
@@ -300,17 +320,17 @@ void create_latex( const std::vector< data_format*> datas,
             differences.push_back(local_diff);
     }
     
-    std::cout<<"on a va générer "<< differences.size()<<" tableaux pour "<<std::endl;
+//     std::cout<<"on a va générer "<< differences.size()<<" tableaux pour "<<std::endl;
     std::ofstream outfile (filename+".tex");
     outfile<<"% \\usepackage{longtable}"<<std::endl;
     
     for (int i=0;i<differences.size();i++)
     {
-        for (int j=0;j<common.size();j++)
-        {
-            std::cout<<"\t"<< common[j]<<":"<< differences[i][j];
-        }
-        std::cout<<std::endl;
+//         for (int j=0;j<common.size();j++)
+//         {
+//             std::cout<<"\t"<< common[j]<<":"<< differences[i][j];
+//         }
+//         std::cout<<std::endl;
         
         
         // on trie
@@ -501,11 +521,70 @@ double toDouble(std::string s){
     return std::atof(s.c_str());
 }
 
-std::string replace (const std::string in)
+std::string replace (const std::string &in)
 {
     std::string out =  std::regex_replace(in, std::regex("_"), "\\textunderscore ");
     out =  std::regex_replace(out, std::regex("BissectionBasis"), "Bis");
     out =  std::regex_replace(out, std::regex("ContractionBasis"), "Cont");
     
+    out =  std::regex_replace(out, std::regex(","), ".");
+    
     return out;
+}
+
+std::string time_format( const std::string & in)
+{
+    // Convertir la chaîne en un entier
+    long tempsEnSecondes = std::stol(in);
+    double temps = toDouble(in);
+//     std::cout<<"temps = "<< temps <<std::endl;
+
+    // Calculer le nombre de jours, heures, minutes et secondes
+    int jours = tempsEnSecondes / (24 * 3600);
+    tempsEnSecondes = tempsEnSecondes % (24 * 3600);
+    int heures = tempsEnSecondes / 3600;
+    tempsEnSecondes %= 3600;
+    int minutes = tempsEnSecondes / 60;
+    tempsEnSecondes %= 60;
+    
+    double secondes = temps - jours*24*3600 - heures * 3600 - minutes * 60;
+//     int secondes = tempsEnSecondes;
+
+    // Construire la chaîne résultante
+    std::string dureeStr;
+    char str[200];
+    if (jours)
+    {
+        dureeStr = std::to_string(jours) + "-" +
+                           std::to_string(heures) + ":" +
+                           std::to_string(minutes) + ":" +
+                           std::to_string((int)secondes);
+        
+        sprintf(str,"%d-%02d:%02d:%02d", jours, heures,minutes,(int)secondes);
+                           
+    }else
+    if (heures)
+    {
+        dureeStr =  std::to_string(heures) + ":" +
+                    std::to_string(minutes) + ":" +
+                    std::to_string((int)secondes);        
+        sprintf(str,"%02d:%02d:%02d",  heures,minutes,(int)secondes);
+    }else 
+    if (minutes)
+    {
+        dureeStr =  std::to_string(minutes) + ":" +
+                    std::to_string((int)secondes);        
+        sprintf(str,"%02d:%02d",  minutes,(int)secondes);
+    }else
+    {
+        long ms = secondes * 1000;
+        dureeStr =  std::to_string(ms/1000.0);    
+        sprintf(str,"%.3f",  secondes);
+    }
+        
+//     printf("Formaté = %s\n", str);
+    dureeStr = std::string(str);
+   
+
+    return replace(dureeStr);    
 }

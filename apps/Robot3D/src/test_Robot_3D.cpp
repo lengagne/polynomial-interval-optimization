@@ -56,21 +56,21 @@ int main( int argc, char** argv)
     
     switch(problem)
     {
-        // full torque, target (0.4,0.4,0.7), critere torque
+        // full torque, target (0.4,0.4,0.7)
         case(1):
         case(11):
                 coeff_torque = 1.0;
                 target = 0;
                 robot_file = "../model/kuka_lwr_4dof.xml";
                 break;
-        // full torque, target (0.6,0.6,0.6), critere torque
+        // full torque, target (0.6,0.6,0.6)
         case(2):
         case(12):    
                 coeff_torque = 1.0;
                 target = 1;
                 robot_file = "../model/kuka_lwr_4dof.xml"; 
                 break;
-        // 10% torque, target (0.4,0.4,0.7), critere torque
+        // 10% torque, target (0.4,0.4,0.7)
         case(3):
         case(13):
                 coeff_torque = 0.1;
@@ -78,7 +78,7 @@ int main( int argc, char** argv)
                 robot_file = "../model/kuka_lwr_4dof.xml";
                 break;
         
-        // 10% torque, target (0.6,0.6,0.6), critere torque
+        // 10% torque, target (0.6,0.6,0.6)
         case(4):
         case(14):
                 coeff_torque = 0.1;
@@ -86,7 +86,7 @@ int main( int argc, char** argv)
                 robot_file = "../model/kuka_lwr_4dof.xml";
                 break;
         
-        // full torque, target (0.4,0.4,0.7), critere torque
+        // full torque, target (0.4,0.4,0.7)
         case(5):
         case(15):
                 coeff_torque = 1.0;
@@ -94,7 +94,7 @@ int main( int argc, char** argv)
                 robot_file = "../model/kuka_lwr.xml";
                 break;
         
-        // full torque, target (0.6,0.6,0.6), critere torque
+        // full torque, target (0.6,0.6,0.6)
         case(6):
         case(16):
                 coeff_torque = 1.0;
@@ -102,7 +102,7 @@ int main( int argc, char** argv)
                 robot_file = "../model/kuka_lwr.xml";
                 break;
 
-        // 10% torque, target (0.4,0.4,0.7), critere torque
+        // 10% torque, target (0.4,0.4,0.7)
         case(7):
         case(17):
                 coeff_torque = 0.1;
@@ -110,7 +110,7 @@ int main( int argc, char** argv)
                 robot_file = "../model/kuka_lwr.xml";
                 break;
         
-        // 10% torque, target (0.6,0.6,0.6), critere torque
+        // 10% torque, target (0.6,0.6,0.6)
         case(8):
         case(18):
                 coeff_torque = 0.1;

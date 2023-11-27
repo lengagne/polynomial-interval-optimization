@@ -34,6 +34,9 @@ class AbstractSolver
         bool check_size(   const Result& in);
 
         void close_files();
+        
+        virtual void evaluate(  const std::vector<Interval>& in,
+                                std::vector<Interval> & out) = 0;
 
         void set_precision_gnuplot(const double a)
         {

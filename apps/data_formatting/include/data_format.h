@@ -79,7 +79,9 @@ std::list<std::string> re_order(const std::list<std::string>& input,
 
 double toDouble(std::string s);
 
-std::string replace (const std::string in);
+std::string replace (const std::string& in);
+
+std::string time_format( const std::string & in);
 
 
 #endif
