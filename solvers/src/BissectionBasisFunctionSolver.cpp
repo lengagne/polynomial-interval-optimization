@@ -29,6 +29,7 @@ BissectionBasisFunctionSolver::~BissectionBasisFunctionSolver()
 void BissectionBasisFunctionSolver::evaluate(   const std::vector<Interval> &in,
                                                 std::vector<Interval> &out)
 {
+    solve_optim_ = true;
     init(1e-3);
     out.resize(nb_fun_);
     Result tmp;
@@ -39,6 +40,14 @@ void BissectionBasisFunctionSolver::evaluate(   const std::vector<Interval> &in,
     for (int i=0;i<nb_fun_;i++)
     {
         out[i] = infos[i]->update_from_inputs();
+    }
+    if(solve_optim_)
+    {
+        std::cout<<"calcul de la deniere "<<std::endl;
+        out[nb_fun_] = info_crit_->update_from_inputs();
+    }else
+    {
+        std::cout<<"on ne calcule pas le dernier"<<std::endl;
     }
 }
 
