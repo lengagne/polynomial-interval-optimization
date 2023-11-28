@@ -50,7 +50,7 @@ unsigned int IntervalEstimator::get_index(mem* m) const
 
 unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigned int num_out)
 {      
-//     std::cout<<"prepare_coeffs ("<<num_out<<") " << out <<std::endl;
+//     std::cout<<"prepare_coeffs ("<<num_out<<") "  <<std::endl;
     num_out_ = num_out;
     out.get_dependancies_with_order(dep_,order_);
     nb_in_ = dep_.size();
@@ -148,6 +148,9 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
         LazyAddOutput(MCT_coeff_[*it],num_out_,nb_valid_coeff++);
     }      */    
     
+//     std::cout<<"nb_control_point_inputs_ = " << nb_control_point_inputs_ <<std::endl;
+//     std::cout<<"coeff_inputs_.size() = " << coeff_inputs_.size() <<std::endl;
+
 //     std::cout<<"TAILLE "<< coeff_inputs_.size() <<std::endl;
     if (coeff_inputs_.size() == 0)
         nb_control_point_inputs_ = 0;
@@ -164,6 +167,7 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
         LazyAddOutput(out,num_out_,nb_valid_coeff++);
     }
     
+//     std::cout<<"avant error nb_valid_coeff = " << nb_valid_coeff <<std::endl;
     // deal with error
     for(std::list<unsigned int >::const_iterator it = coeff_errors_.begin(); it != coeff_errors_.end(); it++)
     {
@@ -171,7 +175,7 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
         LazyAddOutput(MCT_coeff_[*it],num_out_,nb_valid_coeff++);
     }          
 
-
+//     std::cout<<"apres error nb_valid_coeff = " << nb_valid_coeff <<std::endl;
     return nb_valid_coeff;
 }
 

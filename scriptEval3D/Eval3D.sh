@@ -9,5 +9,5 @@
 # #SBATCH --constraint=ivy 
 # #SBATCH --partition=long 
 
-../build/apps/Robot3D/Eval3D $1 
+# ../build/apps/Robot3D/Eval3D $1 
 exit 0

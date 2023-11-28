@@ -43,23 +43,26 @@ void BasisFunctionSolver::init(double eps)
     
     infos_intermediate_update.resize(nb_intermediate_);
     
-    std::cout<<"nb_intermediate_ = "<< nb_intermediate_ <<std::endl;
+//     std::cout<<"nb_intermediate_ = "<< nb_intermediate_ <<std::endl;
     for (int i=0;i<nb_intermediate_;i++)
     {
+//         std::cout<<"prepare_coeffs intermediaire de " <<i <<" / "<< nb_intermediate_ <<std::endl;
         infos_intermediate_update[i] = new IntervalEstimator( bf_);        
         infos_intermediate_update[i]->prepare_coeffs(Intermediate_to_compute[i], i);
     }
-    std::cout<<"on a prepare les intermediares "<<std::endl;
+//     std::cout<<"on a prepare les intermediares "<<std::endl;
 }
 
 void BasisFunctionSolver::init_end()
 {
     for (int i=0;i<nb_fun_;i++)
     {
+//         std::cout<<"prepare_coeffs entree de " <<i <<" / "<< nb_fun_ <<std::endl;
         infos[i]->prepare_coeffs(output_Interval[i], nb_intermediate_+i);
     }   
     if(solve_optim_)
     {
+//         std::cout<<"prepare_coeffs entree de " <<nb_fun_ <<" / "<< nb_fun_ <<std::endl;
         info_crit_->prepare_coeffs(output_Interval[nb_fun_], nb_intermediate_+ nb_fun_);
     }
        
@@ -79,11 +82,11 @@ void BasisFunctionSolver::set_next()
 {    
     current_value_ = current_vector_.back();
     current_vector_.pop_back();         
-    std::cout<<"input_Interval.size() = "<< input_Interval.size()<<std::endl;
-    std::cout<<"current_value_.in.size() = "<< current_value_.in.size()<<std::endl;
+//     std::cout<<"input_Interval.size() = "<< input_Interval.size()<<std::endl;
+//     std::cout<<"current_value_.in.size() = "<< current_value_.in.size()<<std::endl;
     for (int i=0;i<nb_var_;i++)
     {
-        std::cout<<"current_value_["<<i<<"] = "<< current_value_.in[i]<<std::endl;
+//         std::cout<<"current_value_["<<i<<"] = "<< current_value_.in[i]<<std::endl;
         input_Interval[i].update( current_value_.in[i]);        
     }   
 //     std::cout<<"current_value_ = "<< current_value_<<std::endl;

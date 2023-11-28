@@ -4,6 +4,30 @@
 #include "MogsInterval.h"
 #include "ChooseBasisFunction.h"
 
+std::string latex_matrix  ( const Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& M)
+{
+    std::string out;
+    
+    out += "$ \\left[ \\begin\{array\}\{";
+    for (int i=0;i<M.rows();i++)    out += "c";
+    out += "\}\n";
+    for (int i=0;i<M.rows();i++) 
+    {
+        for (int j=0;j<M.rows();j++) 
+        {
+            out += std::to_string( M(i,j));
+            if ( j < M.rows()-1)
+                out += " & ";
+            else
+                out += " \\\\ \n";
+        }
+    }
+    out += "\\end\{array\} \\right]$\n";    
+    
+    return out; 
+    
+}
+
 int main( int argv, char** argc)
 {
     ChooseBasisFunction choice;
@@ -34,7 +58,14 @@ int main( int argv, char** argc)
     
     AbstractBasisFunction* bf;
     
-    for (int i=0;i<vorder.size();i++)   for (int j=0;j<vbf.size();j++)
+    std::ofstream outfile ("basis_functions.tex");
+    
+    outfile<<"\\begin{table}[htb]\n";
+    outfile<<"\\tiny \n";
+    outfile<<"\\begin{tabular}{|c|c|c|c|}\n \\hline \n";
+    outfile<<"type & order&  $\\mathbf B^{-1} $ \\\\  \\hline \\hline\n";
+    
+    for (int j=0;j<vbf.size();j++) for (int i=0;i<vorder.size();i++) 
     {    
         uint order = vorder[i];
         uint bfi = vbf[j];
@@ -43,12 +74,13 @@ int main( int argv, char** argc)
         std::cout<<std::endl<<"basis = "<< basis_type <<std::endl;
         std::cout<<"order = "<< order <<std::endl;
         choice.choose(&bf,j);
-
         Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> M(order+1,order+1),N(order+1,order+1);
         
         bf->get_basis_coeff_matrix(inter,order,M,N);
         std::cout<<"Matrice = "<< M <<std::endl;
         std::cout<<"Inverse = "<< N <<std::endl;
+        
+        outfile<<basis_type <<" & " << order <<" &  "<< latex_matrix(N)<<" \\\\ \\hline\n";
         
         delete bf;
         
@@ -99,4 +131,9 @@ int main( int argv, char** argc)
         system("gnuplot gnuplot.txt");
         
     }
+    
+    outfile<<"\\end{tabular} \n";
+    outfile<<"\\end{table}\n";
+    outfile.close();
+
 }
