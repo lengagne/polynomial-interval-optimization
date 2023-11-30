@@ -32,10 +32,10 @@ void AbstractBasisFunction::get_time_max( const Eigen::Matrix<double,Eigen::Dyna
 {
     uint s = mat.rows();
     tmax.resize(s);      
-    double inf = Inf(inter_);
-    double diam = Diam (inter_);
+    double inf = -1.0; //Inf(inter_);
+    double diam = 2.0; //Diam (inter_);
     
-    int nb = 11;
+    int nb = 101;
     double delta = diam / (nb-1);
 //     std::cout<<"mat = "<< mat <<std::endl;
 //     std::cout<<"s = "<< s <<std::endl;
@@ -47,11 +47,11 @@ void AbstractBasisFunction::get_time_max( const Eigen::Matrix<double,Eigen::Dyna
         for (int j=0;j<nb;j++)
         {
             double t = inf + j *delta;
-            
+//             std::cout<<"t = "<< t << std::endl;
             double val = 0;
             for (int k=0;k<s;k++)
-                val += mat (k,i) * pow (t,k);
-            
+                val +=  mat(k,i) * pow (t,k);
+//             std::cout<<"val = "<< val << std::endl;
             if (val > max)
             {
                 max = val;
@@ -59,6 +59,7 @@ void AbstractBasisFunction::get_time_max( const Eigen::Matrix<double,Eigen::Dyna
             }          
         }
         tmax(i) = maxt;
+//         std::cout<<"tmax("<<i<<") = "<< tmax(i) << "  ("<< max <<")"<<std::endl;
     }
 //     std::cout<<"tmax = "<< tmax.transpose() <<std::endl;
     
@@ -66,22 +67,41 @@ void AbstractBasisFunction::get_time_max( const Eigen::Matrix<double,Eigen::Dyna
 
 Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> AbstractBasisFunction::re_order(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& M)
 {
-    if (re_order_)
-    {
-        uint nb = M.rows();
-        Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> mat(nb,nb);
-        for (int k=0;k<(nb+1)/2;k++)
-        {
-            for(int i=0;i<nb;i++)
-                mat(i,k*2) = M(i,k);
-        }
-        for (int k=0;k<(nb)/2;k++)
-        {
-            for(int i=0;i<nb;i++)           
-                mat(i,k*2+1) = M(i,nb-1-k);
-        }
-        return mat;
-    }else
-        return M;
+//     std::cout<<"Re order matrice"<<std::endl;
+    Eigen::Matrix<double,Eigen::Dynamic,1> time_max;
+    get_time_max(M,time_max);
+
+    uint nb = M.rows();
+    // on rempli le vector avec les min et les maxt
+    std::vector<int> iter_order(nb);
+    std::vector<bool> done(nb);
+    for (int i=0;i<nb;i++)
+        done[i] = false;
     
+    for (int i=0;i<nb;i++)
+    {
+        double m = 2;
+        for (int j=0;j<nb;j++) if (!done[j])
+        {
+            if (time_max(j) < m)
+            {
+                m = time_max(j);
+                iter_order[i] = j;
+            }
+        }
+        done[iter_order[i]] = true;
+//         std::cout<<"iter_order("<<i<<") = "<< iter_order[i] <<std::endl;
+    }
+    
+    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> mat(nb,nb);
+    for (int i=0;i<nb;i++)
+    {
+        uint index = iter_order[i];
+        for (int j=0;j<nb;j++)
+        {
+            mat(j,i) = M(j,index);
+        }
+    }
+    
+    return mat;
 }

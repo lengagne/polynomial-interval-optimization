@@ -41,6 +41,8 @@ int main( int argv, char** argc)
         }
     }
     
+    bool plot_B_invV = false;       // true consider B, false B^-1
+    
     Interval inter= Hull(-1,1.);
 //    std::cout<<"inter = "<< inter <<std::endl;
     uint min_order = 1;
@@ -63,7 +65,14 @@ int main( int argv, char** argc)
     outfile<<"\\begin{table}[htb]\n";
     outfile<<"\\tiny \n";
     outfile<<"\\begin{tabular}{|c|c|c|c|}\n \\hline \n";
-    outfile<<"type & order&  $\\mathbf B^{-1} $ \\\\  \\hline \\hline\n";
+    
+    if (plot_B_invV)
+    {
+        outfile<<"type & order&  $\\mathbf B $ \\\\  \\hline \\hline\n";   
+    }else
+    {
+        outfile<<"type & order&  $\\mathbf B^{-1} $ \\\\  \\hline \\hline\n";   
+    }
     
     for (int j=0;j<vbf.size();j++) for (int i=0;i<vorder.size();i++) 
     {    
@@ -80,7 +89,13 @@ int main( int argv, char** argc)
         std::cout<<"Matrice = "<< M <<std::endl;
         std::cout<<"Inverse = "<< N <<std::endl;
         
-        outfile<<basis_type <<" & " << order <<" &  "<< latex_matrix(N)<<" \\\\ \\hline\n";
+        if (plot_B_invV)
+        {
+            outfile<<basis_type <<" & " << order <<" &  "<< latex_matrix(M)<<" \\\\ \\hline\n";
+        }else
+        {
+            outfile<<basis_type <<" & " << order <<" &  "<< latex_matrix(N)<<" \\\\ \\hline\n";
+        }
         
         delete bf;
         

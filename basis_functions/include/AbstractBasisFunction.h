@@ -48,7 +48,6 @@ class AbstractBasisFunction
         std::map< uint, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> > mat_order_;
         std::map< uint, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> > mat_inverse_order_;
         
-        bool re_order_ = false;
         uint order_;
         Interval inter_;
 };

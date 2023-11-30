@@ -2,7 +2,7 @@
 
 #include "MinNoFunction.h"
        
-MinNoFunction::MinNoFunction(bool re_order): OptimizedBasisFunction("MinNo",re_order)
+MinNoFunction::MinNoFunction(): OptimizedBasisFunction("MinNo")
 {
     for (uint i=2;i<=8;i++)
     {
@@ -342,8 +342,8 @@ MinNoFunction::MinNoFunction(bool re_order): OptimizedBasisFunction("MinNo",re_o
             default:
                 break;
         }
-        mat_order_[i]= M;
-        mat_inverse_order_[i] = M.inverse();
+        mat_order_[i]= re_order(M);
+        mat_inverse_order_[i] = mat_order_[i].inverse();
     }    
 }
        

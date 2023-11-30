@@ -10,7 +10,7 @@ class MinVariance: public OptimizedBasisFunction
 {
     public:
        
-        MinVariance(bool re_order=false);
+        MinVariance();
         
         ~MinVariance()
         {

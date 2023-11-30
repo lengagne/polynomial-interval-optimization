@@ -6,6 +6,7 @@ void BernsteinFunction::compute_basis_coeff_matrix( const Interval& inter,
                                                 Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat,
                                                 Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat_inverse)
 {
+    std::cout<<"BernsteinFunction order = "<< order <<std::endl;
     unsigned int nb_splines =order+1;
     unsigned int size_nodal_vector = nb_splines+order + 1;
     Eigen::Matrix<double,Eigen::Dynamic,1> nodal(size_nodal_vector);
@@ -58,6 +59,7 @@ void BernsteinFunction::compute_basis_coeff_matrix( const Interval& inter,
     }
     
     mat = re_order(mat);
-
     mat_inverse =mat.inverse();
+    
+    std::cout<<"BernsteinFunction fin order = "<< order <<std::endl;
 }

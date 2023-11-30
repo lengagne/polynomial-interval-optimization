@@ -8,9 +8,9 @@ class RecursiveBSplinesFunction2: public AbstractBasisFunction
 {
     public:
        
-        RecursiveBSplinesFunction2(bool re_order=false): AbstractBasisFunction()
+        RecursiveBSplinesFunction2(): AbstractBasisFunction()
         {
-            re_order_ = re_order;
+
         }         
         
         ~RecursiveBSplinesFunction2()

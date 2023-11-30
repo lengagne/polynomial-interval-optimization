@@ -8,9 +8,9 @@ class ApproxMinvoFunction: public AbstractBasisFunction
 {
     public:
        
-        ApproxMinvoFunction(bool re_order=false): AbstractBasisFunction()
+        ApproxMinvoFunction(): AbstractBasisFunction()
         {
-            re_order_ = re_order;
+
         }               
         
         virtual void compute_basis_coeff_matrix(const Interval& inter,

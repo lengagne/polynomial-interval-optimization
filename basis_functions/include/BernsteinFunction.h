@@ -8,9 +8,9 @@ class BernsteinFunction: public AbstractBasisFunction
 {
     public:
        
-        BernsteinFunction(bool re_order=false): AbstractBasisFunction()
+        BernsteinFunction(): AbstractBasisFunction()
         {
-            re_order_ = re_order;
+
         }           
         
         ~BernsteinFunction()

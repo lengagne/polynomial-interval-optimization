@@ -30,7 +30,7 @@ data_format3D::data_format3D( const std::string& filename)
             add_data(line,"comput_time", "computation time (wo prep):");
             add_data(line,"time_per_iter", "Time per iteration :");
             add_data(line,"total_time", "total time :");
-            add_data(line,"(D-H:M:S)", "total time :");
+            add_data(line,"(D-H:M:S.ms)", "total time :");
             add_data(line,"bissection", "Bissection :");
             add_data(line,"criteria", "crit = ");
             add_data(line,"bissection_mode", "bissection_mode =");

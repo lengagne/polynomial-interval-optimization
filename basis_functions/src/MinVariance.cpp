@@ -2,7 +2,7 @@
 
 #include "MinVariance.h"
        
-MinVariance::MinVariance(bool re_order): OptimizedBasisFunction("MinVariance",re_order)
+MinVariance::MinVariance(): OptimizedBasisFunction("MinVariance")
 {
     for (uint i=2;i<=6;i++)
     {
@@ -194,8 +194,8 @@ MinVariance::MinVariance(bool re_order): OptimizedBasisFunction("MinVariance",re
             default:
                 break;
         }
-        mat_order_[i]= M;
-        mat_inverse_order_[i] = M.inverse();
+        mat_order_[i]= re_order(M);
+        mat_inverse_order_[i] = mat_order_[i].inverse();
     }    
 }
        

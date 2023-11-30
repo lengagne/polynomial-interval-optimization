@@ -8,9 +8,9 @@ class BSplinesFunction: public AbstractBasisFunction
 {
     public:
        
-        BSplinesFunction(bool re_order=false): AbstractBasisFunction()
+        BSplinesFunction(): AbstractBasisFunction()
         {
-            re_order_ = re_order;
+
         }         
         
         ~BSplinesFunction()

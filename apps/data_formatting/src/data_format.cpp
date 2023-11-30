@@ -32,7 +32,7 @@ data_format::data_format( const std::string& filename)
             add_data(line,"comput_time", "computation time (wo prep):");
             add_data(line,"time_per_iter", "Time per iteration :");
             add_data(line,"total_time", "total time :");
-            add_data(line,"(D-H:M:S)", "total time :");
+            add_data(line,"(D-H:M:S.ms)", "total time :");
             add_data(line,"bissection", "Bissection : ");
             add_data(line,"criteria", "crit = ");            
             
@@ -93,7 +93,7 @@ void data_format::add_data( const std::string& line, const std::string& name, co
     
     sub.erase(std::remove(sub.begin(), sub.end(), ' '), sub.end());
     
-    if (name == "(D-H:M:S)")
+    if (name == "(D-H:M:S.ms)")
     {
         infos[name] = time_format( sub);
     }else

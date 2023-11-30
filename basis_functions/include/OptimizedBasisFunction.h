@@ -13,7 +13,6 @@ class OptimizedBasisFunction: public AbstractBasisFunction
        
         OptimizedBasisFunction(const std::string criteria_type="Undefined",bool re_order=false): AbstractBasisFunction()
         {
-            re_order_ = re_order;
             criteria_type_ = criteria_type;
         }                    
         

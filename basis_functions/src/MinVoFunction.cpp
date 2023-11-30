@@ -2,7 +2,7 @@
 
 #include "MinVoFunction.h"
        
-MinVoFunction::MinVoFunction(bool re_order): OptimizedBasisFunction("MinVo",re_order)
+MinVoFunction::MinVoFunction(): OptimizedBasisFunction("MinVo")
 {
     for (uint i=2;i<=6;i++)
     {
@@ -168,8 +168,8 @@ MinVoFunction::MinVoFunction(bool re_order): OptimizedBasisFunction("MinVo",re_o
             default:
                 break;
         }
-        mat_order_[i]= M;
-        mat_inverse_order_[i] = M.inverse();
+        mat_order_[i]= re_order(M);
+        mat_inverse_order_[i] = mat_order_[i].inverse();
     }    
 }
        

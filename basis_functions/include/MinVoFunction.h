@@ -10,7 +10,7 @@ class MinVoFunction: public OptimizedBasisFunction
 {
     public:
        
-        MinVoFunction(bool re_order=false);
+        MinVoFunction();
         
         ~MinVoFunction()
         {

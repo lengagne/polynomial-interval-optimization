@@ -64,7 +64,22 @@ int main( int argc, char** argv)
             for (int i=0;i<6;i++)
                 std::cout<<"TORQUE("<<i<<") = "<< out_inter[3+i]<<"  D = "<< Diam(out_inter[3+i])<<std::endl;
             std::cout<<"CRITERE = "<< out_inter[9]<<"  D = "<< Diam(out_inter[9])<<std::endl;            
+            
+            std::cout<<"Latex interval";
+            for (int i=0;i<10;i++)
+            {
+                std::cout<<" & "<< out_inter[i];
+            }
+            std::cout<<std::endl;
+
+            std::cout<<"Latex Diam";
+            for (int i=0;i<10;i++)
+            {
+                std::cout<<" & "<< Diam(out_inter[i]);
+            }
             std::cout<<std::endl<<std::endl;
+            
+            
         }
         delete solver;
     }
