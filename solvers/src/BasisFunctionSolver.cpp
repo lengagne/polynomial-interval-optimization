@@ -248,7 +248,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
             {
                 if(!current_value_.ctr_ok[i] )
                 {
-//                     std::cout<<"dealing with ctr "<< i<< std::endl;
+                    std::cout<<"dealing with ctr "<< i<< std::endl;
                     compute_intermediate_for(i);
                     switch(infos[i]->update_from_inputs(current_value_, bounds_[i],i))    
                     {
