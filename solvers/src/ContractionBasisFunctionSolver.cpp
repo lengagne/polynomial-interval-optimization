@@ -47,24 +47,6 @@ void ContractionBasisFunctionSolver::init(double eps)
         info_crit_ = new IntervalEstimator(bf_);
     }
 
-//     unsigned int cpt =  nb_intermediate_+nb_fun_ +1;
-//     for (int i=0;i<nb_fun_;i++)
-//     {
-//         unsigned int nb = inter_intermediate_to_contract_[i].size();
-//         std::cout<<" nb_intermediate_to_contract = "<< nb <<std::endl;
-// //         intermediate_Interval_value_[i].resize(nb);
-//         for (int j =0;j<nb;j++)
-//         {
-//             Intermediate_to_compute[id_intermediate_to_contract_[i][j]].init(Hull(-1,1),"intermediate_to_compute"+std::to_string(i)+"_"+std::to_string(j));
-//             infos_intermediate_to_contract_[i].push_back(new IntervalEstimatorContractor(bf_));
-//             Intermediate_to_compute[id_intermediate_to_contract_[i][j]].set_as_output();
-//             
-//             infos_intermediate_to_contract_[i][j] = new IntervalEstimatorContractor(bf_);
-//             infos_intermediate_to_contract_[i][j]->prepare_coeffs(Intermediate_to_compute[id_intermediate_to_contract_[i][j]]/*,
-//                                                                  intermediate_Interval_value_[i][j]*/, cpt++);
-//         }
-//     }   
-    
     BasisFunctionSolver::init_end();
     
     std::cout<<"fin preparation "<<std::endl;
@@ -73,6 +55,12 @@ void ContractionBasisFunctionSolver::init(double eps)
 void ContractionBasisFunctionSolver::set_next()
 {
     BasisFunctionSolver::set_next();
+    for (int i=0;i<nb_intermediate_;i++)
+    {
+        Interval v = infos_intermediate_update[i]->update_from_inputs();
+        Intermediate_to_update[i].update( v);
+    }
+    
     if(cpt_iter_ > 1)
         for (int i=0;i<nb_fun_;i++)
             output_Interval_value[i].update(current_value_.out[i]);    
