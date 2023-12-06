@@ -216,6 +216,7 @@ Interval IntervalEstimator::update_from_inputs( )
     }
 
     Interval error = kron_solver_errors_->line_product(sparse_coeff_errors_);
+//     std::cout<<"out = "<< out <<" error = "<< error <<std::endl;
     return out + error;
 }
 
@@ -233,11 +234,11 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
     bool inf_inside,sup_inside, both_side;
     
     Interval Iv = LazyUpdateOutput(num_out_,cpt++);
-    std::cout<<"value(0) = "<< Iv <<std::endl;
+//     std::cout<<"value(0) = "<< Iv <<std::endl;
     for (int i=1;i<nb_control_point_inputs_;i++)
     {
         Interval value = LazyUpdateOutput(num_out_,cpt++);
-        std::cout<<"value("<<i<<") = "<< value <<std::endl;
+//         std::cout<<"value("<<i<<") = "<< value <<std::endl;
         if (i==0)
             Iv = value;
         else
@@ -272,9 +273,9 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
         res.error[num_out_] = error;
     }    
 
-    std::cout<<"error = "<< res.error[num_out_] <<std::endl;
+//     std::cout<<"error = "<< res.error[num_out_] <<std::endl;
     out = Iv + res.error[num_out_];
-    std::cout<<"out final = "<< out <<std::endl;
+//     std::cout<<"out final = "<< out <<std::endl;
     if (Intersection(out,bound))
     {
         if (inf_inside)

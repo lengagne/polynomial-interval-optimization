@@ -143,7 +143,6 @@ void BasisFunctionSolver::init_end()
     double actual_time = get_cpu_time();
     preparation_time_ = actual_time - ts;
     std::cout<<"preparation time : "<< preparation_time_ <<" seconds."<<std::endl;
-    
     std::cout<<"Compilation time : "<< actual_time -before_compil  <<" seconds."<<std::endl;
     ts  = get_cpu_time();
 
@@ -248,7 +247,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
             {
                 if(!current_value_.ctr_ok[i] )
                 {
-                    std::cout<<"dealing with ctr "<< i<< std::endl;
+//                     std::cout<<"dealing with ctr "<< i<< std::endl;
                     compute_intermediate_for(i);
                     switch(infos[i]->update_from_inputs(current_value_, bounds_[i],i))    
                     {
