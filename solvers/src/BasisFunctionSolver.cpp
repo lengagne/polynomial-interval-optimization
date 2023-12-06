@@ -6,14 +6,14 @@
 
 void BasisFunctionSolver::compute_intermediate_for(uint num_function)
 {
-    std::cout<<"compute_intermediate_for "<< num_function <<std::endl;
+//     std::cout<<"compute_intermediate_for "<< num_function <<std::endl;
     for(auto const& id : intermediate_needed_[num_function])
     {
         if (!intermediate_updated_[id])
         {
-            std::cout<<"compute intermediaire "<< id <<std::endl;
+//             std::cout<<"compute intermediaire "<< id <<std::endl;
             Interval v = infos_intermediate_update[id]->update_from_inputs();
-            std::cout<<"intermediate("<<id<<") = "<< v <<std::endl;
+//             std::cout<<"intermediate("<<id<<") = "<< v <<std::endl;
             Intermediate_to_update[id].update( v);
             intermediate_updated_[id] = true;
         }
@@ -24,21 +24,21 @@ void BasisFunctionSolver::get_all_intermediate_dependancies(const std::list<uint
                                                             std::list<uint> & full_list)
 {
     
-    for (auto const& id : full_list) 
-        std::cout<<"full_list : "<< id <<std::endl;
+//     for (auto const& id : full_list) 
+//         std::cout<<"full_list : "<< id <<std::endl;
     
     std::list<uint> tmp;    
     for (auto const& id : id_to_add) 
     {
-        std::cout<<"on regarde "<< id <<std::endl;
+//         std::cout<<"on regarde "<< id <<std::endl;
         if ( std::find ( full_list.begin(), full_list.end(), id) == full_list.end()) // if not id not in the list
         {
-            std::cout<<"on ajoute "<< id <<std::endl;
+//             std::cout<<"on ajoute "<< id <<std::endl;
             full_list.push_back(id);
             tmp = infos_intermediate_update[id]->get_dep_intermediate();
             
-            for (auto const& jj : tmp) 
-                std::cout<<"tmp : "<< jj <<std::endl;
+//             for (auto const& jj : tmp) 
+//                 std::cout<<"tmp : "<< jj <<std::endl;
             
             
             get_all_intermediate_dependancies(tmp,full_list);
@@ -93,7 +93,7 @@ void BasisFunctionSolver::init(double eps)
     std::cout<<"nb_intermediate_ = "<< nb_intermediate_ <<std::endl;
     for (int i=0;i<nb_intermediate_;i++)
     {
-        std::cout<<"prepare_coeffs intermediaire de " <<i <<" / "<< nb_intermediate_ <<std::endl;
+//         std::cout<<"prepare_coeffs intermediaire de " <<i <<" / "<< nb_intermediate_ <<std::endl;
         infos_intermediate_update[i] = new IntervalEstimator( bf_);        
         infos_intermediate_update[i]->prepare_coeffs(Intermediate_to_compute[i], i);
     }
@@ -107,27 +107,27 @@ void BasisFunctionSolver::init_end()
 {
     for (int i=0;i<nb_fun_;i++)
     {
-        std::cout<<"prepare_coeffs fonction " <<i <<" / "<< nb_fun_ <<std::endl;
+//         std::cout<<"prepare_coeffs fonction " <<i <<" / "<< nb_fun_ <<std::endl;
         infos[i]->prepare_coeffs(output_Interval[i], nb_intermediate_+i);
     }   
     if(solve_optim_)
     {
-        std::cout<<"prepare_coeffs criteria " <<nb_fun_ <<" / "<< nb_fun_ <<std::endl;
+//         std::cout<<"prepare_coeffs criteria " <<nb_fun_ <<" / "<< nb_fun_ <<std::endl;
         info_crit_->prepare_coeffs(output_Interval[nb_fun_], nb_intermediate_+ nb_fun_);
     }
     
     intermediate_needed_.resize(nb_fun_ + solve_optim_);
     for (int i=0;i<nb_fun_;i++)
     {
-        std::cout<<"On construit les dépendances pour la fonction "<< i <<std::endl;
+//         std::cout<<"On construit les dépendances pour la fonction "<< i <<std::endl;
         std::list<uint> tmp = infos[i]->get_dep_intermediate();
         intermediate_needed_[i].clear();
         get_all_intermediate_dependancies(tmp, intermediate_needed_[i]);
         
-        for (auto& d : intermediate_needed_[i])
-        {
-            std::cout<<"function "<< i<<" depend de "<< d <<std::endl;
-        }
+//         for (auto& d : intermediate_needed_[i])
+//         {
+//             std::cout<<"function "<< i<<" depend de "<< d <<std::endl;
+//         }
     }
     
     if(solve_optim_)
@@ -224,7 +224,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
     std::vector<double> bissect_weight(nb_var_);
     uint max_iter = 1e3;
     do{
-        std::cout<<"*****************************************"<<std::endl;
+//         std::cout<<"*****************************************"<<std::endl;
         
         cpt_iter_++;
         test = true;
@@ -248,7 +248,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
             {
                 if(!current_value_.ctr_ok[i] )
                 {
-                    std::cout<<"dealing with ctr "<< i<< std::endl;
+//                     std::cout<<"dealing with ctr "<< i<< std::endl;
                     compute_intermediate_for(i);
                     switch(infos[i]->update_from_inputs(current_value_, bounds_[i],i))    
                     {

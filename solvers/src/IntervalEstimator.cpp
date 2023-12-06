@@ -50,18 +50,18 @@ unsigned int IntervalEstimator::get_index(mem* m) const
 
 unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigned int num_out)
 {      
-    std::cout<<"prepare_coeffs ("<<num_out<<") out = "<< out <<std::endl;
+//     std::cout<<"prepare_coeffs ("<<num_out<<") out = "<< out <<std::endl;
     num_out_ = num_out;
     out.get_dependancies_with_order(dep_,order_);
     
     depend_intermediate_.clear();
     for (int i=0;i<dep_.size();i++)
     {        
-        std::cout<<"dep : "<< *dep_[i]<<std::endl;
+//         std::cout<<"dep : "<< *dep_[i]<<std::endl;
         if (dep_[i]->is_it_intermediate())
         {
             depend_intermediate_.push_back(dep_[i]->get_id_intermediate());
-            std::cout<<"depend on intermediate : "<< dep_[i]->get_id_intermediate() <<std::endl;
+//             std::cout<<"depend on intermediate : "<< dep_[i]->get_id_intermediate() <<std::endl;
         }
     }
     depend_intermediate_.sort();
@@ -233,11 +233,11 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
     bool inf_inside,sup_inside, both_side;
     
     Interval Iv = LazyUpdateOutput(num_out_,cpt++);
-    std::cout<<"value(0) = "<< Iv <<std::endl;
+//     std::cout<<"value(0) = "<< Iv <<std::endl;
     for (int i=1;i<nb_control_point_inputs_;i++)
     {
         Interval value = LazyUpdateOutput(num_out_,cpt++);
-        std::cout<<"value("<<i<<") = "<< value <<std::endl;
+//         std::cout<<"value("<<i<<") = "<< value <<std::endl;
         if (i==0)
             Iv = value;
         else
@@ -272,9 +272,9 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
         res.error[num_out_] = error;
     }    
 
-    std::cout<<"error = "<< res.error[num_out_] <<std::endl;
+//     std::cout<<"error = "<< res.error[num_out_] <<std::endl;
     out = Iv + res.error[num_out_];
-    std::cout<<"out final = "<< out <<std::endl;
+//     std::cout<<"out final = "<< out <<std::endl;
     if (Intersection(out,bound))
     {
         if (inf_inside)

@@ -44,7 +44,7 @@ void BissectionBasisFunctionSolver::evaluate(   const std::vector<Interval> &in,
     }
     if(solve_optim_)
     {
-        std::cout<<"calcul de la deniere "<<std::endl;
+//         std::cout<<"calcul de la deniere "<<std::endl;
         out[nb_fun_] = info_crit_->update_from_inputs();
     }else
     {
