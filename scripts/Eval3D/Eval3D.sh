@@ -7,7 +7,7 @@
 #SBATCH --ntasks-per-core=1
 #SBATCH --exclusive
 # #SBATCH --constraint=ivy 
-#SBATCH --partition=fast
+# #SBATCH --partition=normal
 
 ../build/apps/Robot3D/Eval3D $1 
 exit 0

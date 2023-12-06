@@ -41,7 +41,7 @@ int main( int argv, char** argc)
         }
     }
     
-    bool plot_B_invV = false;       // true consider B, false B^-1
+    bool plot_B_invV = true;       // true consider B, false B^-1
     
     Interval inter= Hull(-1,1.);
 //    std::cout<<"inter = "<< inter <<std::endl;

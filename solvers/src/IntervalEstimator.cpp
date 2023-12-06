@@ -80,7 +80,7 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
         Interval val = dep_[i]->value_;
         bf_->get_basis_coeff_matrix(val, order_[i],local_M_[nb_in_-i-1],local_M_inverse_[nb_in_-i-1]);
         bf_->get_time_max( local_M_[nb_in_-i-1], pmax[nb_in_-i-1]);
-        std::cout<<"order_["<<i<<"] = "<< order_[i] <<std::endl;
+//         std::cout<<"order_["<<i<<"] = "<< order_[i] <<std::endl;
     }
     
     for (int i=0;i<nb_in_;i++)  if(! dep_[nb_in_-i-1]->rely_on_error())

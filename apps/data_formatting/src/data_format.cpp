@@ -33,7 +33,7 @@ data_format::data_format( const std::string& filename)
             add_data(line,"time_per_iter", "Time per iteration :");
             add_data(line,"total_time", "total time :");
             add_data(line,"(D-H:M:S.ms)", "total time :");
-            add_data(line,"bissection", "Bissection : ");
+            add_data(line,"type", "Bissection : ");
             add_data(line,"criteria", "crit = ");            
             
             if (loof_for(line,"DUE TO TIME LIMIT"))
@@ -53,7 +53,17 @@ data_format::data_format( const std::string& filename)
                 infos["comput_time"] = "CANCELLED";
                 infos["time_per_iter"] = "CANCELLED";
                 infos["total_time"] = "CANCELLED";                   
-            }                   
+            }        
+            if (loof_for(line,"Cannot load the library, stopping program"))
+            {
+                time_out_ = true;                
+                infos["prep_time"] = "CANNOT_LOAD_LIBRARY";
+                infos["nb_iter"] = "CANNOT_LOAD_LIBRARY";
+                infos["comput_time"] = "CANNOT_LOAD_LIBRARY";
+                infos["time_per_iter"] = "CANNOT_LOAD_LIBRARY";
+                infos["total_time"] = "CANNOT_LOAD_LIBRARY";      
+                std::cout<<"CANNOT_LOAD_LIBRARY: ";                
+            }            
         }        
     }else
     {
@@ -64,11 +74,6 @@ data_format::data_format( const std::string& filename)
     {
         std::cout<<"rm -frv "<< filename<<std::endl;
         std::cout<<"sbatch job_long.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["bissection"]) <<" "<< get_solver(infos["solver"])<<std::endl;
-        infos["prep_time"] = "TIMEOUT";
-        infos["nb_iter"] = "TIMEOUT";
-        infos["comput_time"] = "TIMEOUT";
-        infos["time_per_iter"] = "TIMEOUT";
-        infos["total_time"] = "TIMEOUT";        
         infos["criteria"] = filename;
     }
 }
@@ -262,26 +267,34 @@ void create_latex( std::ofstream& outfile,
 //     std::cout<<"create table"<<std::endl;
 //     std::cout<<"On a "<< columns.size() <<" colonnes "<<std::endl;
     uint cs = columns.size();
-    outfile <<"\\begin{longtable}{|";
+//     outfile <<"\\begin{longtable}{|";
+    
+    
+    outfile <<"\\begin{table}\n \\tiny \n \\begin{tabular}{|";
+    
     for (int i=0;i<cs;i++)  outfile<< "c|";
     outfile <<"}\n";
     outfile<<"\\hline\n"; 
     
-    for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
-    outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\endfirsthead \\hline \n";    
+//     for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
+//     outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\endfirsthead \\hline \n";    
 
-    for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
-    outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\endhead \\hline \n";        
+//     for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
+//     outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\endhead \\hline \n";        
+    
+        for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
+    outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\hline \n";        
     
 //     std::cout<<"datas.size() = "<< datas.size()<<std::endl;
     create_latex_subpart( outfile, 0, columns, datas);
-    
+    outfile <<"\\end{tabular}\n";
     if (titre != "")
     {
         outfile<<"\n \\caption\{"<< titre<<"\}"<<std::endl;
     }
-    
-    outfile <<"\\end{longtable}\n\n";
+    outfile <<"\\end{table}\n\n";
+//     outfile <<"\\normalsize \n";
+//     outfile <<"\\end{longtable}\n\n";
 //     std::cout<<"end of table"<<std::endl;
     
 }
@@ -289,35 +302,57 @@ void create_latex( std::ofstream& outfile,
 void create_latex( const std::vector< data_format*> datas,
                    const std::string filename,
                    std::vector<std::string> & columns,
-                   std::vector<std::string> & common)
+                   std::vector<std::string> & common,
+                   std::vector<std::string> & remove,
+                   const std::string main_title
+                 )
 {
     std::cout<<"CREATE LATEX With "<< filename <<std::endl;
     std::vector< std::vector< std::string > > differences;
     for (auto& d : datas)
     {
-        std::vector<std::string> local_diff;
-        for (int i=0;i<common.size();i++)
+        bool add = true;
+        // on vérifie les remove
+        for (int i=0;i<remove.size();i++)
         {
-            local_diff.push_back( d->infos[common[i]]);
+            for (auto& info : d->infos)
+            {
+//                 std::cout<<"info : "<< info.first<<" -- " << info.second <<std::endl;
+                if (info.first.find(remove[i]) != std::string::npos ||  info.second.find(remove[i]) != std::string::npos)
+                {
+//                     std::cout<<"on ignore "<< info.first<<" -- " << info.second <<" due to "<< remove[i] <<std::endl;
+                    add = false;
+                    break;
+                }
+            }
         }
         
-        bool add = true;
-        for (int i=0;i<differences.size();i++)
+        if (add)
         {
-            bool mem = true;
-            for (int j=0;j<common.size();j++)
+            std::vector<std::string> local_diff;
+            for (int i=0;i<common.size();i++)
             {
-                if ( local_diff[j] != differences[i][j])
-                    mem = false;
+                local_diff.push_back( d->infos[common[i]]);
             }
             
-            if (mem)
+            
+            for (int i=0;i<differences.size();i++)
             {
-                add = false;
+                bool mem = true;
+                for (int j=0;j<common.size();j++)
+                {
+                    if ( local_diff[j] != differences[i][j])
+                        mem = false;
+                }
+                
+                if (mem)
+                {
+                    add = false;
+                }
             }
+            if (add)
+                differences.push_back(local_diff);
         }
-        if (add)
-            differences.push_back(local_diff);
     }
     
 //     std::cout<<"on a va générer "<< differences.size()<<" tableaux pour "<<std::endl;
@@ -350,9 +385,13 @@ void create_latex( const std::vector< data_format*> datas,
                 local_datas.push_back(d);
         }
         
-        std::string caption ="";
+        std::string caption = main_title;
         for (int j=0;j<common.size();j++)
-            caption += common[j] + ":" + differences[i][j]+ "  ";
+        {
+            caption += common[j] + ": " + differences[i][j];
+            if (j != common.size()-1)
+                caption += ", ";
+        }
         
         create_latex( outfile, local_datas, columns, caption);
     }
@@ -523,11 +562,21 @@ double toDouble(std::string s){
 
 std::string replace (const std::string &in)
 {
-    std::string out =  std::regex_replace(in, std::regex("_"), "\\textunderscore ");
-    out =  std::regex_replace(out, std::regex("BissectionBasis"), "Bis");
-    out =  std::regex_replace(out, std::regex("ContractionBasis"), "Cont");
+    
+//     out =  std::regex_replace(out, std::regex("Bissection"), "Bis_");
+//     out =  std::regex_replace(out, std::regex("BissectionBasis"), "Bis");
+//     out =  std::regex_replace(out, std::regex("ContractionBasis"), "Cont");
+//     out =  std::regex_replace(out, std::regex("Contraction"), "Cont_");    
+    
+    std::string out =  std::regex_replace(in, std::regex("BissectionBasis_"), "");
+    out =  std::regex_replace(out, std::regex("Bissection"), "");
+    out =  std::regex_replace(out, std::regex("ContractionBasis_"), "");
+    out =  std::regex_replace(out, std::regex("Contraction"), "");
+    
+    out =  std::regex_replace(out, std::regex("RecursiveBSplines"), "Recursive");
     
     out =  std::regex_replace(out, std::regex(","), ".");
+    out =  std::regex_replace(out, std::regex("_"), "\\textunderscore ");
     
     return out;
 }

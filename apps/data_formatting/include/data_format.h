@@ -54,7 +54,10 @@ void create_csv(const std::vector< data_format*> datas,
 void create_latex( const std::vector< data_format*> datas,
                    const std::string filename,
                    std::vector<std::string> & columns,
-                   std::vector<std::string> & common);
+                   std::vector<std::string> & common,
+                   std::vector<std::string> & remove,
+                   const std::string main_title="empty"
+                 );
 
 void create_latex( const std::vector< data_format*> datas,
                    const std::string filename,

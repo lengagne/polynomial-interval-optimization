@@ -61,9 +61,16 @@ int main(int argc, char *argv[])
     order_latex.push_back("criteria");
     
     std::vector<std::string> common;
-    common.push_back("bissection");
+    common.push_back("type");
     common.push_back("problem");
     
-    create_latex( datas_, "recap", order_latex,common);
+    std::vector<std::string> remove;
+    remove.push_back("Contraction");
+    create_latex( datas_, "recap_bis_2D", order_latex,common,remove,"Bissection of problem 2D with ");
+    
+    remove.clear();
+    remove.push_back("Bissection");
+    create_latex( datas_, "recap_cont_2D", order_latex,common,remove,"Contraction of problem 2D with ");
+    
     
 }
