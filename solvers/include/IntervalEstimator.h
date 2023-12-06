@@ -34,6 +34,11 @@ class IntervalEstimator{
         virtual check_constraint update_from_inputs( Result& res, 
                                                      Interval& bound,
                                                      uint index_ctr);
+        
+        virtual std::list<unsigned int> get_dep_intermediate()const
+        {
+            return depend_intermediate_;
+        }
 
     unsigned int nb_in_;
     std::vector<MogsInterval*> dep_;
@@ -48,6 +53,8 @@ class IntervalEstimator{
     std::vector< Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> > local_M_inverse_inputs_;
 
     std::vector<mem*> all_dependancies_;
+    
+    std::list< unsigned int> depend_intermediate_;
 
     Kronecker* kron_solver_inputs_;
     Kronecker* kron_solver_errors_;

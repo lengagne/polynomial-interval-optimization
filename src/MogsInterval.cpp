@@ -231,7 +231,9 @@ MogsInterval::MogsInterval(const double & d)
 
 MogsInterval::MogsInterval(const MogsInterval & in):value_(in.value_), name_(in.name_),
                                                     the_sons_(in.the_sons_),is_an_error_(in.is_an_error_),
-                                                    is_input_(in.is_input_),level_(in.level_),is_an_intermediare(in.is_an_intermediare),
+                                                    is_input_(in.is_input_),
+                                                    /*level_(in.level_),*/
+                                                    is_an_intermediare(in.is_an_intermediare),
                                                     id_intermediate_(in.id_intermediate_)
 {
     id_ = nb_mogs_intervals_++;
@@ -423,10 +425,10 @@ void MogsInterval::get_intermediate_to_update(std::vector<MogsInterval> & out)
     interval_chief_.get_intermediate_to_update(out);
 }
 
-unsigned int MogsInterval::get_max_level()
-{
-    return interval_chief_.get_max_level();
-}
+// unsigned int MogsInterval::get_max_level()
+// {
+//     return interval_chief_.get_max_level();
+// }
 
 unsigned int MogsInterval::get_maximal_order(const MogsInterval& var) const
 {
@@ -668,7 +670,7 @@ MogsInterval MogsInterval::operator= (const MogsInterval& in)
         the_sons_ = in.the_sons_;
         is_an_error_ = in.is_an_error_;
         is_input_ = in.is_input_;
-        level_ = in.level_;
+//         level_ = in.level_;
         is_an_intermediare = in.is_an_intermediare;
         id_intermediate_ = in.id_intermediate_;
         if(is_input_)

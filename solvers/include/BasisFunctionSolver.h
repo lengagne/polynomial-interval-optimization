@@ -13,6 +13,11 @@ class BasisFunctionSolver: public AbstractSolver
     public:
        
         virtual param_optim solve_optim(double eps=1e-3);
+        
+        void compute_intermediate_for(uint num_function);
+        
+        void get_all_intermediate_dependancies( const std::list<uint>& id_to_add,
+                                                 std::list<uint> & full_list);
 
     protected:
         
@@ -38,6 +43,9 @@ class BasisFunctionSolver: public AbstractSolver
 
         std::vector<IntervalEstimator*> infos;
         std::vector<IntervalEstimator*> infos_intermediate_update;
+        
+        std::vector<bool> intermediate_updated_;
+        std::vector< std::list<uint> > intermediate_needed_;
         
         IntervalEstimator* info_crit_;
 

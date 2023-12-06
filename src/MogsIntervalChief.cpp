@@ -42,80 +42,99 @@ MogsInterval MogsIntervalChief::add_intermediate(const MogsInterval& inter, unsi
     }
 //    std::cout<<"create a new one "<<std::endl;
 
-    if (inter.rely_on_error())
+//     if (inter.rely_on_error())
     {
 //        std::cout<<"create with seperated error" <<std::endl;
         MogsInterval* no_error = new MogsInterval();
         MogsInterval* error = new MogsInterval();
+              
         for(std::map<mem*,LazyVariable>::const_iterator itmem = inter.dependances_.begin(); itmem != inter.dependances_.end(); itmem++)
-            if( !(itmem->first)->contains_error())
+        {
+            if( (itmem->first)->contains_error())
             {
+                error->dependances_[itmem->first] = itmem->second;
+            }
+            else{
 //                std::cout<<"*(itmem->first) does not rely on error : "<< *(itmem->first)<<std::endl;
                 no_error->dependances_[itmem->first] = itmem->second;
-            }
-
-
-        for(std::map<mem*,LazyVariable>::const_iterator itmem = inter.dependances_.begin(); itmem != inter.dependances_.end(); itmem++)
-            if( (itmem->first)->contains_error())
-                error->dependances_[itmem->first] = itmem->second;
-
-////        std::cout<<"*no_error = "<< *no_error <<std::endl;
-//        std::cout<<"*error = "<< *error <<std::endl;
-
-        error->id_intermediate_ = intermediate_.size();
-        intermediate_.push_back(*error);
-
-//        MogsInterval* no_error_to_init = new MogsInterval();
-        MogsInterval* error_to_init = new MogsInterval();
-
-
-//        no_error_to_init->init(Interval(), "NOERRIntermediate_variable_"+std::to_string(intermediate_.size()));
-        error_to_init->is_error();
-        error_to_init->init(Interval(), "ERRIntermediate_variable_"+std::to_string(intermediate_.size()));
-        error_to_init->ref_->is_an_intermediare = true;
-        error_to_init->ref_->is_error();
-
-//        no_error_to_init->level_ = inter.level_ + 1;
-        error_to_init->level_ = inter.level_ + 1;
-        error_to_init->ref_->id_intermediate_ = intermediate_.size();
-//        intermediate_.push_back(inter);
-        intermediate_in_.push_back(*error_to_init);
-        if(no_error->guess_size() > M/2)
-        {
-            MogsInterval out = add_intermediate(*no_error)+   (*error_to_init);
-            return out;
+            }       
         }
-
-        // MogsInterval sum = (*no_error_to_init) + (*error_to_init);
-        MogsInterval sum = (*no_error) + (*error_to_init);
-        delete no_error;
-//        std::cout<<" sum "<<sum <<std::endl;
-//        memory_[&inter] = sum;
+        
+        no_error->id_intermediate_ = intermediate_.size();
+        no_error->init(Interval(), "IntermediateVariable_"+std::to_string(intermediate_.size()));
+        no_error->is_an_intermediare = true;
+//         no_error->ref_->is_an_intermediare = true;
+        uint id_inter = no_error->id_intermediate_;
+        intermediate_.push_back(*no_error);
+            
+        error->id_intermediate_ = intermediate_.size();
+        error->is_error();
+        error->is_an_intermediare = true;
+        error->init(Interval(), "ERRIntermediate_variable_"+std::to_string(id_inter));
+        intermediate_.push_back(*error);
+        
+        MogsInterval sum = (*no_error) + (*error);
         memory_[inter.id_] = sum;
-//        intermediate_in_.push_back(*no_error_to_init);
-//        std::cout<<"sum.guess_size() = "<< sum.guess_size()<<std::endl;
+        
+        std::cout<<"Add intermediate  inter = "<< inter <<std::endl;
+        std::cout<<"Add intermediate  no_error = "<< *no_error <<std::endl;
+        std::cout<<"Add intermediate  error = "<< *error <<std::endl;
+        
+        std::cout<<"Add intermediate  sum = "<< sum <<std::endl<<std::endl;
+        
         return sum;
+
+// //        MogsInterval* no_error_to_init = new MogsInterval();
+//         MogsInterval* error_to_init = new MogsInterval();
+// 
+// 
+// //        no_error_to_init->init(Interval(), "NOERRIntermediate_variable_"+std::to_string(intermediate_.size()));
+//         error_to_init->is_error();
+//         error_to_init->init(Interval(), "ERRIntermediate_variable_"+std::to_string(intermediate_.size()));
+//         error_to_init->ref_->is_an_intermediare = true;
+//         error_to_init->ref_->is_error();
+// 
+// //        no_error_to_init->level_ = inter.level_ + 1;
+//         error_to_init->level_ = inter.level_ + 1;
+//         error_to_init->ref_->id_intermediate_ = intermediate_.size();
+// //        intermediate_.push_back(inter);
+//         intermediate_in_.push_back(*error_to_init);
+//         if(no_error->guess_size() > M/2)
+//         {
+//             MogsInterval out = add_intermediate(*no_error)+   (*error_to_init);
+//             return out;
+//         }
+// 
+//         // MogsInterval sum = (*no_error_to_init) + (*error_to_init);
+//         MogsInterval sum = (*no_error) + (*error_to_init);
+//         delete no_error;
+// //        std::cout<<" sum "<<sum <<std::endl;
+// //        memory_[&inter] = sum;
+//         memory_[inter.id_] = sum;
+// //        intermediate_in_.push_back(*no_error_to_init);
+// //        std::cout<<"sum.guess_size() = "<< sum.guess_size()<<std::endl;
+//         return sum;
     }
 
-    // no error;
-//    std::cout<<"no error add "<< inter<<std::endl;
-
-
-    MogsInterval new_inter;
-    new_inter.is_an_intermediare = true;
-    new_inter.init(Interval(-2.), "Intermediate_variable_"+std::to_string(intermediate_.size()));
-    new_inter.ref_->is_an_intermediare = true;
-    new_inter.ref_->id_intermediate_ = intermediate_.size();
-    new_inter.level_ = inter.level_ + 1;
-    memory_[inter.id_] = new_inter;
-    intermediate_.push_back(inter);
-//    memory_[inter] = new_inter;
-//    std::cout<<"stoking "<< new_inter<<std::endl;
-    new_inter.is_an_intermediare = true;
-    new_inter.id_intermediate_ = intermediate_.size();
-    intermediate_in_.push_back(new_inter);
-//    std::cout<<"new_inter.guess_size() = "<< new_inter.guess_size()<<std::endl;
-    return new_inter;
+//     // no error;
+// //    std::cout<<"no error add "<< inter<<std::endl;
+// 
+// 
+//     MogsInterval new_inter;
+//     new_inter.is_an_intermediare = true;
+//     new_inter.init(Interval(-2.), "Intermediate_variable_"+std::to_string(intermediate_.size()));
+//     new_inter.ref_->is_an_intermediare = true;
+//     new_inter.ref_->id_intermediate_ = intermediate_.size();
+// //     new_inter.level_ = inter.level_ + 1;
+//     memory_[inter.id_] = new_inter;
+//     intermediate_.push_back(inter);
+// //    memory_[inter] = new_inter;
+// //    std::cout<<"stoking "<< new_inter<<std::endl;
+//     new_inter.is_an_intermediare = true;
+//     new_inter.id_intermediate_ = intermediate_.size();
+//     intermediate_in_.push_back(new_inter);
+// //    std::cout<<"new_inter.guess_size() = "<< new_inter.guess_size()<<std::endl;
+//     return new_inter;
 }
 
 
@@ -133,7 +152,7 @@ mem* MogsIntervalChief::check_input(mem* in)
         return &(*it);
     }
 }
-
+/*
 unsigned int MogsIntervalChief::get_max_level()
 {
     unsigned int v = 0;
@@ -141,7 +160,7 @@ unsigned int MogsIntervalChief::get_max_level()
         if(intermediate_in_[i].level_ > v )
             v = intermediate_in_[i].level_;
     return v;
-}
+}*/
 
 mem* MogsIntervalChief::get_mem(const mem& in)
 {

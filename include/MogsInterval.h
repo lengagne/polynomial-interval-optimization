@@ -136,13 +136,20 @@ class MogsInterval
         /// return the pointeur to the save mem
         mem* get_mem_pointeur(const mem& m) const;
 
+        unsigned int get_id_intermediate() const
+        {
+            return id_intermediate_;
+        }
+        
         static unsigned int get_nb_intermediate();
+        
+        
 
         static void get_intermediate_to_compute(std::vector<MogsInterval> & out);
 
         static void get_intermediate_to_update(std::vector<MogsInterval> & out);
 
-        static unsigned int get_max_level();
+//         static unsigned int get_max_level();
         
         LazyVariable get_mid_value() const
         {
@@ -293,7 +300,7 @@ class MogsInterval
         bool is_output_ = false;
         bool is_input_ = false;
 
-        unsigned int level_ = 0;    // level in the temporary variables
+//         unsigned int level_ = 0;    // level in the temporary variables
 
 //    private:
         bool is_an_error_ = false;
