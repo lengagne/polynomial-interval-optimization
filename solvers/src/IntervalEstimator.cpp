@@ -50,7 +50,7 @@ unsigned int IntervalEstimator::get_index(mem* m) const
 
 unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigned int num_out)
 {      
-//     std::cout<<"prepare_coeffs ("<<num_out<<") out = "<< out <<std::endl;
+//     std::cout<<"prepare_coeffs ("<<num_out<<") " <<std::endl;
     num_out_ = num_out;
     out.get_dependancies_with_order(dep_,order_);
     
@@ -243,6 +243,7 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
             Iv = value;
         else
             Iv = Hull(Iv,value);
+        
         double iv = Inf(Iv);
         double sv = Sup(Iv);
 
@@ -250,6 +251,8 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
         inf_inside = (iv >= ii && iv <= ss);
         sup_inside = (sv >= ii && sv <= ss);       
         both_side = (iv <= ii && sv >= ss);
+        
+       
         if ( inf_inside != sup_inside || both_side)
         {
             out = Iv;
@@ -278,14 +281,17 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
 //     std::cout<<"out final = "<< out <<std::endl;
     if (Intersection(out,bound))
     {
-        if (inf_inside)
+        if ( Inf(out) >= Inf(bound) &&  Sup(out) <= Sup(bound) )
+        {
+//             std::cout<<"INSIDE FINAL"<<std::endl;
             return INSIDE;
+        }
         else 
         {
 //             std::cout<<"OVERLAP FINAL"<<std::endl;
             return OVERLAP;
         }
     }
-    
+//     std::cout<<"OUTSIDE FINAL"<<std::endl;
     return OUTSIDE;
 }

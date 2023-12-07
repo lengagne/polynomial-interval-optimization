@@ -26,7 +26,7 @@ public:
     std::vector<double> bissect_weight;
     std::vector<double> inf_sup_proba;
     
-    bool info_defined = false;
+//     bool info_defined = false;
     uint nb_info;
     
     

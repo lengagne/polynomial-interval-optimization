@@ -49,7 +49,7 @@ int main( int argc, char** argv)
     
     AbstractCSP* pb;
     
-    if (problem>=10)
+    if (problem < 10)
         critere = 0;
     else
         critere = 1;

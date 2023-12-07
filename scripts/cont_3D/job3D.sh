@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=jcont3D
+#SBATCH --job-name=cont3D
 #SBATCH --mail-user=sebastien.lengagne@uca.fr
 #SBATCH --mail-type=FAIL
 #SBATCH --ntasks=1

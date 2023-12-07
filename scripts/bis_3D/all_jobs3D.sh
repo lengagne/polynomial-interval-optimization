@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-for precision in 0.01 0.001 0.0001
+for precision in $1
 do
     for bissection_mode in `seq 0 1`
     do
@@ -20,7 +20,7 @@ do
     done
 done
 
-for precision in 0.01 0.001 0.0001
+for precision in $1
 do
     for bissection_mode in `seq 0 1`
     do

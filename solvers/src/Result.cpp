@@ -8,7 +8,6 @@ Result::Result()
     error.clear();
     ctr_ok.clear();
     error_ok.clear();
-    info_defined = false;
 }
     
 Result::Result( const std::vector<Interval> &input,
@@ -31,7 +30,6 @@ Result::Result( const std::vector<Interval> &input,
         error[i] = Hull(-42.0,42.42);   // 
         error_ok[i] = false;
     }  
-    info_defined = false;
 }
  
 void Result::operator=( const Result& res)
@@ -42,7 +40,6 @@ void Result::operator=( const Result& res)
     error = res.error;
     ctr_ok = res.ctr_ok;
     error_ok = res.error_ok;
-    info_defined = false;
 }
  
     

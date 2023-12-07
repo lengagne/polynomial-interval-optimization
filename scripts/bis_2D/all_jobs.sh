@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for precision in 0.01 0.001 0.0001
+for precision in $1
 do
     for bissection_type in `seq 0 1`
     do
@@ -22,7 +22,7 @@ do
 done
 
 
-for precision in 0.01 0.001 0.0001
+for precision in $1
 do
     for bissection_type in `seq 0 1`
     do

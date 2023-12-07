@@ -2,20 +2,18 @@
 #include <string.h>
 #include <time.h>
 
-
-
 void BasisFunctionSolver::compute_intermediate_for(uint num_function)
 {
-//     std::cout<<"compute_intermediate_for "<< num_function <<std::endl;
-    for(auto const& id : intermediate_needed_[num_function])
     {
-        if (!intermediate_updated_[id])
+        for(auto const& id : intermediate_needed_[num_function])
         {
-//             std::cout<<"compute intermediaire "<< id <<std::endl;
-            Interval v = infos_intermediate_update[id]->update_from_inputs();
-//             std::cout<<"intermediate("<<id<<") = "<< v <<std::endl;
-            Intermediate_to_update[id].update( v);
-            intermediate_updated_[id] = true;
+            if (!intermediate_updated_[id])
+            {
+                Interval v = infos_intermediate_update[id]->update_from_inputs();
+//                 std::cout<<"intermediate("<<id<<") = "<< v <<std::endl;
+                Intermediate_to_update[id].update( v);
+                intermediate_updated_[id] = true;
+            }
         }
     }
 }
@@ -163,10 +161,13 @@ void BasisFunctionSolver::set_next()
     for (int i=0;i<nb_intermediate_;i++)
     {
         intermediate_updated_[i] = false;
-//         
-//         Interval v = infos_intermediate_update[i]->update_from_inputs();
-//         Intermediate_to_update[i].update( v);
-//          std::cout<<"intermediate("<<i<<") = "<< v <<std::endl;
+//         #ifndef TEST_ENABLED
+//         {
+//             Interval v = infos_intermediate_update[i]->update_from_inputs();
+//             Intermediate_to_update[i].update( v);
+// //             std::cout<<"intermediate("<<i<<") = "<< v <<std::endl;
+//         }
+//         #endif
     }         
 }
 
@@ -221,9 +222,15 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
     }    
     
     std::vector<double> bissect_weight(nb_var_);
-    uint max_iter = 1e3;
+//     uint max_iter = 1e3;
     do{
 //         std::cout<<"*****************************************"<<std::endl;
+        
+//         if (cpt_iter_%10000 == 0)
+//         {
+//             std::cout<<cpt_iter_<<" crit ! "<< optim_crit_ <<std::endl;
+//         }
+        
         
         cpt_iter_++;
         test = true;
@@ -236,7 +243,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
 //             std::cout<<"dealing with optim before"<< std::endl;
             compute_intermediate_for(nb_fun_);            
             type_optim = info_crit_->update_from_inputs(current_value_,tmp_crit, nb_fun_);   
-            current_value_.info_defined = false;
+//             current_value_.info_defined = false;
         }
 
         if( type_optim != OUTSIDE)
@@ -283,12 +290,18 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
 //                                         std::cout<<"dealing with optim after"<< std::endl;
                                         type_optim = info_crit_->update_from_inputs(current_value_,tmp_crit, nb_fun_);
                                     }
+                                    
+//                                     std::cout<<"We found one feasible : "<< current_value_.out[nb_fun_] <<std::endl;
                                     if (type_optim == INSIDE)
                                     {
-//                                         std::cout<<"We found one feasible "<<std::endl;
+                                    
+//                                         std::cout<<"  tmp = "<< tmp_crit <<std::endl;
                                         find_one_feasible_ = true;
 //                                         optim_crit_ =  Sup(tmp_crit);
                                         optim_crit_ =  Sup(current_value_.out[nb_fun_]);
+                                        
+//                                         std::cout<<"optim_crit_ = "<<current_value_.out[nb_fun_]<<std::endl<<std::endl;                                        
+//                                         std::cout<<"current_value_ = "<<current_value_<<std::endl<<std::endl;
                                         optim_ = current_value_;
 //                                         Result result1, result2;
                                         bissect(current_value_,current_vector_);

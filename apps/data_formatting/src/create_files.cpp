@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
     std::vector<std::string> order_latex;
     
 //     order_latex.push_back("problem");
+    order_latex.push_back("precision");
     order_latex.push_back("ndof");
     order_latex.push_back("solver");    
     order_latex.push_back("prep_time");

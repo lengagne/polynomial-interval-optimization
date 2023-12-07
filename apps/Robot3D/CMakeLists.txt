@@ -9,7 +9,8 @@ if(MogsCore_FOUND)
     message("MogsCore_FOUND")   
     
     include_directories(    include
-                            ${MogsCore_INCLUDE_DIRS})
+                            ${MogsCore_INCLUDE_DIRS}
+                            ../data_formatting/include/)
 
     add_executable (Robot3D 
                             src/test_Robot_3D.cpp
@@ -23,7 +24,8 @@ if(MogsCore_FOUND)
     add_executable (Eval3D  
                             src/eval_3D.cpp
                             src/Problem3D.cpp
-                            src/Problem3D_with_torque_limit.cpp)
+                            src/Problem3D_with_torque_limit.cpp
+                            ../data_formatting/src/data_format.cpp)
 
     target_link_libraries(	Eval3D
                             PIO
