@@ -1,10 +1,10 @@
 #!/bin/bash
 
-for precision in 0.001 # for precision in  0.1 0.01 0.001
+for precision in 0.01 0.001 0.0001
 do
     for bissection_type in `seq 0 1`
     do
-        for dof in `seq 2 5`
+        for dof in `seq 2 4`
         do
             for pb10 in `seq 0 1`
             do         
@@ -22,11 +22,11 @@ do
 done
 
 
-for precision in 0.001 # for precision in  0.1 0.01 0.001
+for precision in 0.01 0.001 0.0001
 do
     for bissection_type in `seq 0 1`
     do
-        for dof in `seq 6 8`
+        for dof in `seq 5 8`
         do
             for pb10 in `seq 0 1`
             do         
