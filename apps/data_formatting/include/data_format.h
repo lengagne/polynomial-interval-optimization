@@ -7,6 +7,8 @@
 #include <vector>
 #include <list>
 
+std::ostream& scientificFormat(std::ostream& os, double value);
+
 class data_format
 {
 public:

@@ -6,10 +6,43 @@
 #include <array>
 #include <functional>
 #include <regex>
+#include <iomanip>
+#include <locale.h>
+#include <cmath>
 
 std::list<std::string> solver_order_;
 std::list<std::string> bissect_order_;
 std::list<std::string> pb_order_;
+
+
+std::ostream& scientificFormat(std::ostream& os, double value) {
+    // Calcul de l'exposant pour qu'il soit un multiple de 3
+    int exponent = static_cast<int>(std::floor(std::log10(std::abs(value)) / 3) * 3);
+    
+    exponent = (exponent/3) * 3;
+    
+    double mantisse = value * std::pow(10, -exponent);
+    
+    int precision = 3;
+    if (abs(mantisse) > 100)
+        precision = 1;
+    else if (abs(mantisse) > 10)
+        precision = 2;    
+
+    os << std::fixed << std::setprecision(precision) ;
+    os << mantisse;
+    
+    // Configuration de l'affichage en format scientifique avec 1 chiffre avant la virgule
+//     os << std::scientific ;
+    if (exponent !=0)
+    {
+        os<<"e"<< exponent;
+    }
+    
+    os << std::scientific<< std::setprecision(3) ;
+    return os;
+}
+
 
 data_format::data_format( const std::string& filename)
 {

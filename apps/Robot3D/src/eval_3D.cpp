@@ -7,7 +7,7 @@
 #include "Problem3D_with_torque_limit.h"
 #include <locale.h>
 
-std::vector<double> steps = {2,1,0.5,0.1,0.01};
+
 
 int main( int argc, char** argv)
 {   
@@ -36,6 +36,10 @@ int main( int argc, char** argv)
     std::ofstream outfile_diam ("eval_3D_diam.tex");
     std::ofstream outfile_value("eval_3D_value.tex");
     
+    outfile_diam<<std::scientific << std::setprecision(2)<<std::setiosflags(std::ios_base::scientific);
+    outfile_value<<std::scientific << std::setprecision(2)<<std::setiosflags(std::ios_base::scientific);
+    std::cout<<std::scientific << std::setprecision(2)<<std::setiosflags(std::ios_base::scientific);
+    
     outfile_diam<<"\\begin{table}[htb]\n \\tiny \n \\centering \n \\begin{tabular}{|c|c||c|c|c|c|c|c|c|c|c|c|} \n  \\hline "<< std::endl;
     outfile_diam<<"input & eval & $X$ & $Y$ & $Z$ & $\\Gamma_1$ & $\\Gamma_2$ & $\\Gamma_3$ & $\\Gamma_4$ & $\\Gamma_5$ & $\\Gamma_6$ & $\\sum \\Gamma_i^2$\\\\ \\hline  \\hline  "<< std::endl;
     
@@ -49,7 +53,7 @@ int main( int argc, char** argv)
     
     AbstractSolver* solver;
     
-    for (int j=0;j<steps.size();j++)
+    for (int j=0;j<diam.size();j++)
     {
         outfile_diam<<"\\multirow{2}{*}{$"<< 0.5 + Hull(-diam[j],diam[j])<<" $} ";
         outfile_value<<"\\multirow{2}{*}{$"<< 0.5 + Hull(-diam[j],diam[j])<<" $} ";
@@ -78,8 +82,14 @@ int main( int argc, char** argv)
             std::cout<<"Latex interval";
             for (int j=0;j<10;j++)
             {
-                outfile_diam<<" & "<< Diam(out_inter[j]) ;
-                outfile_value<<" & "<< out_inter[j];
+                outfile_diam<<" & ";
+                scientificFormat(outfile_diam, Diam(out_inter[j]));
+                outfile_value<<" & [";
+                scientificFormat(outfile_value, Inf(out_inter[j]));
+                outfile_value<<" :";
+                scientificFormat(outfile_value, Sup(out_inter[j]));
+                outfile_value<<" ] ";
+                
                 std::cout<<" & "<< out_inter[j];
             }
             if (i <nb_basis -1)
