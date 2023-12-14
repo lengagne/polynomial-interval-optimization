@@ -303,7 +303,7 @@ void create_latex( std::ofstream& outfile,
 //     outfile <<"\\begin{longtable}{|";
     
     
-    outfile <<"\\begin{table}\n \\tiny \n \\begin{tabular}{|";
+    outfile <<"\\begin{table}\n  \\resizebox{\\textwidth}{!}{   \n \\begin{tabular}{|";
     
     for (int i=0;i<cs;i++)  outfile<< "c|";
     outfile <<"}\n";
@@ -323,9 +323,9 @@ void create_latex( std::ofstream& outfile,
     outfile <<"\\end{tabular}\n";
     if (titre != "")
     {
-        outfile<<"\n \\caption\{"<< titre<<"\}"<<std::endl;
+        outfile<<"\n } \n \\caption\{"<< titre<<"\}"<<std::endl;
     }
-    outfile <<"\\end{table}\n\n";
+    outfile <<"\n \\end{table}\n\n";
 //     outfile <<"\\normalsize \n";
 //     outfile <<"\\end{longtable}\n\n";
 //     std::cout<<"end of table"<<std::endl;

@@ -17,7 +17,7 @@ int main( int argc, char** argv)
     
     ChooseBasisFunction choice;
     ChooseSolver choice_solver;
-    uint nb_basis = choice.get_nb_basis_type();
+    uint nb_basis = choice.get_nb_basis_type()+1;
     
     std::cout<<"on va evaluer "<< nb_basis <<" basis functions."<<std::endl;
     Problem3D_with_torque_limit pb("../model/kuka_lwr.xml"        ,"kuka_lwr_7_link",1.0,0,1);
@@ -40,10 +40,10 @@ int main( int argc, char** argv)
     outfile_value<<std::scientific << std::setprecision(2)<<std::setiosflags(std::ios_base::scientific);
     std::cout<<std::scientific << std::setprecision(2)<<std::setiosflags(std::ios_base::scientific);
     
-    outfile_diam<<"\\begin{table}[htb]\n \\tiny \n \\centering \n \\begin{tabular}{|c|c||c|c|c|c|c|c|c|c|c|c|} \n  \\hline "<< std::endl;
+    outfile_diam<<"\\begin{table}[htb]\n \\resizebox{1.1\\paperwidth}{!}{ \n \\tiny \n \\centering \n \\begin{tabular}{|c|c||c|c|c|c|c|c|c|c|c|c|} \n  \\hline "<< std::endl;
     outfile_diam<<"input & eval & $X$ & $Y$ & $Z$ & $\\Gamma_1$ & $\\Gamma_2$ & $\\Gamma_3$ & $\\Gamma_4$ & $\\Gamma_5$ & $\\Gamma_6$ & $\\sum \\Gamma_i^2$\\\\ \\hline  \\hline  "<< std::endl;
     
-    outfile_value<<"\\begin{table}[htb]\n \\tiny \n \\centering \n \\begin{tabular}{|c|c||c|c|c|c|c|c|c|c|c|c|} \n  \\hline "<< std::endl;
+    outfile_value<<"\\begin{table}[htb]\n \\resizebox{1.1\\paperwidth}{!}{ \n \\tiny \n \\centering \n \\begin{tabular}{|c|c||c|c|c|c|c|c|c|c|c|c|} \n  \\hline "<< std::endl;
     outfile_value<<"input & eval & $X$ & $Y$ & $Z$ & $\\Gamma_1$ & $\\Gamma_2$ & $\\Gamma_3$ & $\\Gamma_4$ & $\\Gamma_5$ & $\\Gamma_6$ & $\\sum \\Gamma_i^2$\\\\ \\hline  \\hline " << std::endl;    
     
     
@@ -55,8 +55,20 @@ int main( int argc, char** argv)
     
     for (int j=0;j<diam.size();j++)
     {
-        outfile_diam<<"\\multirow{2}{*}{$"<< 0.5 + Hull(-diam[j],diam[j])<<" $} ";
-        outfile_value<<"\\multirow{2}{*}{$"<< 0.5 + Hull(-diam[j],diam[j])<<" $} ";
+        outfile_diam<<"\\multirow{2}{*}{$";//<< 0.5 + Hull(-diam[j],diam[j])<<" $} ";
+        outfile_value<<"\\multirow{2}{*}{$";//<< 0.5 + Hull(-diam[j],diam[j])<<" $} ";
+
+        outfile_diam<<" [";
+        scientificFormat(outfile_diam, 0.5-diam[j]);
+        outfile_diam<<" :";
+        scientificFormat(outfile_diam, 0.5+diam[j]);
+        outfile_diam<<" ] $}  ";
+
+        outfile_value<<" [";
+        scientificFormat(outfile_value, 0.5-diam[j]);
+        outfile_value<<" :";
+        scientificFormat(outfile_value, 0.5+diam[j]);
+        outfile_value<<" ] $}  ";        
         
         
         std::cout<<"DIAM = "<< diam[j]<<std::endl;
@@ -113,11 +125,11 @@ int main( int argc, char** argv)
         }               
     }
     
-    outfile_diam<<"\\end{tabular} \n";
+    outfile_diam<<"\\end{tabular} \n } \n";
     outfile_diam<<"\\caption{Diameter of the end effector position, joint torque and sum of square joint torque for several inputs considering several basis functions. } \n";
     outfile_diam<<"\\label{tab_eval_6dof_diam} \n \\end{table} \n";
 
-    outfile_value<<"\\end{tabular} \n";
+    outfile_value<<"\\end{tabular} \n } \n";
     outfile_value<<"\\caption{Value of the end effector position, joint torque and sum of square joint torque for several inputs considering several basis functions. } \n";
     outfile_value<<"\\label{tab_eval_6dof_value} \n \\end{table} \n";    
     
