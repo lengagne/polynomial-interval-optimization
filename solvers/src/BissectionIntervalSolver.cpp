@@ -39,24 +39,26 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     bounds_input_ = pb_->get_input();
 
     Result tmp(pb_->get_input(), nb_fun_, pb_->get_criteria());
-    cpt_iter_ = 0;
+
+    optim_crit_ = std::numeric_limits<double>::max();
+    find_one_feasible_ =false;        
+
     if (save_and_load_)
     {        
+        std::cout<<"load file"<<std::endl;
         if (! load_save_filename(save_filename_,tmp))
-            current_vector_.push_back(tmp);  
-        else
         {
-            current_vector_.push_back(tmp);    
-            optim_crit_ = std::numeric_limits<double>::max();
-            find_one_feasible_ =false;            
+            std::cout<<"FAIL to load file "<<std::endl;
+            current_vector_.push_back(tmp);  
         }
     }
     else
     {
+        std::cout<<"no load file"<<std::endl;
         current_vector_.push_back(tmp);    
-        optim_crit_ = std::numeric_limits<double>::max();
-        find_one_feasible_ =false;
-    }    
+        cpt_iter_ = 0;
+    }
+    
     
 
     bool test;
@@ -77,7 +79,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     }    
     
     
-    if(results.size() == 0)
+    if(current_vector_.size() == 0)
     {
         std::cout<<"We already load optim results (notinh in the pile)"<<std::endl;
         return set_results();

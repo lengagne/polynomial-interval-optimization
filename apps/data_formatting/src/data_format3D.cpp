@@ -22,6 +22,7 @@ data_format3D::data_format3D( const std::string& filename)
 //         std::cout<<" reading "<< filename_ <<std::endl;
         while(getline(file,line))
         {
+            add_data(line,"save_file", "save_filename =");
             add_data(line,"problem", "problem =");
             add_data(line,"precision", "precision = ");
             add_data(line,"solver", "solver : ");            
@@ -78,9 +79,11 @@ data_format3D::data_format3D( const std::string& filename)
         std::cout<<"Problem "<<  infos["problem"]<< "  solver = "<< infos["solver"] <<" Bissection = "<< infos["bissection_mode"] <<std::endl;
         
         std::cout<<"rm -frv "<< filename<<std::endl;
-//         std::cout<<"sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << infos["bissection"]<<" "<<infos["solver"]<<std::endl;
-        std::cout<<"sbatch job3D_long.sh "<< infos["precision"]<<" "<< infos["problem"]<<" " << get_bissection(infos["bissection_mode"]) <<" "<< get_solver(infos["solver"])<<std::endl;        
+        std::cout<<"sbatch job3D.sh "<< infos["precision"]<<" "<< infos["problem"]<<" " << get_bissection(infos["bissection_mode"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"]<<std::endl;        
         std::cout<<std::endl;     
+
+//         std::cout<<"sbatch job3D_long.sh "<< infos["precision"]<<" "<< infos["problem"]<<" " << get_bissection(infos["bissection_mode"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"]<<std::endl;        
+//         std::cout<<std::endl;     
         infos["criteria"] = filename;
     }
 }

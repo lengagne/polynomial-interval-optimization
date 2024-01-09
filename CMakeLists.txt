@@ -68,6 +68,7 @@ execute_process(
 
 add_definitions("-DGIT_BRANCH=\"${GIT_BRANCH}\"")
 
+include(${QT_USE_FILE})
 
 file( GLOB_RECURSE PIO_SOURCES src/*.cpp )
 FILE ( GLOB_RECURSE PIO_HEADERS include/*.h   include/*.hxx )
@@ -86,6 +87,7 @@ include_directories(	include
                         ${TCMALLOC_INCLUDE_DIRS}
                         ${LazyCPP_INCLUDE_DIRS}
                         ${IPOPT_INCLUDE_DIRS}
+                        ${QT_INCLUDES}
                         )
 
 link_directories(	${CMAKE_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}

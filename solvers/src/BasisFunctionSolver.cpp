@@ -205,7 +205,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
     
     if(current_vector_.size() == 0)
     {
-        std::cout<<"We already load optim results (notinh in the pile)"<<std::endl;
+        std::cout<<"We may already load optim results (notinh in the pile)"<<std::endl;
         return set_results();
     }
     

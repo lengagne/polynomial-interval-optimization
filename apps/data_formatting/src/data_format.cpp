@@ -56,6 +56,7 @@ data_format::data_format( const std::string& filename)
 //         std::cout<<" reading "<< filename_ <<std::endl;
         while(getline(file,line))
         {
+            add_data(line,"save_file", "save_filename =");
             add_data(line,"ndof", "ndof =");
             add_data(line,"problem", "npb =");
             add_data(line,"precision", "precision = ");
@@ -107,7 +108,9 @@ data_format::data_format( const std::string& filename)
     {
         std::cout<<"Problem "<<  infos["problem"]<< "  solver = "<< infos["solver"] <<" Bissection = "<< infos["type"] <<std::endl;
         std::cout<<"rm -frv "<< filename<<std::endl;
-        std::cout<<"sbatch job_long.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<std::endl;
+        std::cout<<"sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"] <<std::endl;
+        
+        std::cout<<"sbatch job_long.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"] <<std::endl;
         infos["criteria"] = filename;
     }
 }
