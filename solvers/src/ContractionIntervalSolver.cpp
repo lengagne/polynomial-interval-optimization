@@ -202,8 +202,8 @@ param_optim ContractionIntervalSolver::solve_optim(double eps)
     out.nb_bissections = cpt_iter_;
     out.nb_valid_boxes = nb_valid_box_;
     out.nb_possible_boxes = nb_maybe_box_;
-    out.computation_time = te - ts;
-    out.computation_time_wo_prep = out.computation_time+ preparation_time_;
+    out.computation_time = current_time_ - start_preparation_time_;
+    out.computation_time_wo_prep = current_time_ - start_computation_time_;    
     out.optim = optim_crit;    
     out.nb_intermediate = 0;
     out.solution_found = find_one_feasible;

@@ -4,7 +4,8 @@
 void CompareSolver::compare(const std::string & filename,
                             double p,
                             uint bissection_mode,
-                            int id)
+                            int id,
+                            const std::string& save_filename)
 {
     std::ofstream file;
     file.open(filename+".csv");
@@ -25,6 +26,7 @@ void CompareSolver::compare(const std::string & filename,
             std::cout<<"solver number "<<i<< std::endl;
            
             param_optim result;
+            solver->set_save_filename(save_filename);
             result = solver->solve_optim(precision);
             
             file<<result.nb_bissections<<"\t"<<result.computation_time<<"\t"<<result.optim<<"\t"<<choice_solver_.get_solver_name(i)<<std::endl;
@@ -41,6 +43,7 @@ void CompareSolver::compare(const std::string & filename,
         choice_solver_.choose(pb_,&solver,id,bissection_mode);
         std::cout<<"solver number "<<id<< std::endl;
         param_optim result;
+        solver->set_save_filename(save_filename);
         result = solver->solve_optim(precision);
         
         file<<result.nb_bissections<<"\t"<<result.computation_time<<"\t"<<result.optim<<"\t"<<choice_solver_.get_solver_name(id)<<std::endl;

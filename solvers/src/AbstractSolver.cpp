@@ -1,6 +1,8 @@
 #include "AbstractSolver.h"
 #include <string.h>
 
+#include <QtXml>
+
 bool AbstractSolver::check_size(   const Result& in)
 {
     double w = 0.;
@@ -139,6 +141,178 @@ void AbstractSolver::prepare_files(const std::string& filename)
         cpt_rec_output_ = 1;
     }
     file_open = true;
+}
+
+bool AbstractSolver::load_save_filename( const std::string& filename,
+                                        const Result& res
+)
+{
+    std::cout<<"We load the current filename : "<< save_filename_ <<std::endl;
+  // Convertir std::string en QString
+    QString qFileName = QString::fromStdString(filename);
+    // Créer un objet QFile
+    QFile file(qFileName);
+
+    // Ouvrir le fichier en mode lecture
+    if (!file.open(QIODevice::ReadOnly)) {
+        std::cout<<"Cannot found the file"<<std::endl;
+        return false;
+    }
+    
+    QDomDocument dom;
+    dom.setContent(&file);
+    
+    QDomElement root = dom.documentElement();
+    assert (!root.isNull());
+    
+    std::string pb_name;
+    uint nb_pile = 0;
+    
+    QDomElement Child=root.firstChild().toElement();
+    while (!Child.isNull())
+    {
+         if (Child.tagName()=="problem")    pb_name = Child.firstChild().toText().data().toUtf8().constData();
+         
+         if (Child.tagName()=="nb_var") nb_var_ = Child.firstChild().toText().data().toInt();
+         
+         if (Child.tagName()=="preparation_duration") preparation_duration_ = Child.firstChild().toText().data().toDouble();
+         
+         if (Child.tagName()=="computation_time") previous_time_ = Child.firstChild().toText().data().toDouble();
+         
+         if (Child.tagName()=="cpt_iter") cpt_iter_ = Child.firstChild().toText().data().toInt();
+         
+         if (Child.tagName()=="pile")
+         {
+             nb_pile = Child.attribute("nb").toInt();
+             current_vector_.resize(nb_pile);
+             for (QDomElement boxEl = Child.firstChildElement("box"); !boxEl.isNull(); boxEl = boxEl.nextSiblingElement("box") )
+             {
+                uint pos = boxEl.attribute("pos").toInt();
+                current_vector_[pos].load(boxEl);
+             }
+         }                  
+     
+         if (Child.tagName()=="optim")
+         {
+            optim_crit_ = Child.attribute("crit").toDouble();
+            find_one_feasible_ = QVariant(Child.attribute("feasible")).toBool();
+            optim_.load(Child);
+         }              
+         
+         Child = Child.nextSibling().toElement();
+    }    
+    file.close();    
+    
+    return true;
+}
+
+void AbstractSolver::save_current_state( const std::string& filename)
+{    
+    QString qFileName = QString::fromStdString(filename);
+    QFile xmlFile(qFileName);
+    if (!xmlFile.open(QFile::WriteOnly | QFile::Text ))
+    {
+        qDebug() << "Already opened or there is another issue";
+        xmlFile.close();
+    }
+    QTextStream xmlContent(&xmlFile);
+    QDomDocument document;
+
+    //make the root element
+    QDomElement root = document.createElement("optimization");
+    document.appendChild(root);
+
+    QDomElement problem = document.createElement("problem");
+    QDomText text = document.createTextNode(QString::fromStdString(pb_->get_problem_name()));
+    problem.appendChild(text);
+    root.appendChild(problem);
+
+    QDomElement nb_var = document.createElement("nb_var");
+    text = document.createTextNode(QString::number(nb_var_));
+    nb_var.appendChild(text);
+    root.appendChild(nb_var);    
+    
+    QDomElement preparation_duration = document.createElement("preparation_duration");
+    text = document.createTextNode(QString::number(preparation_duration_));
+    preparation_duration.appendChild(text);
+    root.appendChild(preparation_duration);     
+    
+    current_time_ = get_cpu_time();
+    QDomElement computation_time = document.createElement("computation_time");
+    text = document.createTextNode(QString::number(current_time_ - start_computation_time_));
+    computation_time.appendChild(text);
+    root.appendChild(computation_time);        
+    
+    QDomElement cpt_iter = document.createElement("cpt_iter");
+    text = document.createTextNode(QString::number(cpt_iter_));
+    cpt_iter.appendChild(text);
+    root.appendChild(cpt_iter);     
+    
+    QDomElement pile = document.createElement("pile");
+    uint nb = current_vector_.size();
+    pile.setAttribute("nb", QString::number(nb));
+    
+    for (int i=0;i<nb;i++)
+    {
+        QDomElement box = document.createElement("box");
+        box.setAttribute("pos", QString::number(i));
+        current_vector_[i].save(document,box);
+        pile.appendChild(box);
+    }
+    root.appendChild(pile);
+    
+    std::cout<<"SAVE optim_crit_ = "<< optim_crit_ <<std::endl;
+    
+    QDomElement optim = document.createElement("optim");
+    optim.setAttribute("crit", QString::number(optim_crit_,'e',24));
+    optim.setAttribute("feasible", QVariant(find_one_feasible_).toString());
+    
+    optim_.save(document,optim);
+    root.appendChild(optim);   
+    
+    
+    xmlContent << document.toString();    
+    xmlFile.close();
+}
+
+param_optim AbstractSolver::set_results()
+{
+    current_time_ = get_cpu_time();
+    std::cout<<"Number of Bissections : "<< cpt_iter_ <<std::endl;
+    std::cout<<"Number of valid boxes : "<< nb_valid_box_ <<std::endl;
+    std::cout<<"Number of possible boxes : "<< nb_maybe_box_<<std::endl;
+//     std::cout<<"Size of ignored space  : "<< ignored_space_<<std::endl;
+    std::cout<<"computation time (wo prep): "<< previous_time_ + current_time_ - start_computation_time_ <<" seconds."<<std::endl;
+    std::cout<<"Time per iteration : "<< (previous_time_ + current_time_ - start_computation_time_)/cpt_iter_ <<" seconds."<<std::endl;
+    std::cout<<"total time : "<< previous_time_+ current_time_ - start_preparation_time_ <<" seconds."<<std::endl;
+    close_files();
+    if(find_one_feasible_)
+    {
+        std::cout<<"crit = "<< optim_crit_ <<std::endl;
+        for (int i=0;i<nb_var_;i++)
+            std::cout<<"input["<<i<<"] = "<< optim_.in[i]<<std::endl;
+    }else
+        std::cout<<"crit =  -1 \nno feasible solution found"<<std::endl;
+
+    save_current_state(save_filename_);
+    
+    param_optim out;
+    out.nb_bissections = cpt_iter_;
+    out.nb_valid_boxes = nb_valid_box_;
+    out.nb_possible_boxes = nb_maybe_box_;
+    out.computation_time = previous_time_ + current_time_ - start_preparation_time_;
+    out.computation_time_wo_prep = previous_time_ + current_time_ - start_computation_time_;
+    out.optim = optim_crit_;    
+    out.nb_intermediate = nb_intermediate_;
+    out.solution_found = find_one_feasible_;
+
+    return out;
+}
+
+void AbstractSolver::set_save_filename( const std::string& s)
+{
+    save_and_load_ = true;
+    save_filename_ = s;
 }
 
 check_constraint AbstractSolver::test_Interval( const Interval &in ,

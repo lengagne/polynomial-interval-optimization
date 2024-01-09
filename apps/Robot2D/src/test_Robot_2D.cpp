@@ -10,6 +10,8 @@
 #include "Problem4Torque.h"
 #include "Problem7Torque.h"
 
+#include "construct_filename_2D.h"
+
 
 
 int main( int argc, char** argv)
@@ -47,6 +49,20 @@ int main( int argc, char** argv)
 	if(argc > 5)
         test = atoi(argv[5]);   
     
+    std::string save_filename = construct_filename_2D(ndof,npb,precision,bissection_mode,test);
+    std::cout<<"save_filename = "<< save_filename <<std::endl;
+    if(test != -1 && argc == 7)
+    {
+        std::string load_file = argv[6];
+        if ( load_file != save_filename)
+        {
+            std::cerr<<"Be carefull not good filename"<<std::endl;
+            std::cerr<<load_file <<" != "<< save_filename<<std::endl;
+            std::exit(13);
+        }
+    }
+    
+    
     std::cout<<"******************************" <<std::endl;
     std::cout<<"ndof = "<< ndof <<std::endl;
     std::cout<<"npb = "<< npb <<std::endl;
@@ -79,7 +95,7 @@ int main( int argc, char** argv)
     }
     
     CompareSolver cp(pb);   
-    cp.compare("Robot2D_"+std::to_string(ndof)+"_ndof_pb_"+std::to_string(npb),precision,bissection_mode,test);
+    cp.compare("Robot2D_"+std::to_string(ndof)+"_ndof_pb_"+std::to_string(npb),precision,bissection_mode,test,save_filename);
         
     delete pb;
     

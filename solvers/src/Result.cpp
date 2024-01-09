@@ -31,6 +31,117 @@ Result::Result( const std::vector<Interval> &input,
         error_ok[i] = false;
     }  
 }
+
+void Result::load(QDomElement &El)
+{
+    uint nb_in = El.attribute("nb_in").toInt();
+    in.resize(nb_in);
+    for (QDomElement El1 = El.firstChildElement("input"); !El1.isNull(); El1 = El1.nextSiblingElement("input") )
+    {                    
+        uint id = El1.attribute("id").toInt();
+        double inf = El1.attribute("inf").toDouble();
+        double sup = El1.attribute("sup").toDouble();
+        assert(id<nb_in);
+        in[id] = Hull(inf,sup);
+    }                    
+    
+    uint nb_out = El.attribute("nb_out").toInt();
+    out.resize(nb_out);
+    for (QDomElement El1 = El.firstChildElement("output"); !El1.isNull(); El1 = El1.nextSiblingElement("output") )
+    {                    
+        uint id = El1.attribute("id").toInt();
+        double inf = El1.attribute("inf").toDouble();
+        double sup = El1.attribute("sup").toDouble();
+        assert(id<nb_in);
+        out[id] = Hull(inf,sup);
+    }            
+    
+    uint nb_error = El.attribute("nb_error").toInt();
+    error.resize(nb_error);
+    for (QDomElement El1 = El.firstChildElement("error"); !El1.isNull(); El1 = El1.nextSiblingElement("error") )
+    {                    
+        uint id = El1.attribute("id").toInt();
+        double inf = El1.attribute("inf").toDouble();
+        double sup = El1.attribute("sup").toDouble();
+        assert(id<nb_in);
+        error[id] = Hull(inf,sup);
+    }      
+    
+    uint nb_ctr_ok = El.attribute("nb_ctr_ok").toInt();
+    ctr_ok.resize(nb_error);
+    for (QDomElement El1 = El.firstChildElement("ctr_ok"); !El1.isNull(); El1 = El1.nextSiblingElement("ctr_ok") )
+    {                    
+        uint id = El1.attribute("id").toInt();
+        assert(id<nb_in);
+        ctr_ok[id] = QVariant(El1.attribute("bool")).toBool();
+    }      
+      
+    uint nb_error_ok = El.attribute("nb_error_ok").toInt();
+    error_ok.resize(nb_error);
+    for (QDomElement El1 = El.firstChildElement("error_ok"); !El1.isNull(); El1 = El1.nextSiblingElement("error_ok") )
+    {                    
+        uint id = El1.attribute("id").toInt();
+        assert(id<nb_in);
+        error_ok[id] = QVariant(El1.attribute("bool")).toBool();
+    }        
+}
+
+void Result::save(  QDomDocument &document,
+                    QDomElement &El)
+{
+    uint nb_in = in.size();
+    El.setAttribute("nb_in", QString::number(nb_in));
+    for (int j=0;j<nb_in;j++)
+    {
+        QDomElement inter = document.createElement("input");
+        inter.setAttribute("id", QString::number(j));
+        inter.setAttribute("inf", QString::number(Inf(in[j]),'e',24));
+        inter.setAttribute("sup", QString::number(Sup(in[j]),'e',24));
+        El.appendChild(inter);
+    }        
+    
+    uint nb_out = out.size();
+    El.setAttribute("nb_out", QString::number(nb_out));
+    for (int j=0;j<nb_in;j++)
+    {
+        QDomElement inter = document.createElement("output");
+        inter.setAttribute("id", QString::number(j));
+        inter.setAttribute("inf", QString::number(Inf(out[j]),'e',24));
+        inter.setAttribute("sup", QString::number(Sup(out[j]),'e',24));
+        El.appendChild(inter);
+    }   
+    
+    uint nb_error = error.size();
+    El.setAttribute("nb_error", QString::number(nb_error));
+    for (int j=0;j<nb_in;j++)
+    {
+        QDomElement inter = document.createElement("error");
+        inter.setAttribute("id", QString::number(j));
+        inter.setAttribute("inf", QString::number(Inf(error[j]),'e',24));
+        inter.setAttribute("sup", QString::number(Sup(error[j]),'e',24));
+        El.appendChild(inter);
+    }  
+    
+    uint nb_ctr_ok = ctr_ok.size();
+    El.setAttribute("nb_ctr_ok", QString::number(nb_ctr_ok));
+    for (int j=0;j<nb_in;j++)
+    {
+        QDomElement inter = document.createElement("ctr_ok");
+        inter.setAttribute("id", QString::number(j));        
+        inter.setAttribute("bool", QVariant(ctr_ok[j]).toString());
+        El.appendChild(inter);
+    }      
+    
+    uint nb_error_ok = error_ok.size();
+    El.setAttribute("nb_error_ok", QString::number(nb_error_ok));
+    for (int j=0;j<nb_in;j++)
+    {
+        QDomElement inter = document.createElement("error_ok");
+        inter.setAttribute("id", QString::number(j));        
+        inter.setAttribute("bool", QVariant(error_ok[j]).toString());
+        El.appendChild(inter);
+    }          
+}
  
 void Result::operator=( const Result& res)
 {

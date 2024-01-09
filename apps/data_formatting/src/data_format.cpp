@@ -105,8 +105,9 @@ data_format::data_format( const std::string& filename)
     
     if (time_out_)
     {
+        std::cout<<"Problem "<<  infos["problem"]<< "  solver = "<< infos["solver"] <<" Bissection = "<< infos["type"] <<std::endl;
         std::cout<<"rm -frv "<< filename<<std::endl;
-        std::cout<<"sbatch job_long.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["bissection"]) <<" "<< get_solver(infos["solver"])<<std::endl;
+        std::cout<<"sbatch job_long.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<std::endl;
         infos["criteria"] = filename;
     }
 }

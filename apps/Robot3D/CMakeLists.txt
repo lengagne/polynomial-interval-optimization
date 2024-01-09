@@ -13,19 +13,20 @@ if(MogsCore_FOUND)
                             ../data_formatting/include/)
 
     add_executable (Robot3D 
-                            src/test_Robot_3D.cpp
-                            src/Problem3D.cpp
-                            src/Problem3D_with_torque_limit.cpp)
+                    src/test_Robot_3D.cpp
+                    src/Problem3D.cpp
+                    src/Problem3D_with_torque_limit.cpp
+                    src/contruct_filename_3D.cpp)
 
     target_link_libraries(	Robot3D
                             PIO
                             ${MogsCore_LIBRARIES})
 
     add_executable (Eval3D  
-                            src/eval_3D.cpp
-                            src/Problem3D.cpp
-                            src/Problem3D_with_torque_limit.cpp
-                            ../data_formatting/src/data_format.cpp)
+                    src/eval_3D.cpp
+                    src/Problem3D.cpp
+                    src/Problem3D_with_torque_limit.cpp
+                    ../data_formatting/src/data_format.cpp)
 
     target_link_libraries(	Eval3D
                             PIO

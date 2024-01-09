@@ -32,11 +32,26 @@ class AbstractSolver
         
 
         bool check_size(   const Result& in);
+        
+        /// test if the Interval in is INSIDE/OUTSIDE or OVERLAPPING the bound
+        check_constraint test_Interval( const Interval &in ,
+                                       const Interval & bound);
+        
 
         void close_files();
         
         virtual void evaluate(  const std::vector<Interval>& in,
                                 std::vector<Interval> & out) = 0;
+                                
+        bool load_save_filename( const std::string& s,
+                                const Result & res  // is initialized
+        );     
+        
+        virtual param_optim solve_optim(double eps=1e-3) = 0;
+        
+        void prepare_files(const std::string& filename);
+                                
+        void save_current_state( const std::string& filename = "current_state_optim");
 
         void set_precision_gnuplot(const double a)
         {
@@ -47,38 +62,48 @@ class AbstractSolver
         {
             print_ = in;
         }
-
-        void prepare_files(const std::string& filename);
-
-        virtual param_optim solve_optim(double eps=1e-3) = 0;
-
-        /// test if the Interval in is INSIDE/OUTSIDE or OVERLAPPING the bound
-        check_constraint test_Interval( const Interval &in ,
-                                       const Interval & bound);
-
+        
+        virtual param_optim set_results();
+        
+        void set_save_filename( const std::string& s);
 
     protected:
         AbstractCSP *pb_;
 
+        std::vector<Result> current_vector_;
+        
         std::vector<Result> results;
         std::vector<Interval> bounds_,bounds_input_;
 
         unsigned int nb_valid_box_;
         unsigned int nb_maybe_box_;
 //         double ignored_space_;
+        
+        unsigned int nb_intermediate_ = 0;
 
         unsigned int nb_fun_, nb_var_;
 
         double precision_;
         unsigned long long int cpt_iter_;
         
-        double tsglobal,ts, preparation_time_;
-
+        double current_time_;
+        double start_preparation_time_;
+        double start_computation_time_;
+        double preparation_duration_;
+        
+        double previous_time_ = 0;
+        
+        double optim_crit_;
+        bool find_one_feasible_ =false;
         Result optim_;
 
         bool print_ = false;
         
         uint bissection_type_ = 0;
+        
+        bool save_and_load_ = false;
+        std::string save_filename_ = "no_save";
+        
         
     private:
 

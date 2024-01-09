@@ -79,7 +79,7 @@ data_format3D::data_format3D( const std::string& filename)
         
         std::cout<<"rm -frv "<< filename<<std::endl;
 //         std::cout<<"sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << infos["bissection"]<<" "<<infos["solver"]<<std::endl;
-        std::cout<<"sbatch job3D_long.sh "<< infos["precision"]<<" "<< infos["problem"]<<" " << infos["bissection_mode"] <<" "<< get_solver(infos["solver"])<<std::endl;        
+        std::cout<<"sbatch job3D_long.sh "<< infos["precision"]<<" "<< infos["problem"]<<" " << get_bissection(infos["bissection_mode"]) <<" "<< get_solver(infos["solver"])<<std::endl;        
         std::cout<<std::endl;     
         infos["criteria"] = filename;
     }

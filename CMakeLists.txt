@@ -13,7 +13,6 @@ else(CRRI)
 	find_package(Eigen3 REQUIRED)
 endif(CRRI)
 
-
 if (NOT LAZYCPP_FOUND)
     find_package(LazyCPP REQUIRED)
 endif()
@@ -26,6 +25,19 @@ if(  IPOPT_FOUND)
 else()
     message(" Ipopt not found")
 endif()
+
+### QT used for graphical interfaces strings and xml
+find_package(Qt4 REQUIRED COMPONENTS QTCORE QTXML QtXmlPatterns QUIET COMPONENTS QTGUI)
+#find_package(Qt4 QUIET COMPONENTS QTGUI)
+
+set(QT_DEFINITIONS -DQT_NO_KEYWORDS)
+if(QT_QTGUI_FOUND)
+set(QT_DEFINITIONS ${QT_DEFINITIONS} -DQT_GUI_FOUND)
+endif(QT_QTGUI_FOUND)
+add_definitions(${QT_DEFINITIONS})
+
+include(${QT_USE_FILE})
+
 
 
  ## TCMALLOC used to optimized memory allocation
@@ -87,6 +99,7 @@ add_library(PIO_Solvers SHARED ${PIO_Solvers_SOURCES} ${PIO_HEADERS})
 target_link_libraries(	PIO_BasisFunctions
                         ${TCMALLOC_LIBRARIES}
                         ${IPOPT_LIBRARIES}
+                        ${QT_LIBRARIES}
                         )
 
 target_link_libraries(	PIO_Solvers

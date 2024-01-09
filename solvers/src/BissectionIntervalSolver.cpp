@@ -31,25 +31,43 @@ void BissectionIntervalSolver::evaluate(const std::vector<Interval> &in,
 param_optim BissectionIntervalSolver::solve_optim(double eps)
 {
     std::cout<<"BissectionIntervalSolver::solve_optim"<<std::endl;
-    double ts = get_cpu_time();
-    double tsglobal = ts;
+    start_preparation_time_ = get_cpu_time();
     precision_ = eps;
 
-    std::vector<Result> current;
+    current_vector_.clear();
     bounds_ = pb_->get_bound();
     bounds_input_ = pb_->get_input();
 
     Result tmp(pb_->get_input(), nb_fun_, pb_->get_criteria());
-    current.push_back(tmp);
+    cpt_iter_ = 0;
+    if (save_and_load_)
+    {        
+        if (! load_save_filename(save_filename_,tmp))
+            current_vector_.push_back(tmp);  
+        else
+        {
+            current_vector_.push_back(tmp);    
+            optim_crit_ = std::numeric_limits<double>::max();
+            find_one_feasible_ =false;            
+        }
+    }
+    else
+    {
+        current_vector_.push_back(tmp);    
+        optim_crit_ = std::numeric_limits<double>::max();
+        find_one_feasible_ =false;
+    }    
+    
 
     bool test;
     nb_valid_box_=0;
     nb_maybe_box_=0;
 
-    double optim_crit = std::numeric_limits<double>::max();
+    
     Result optim = tmp;
-    bool find_one_feasible =false;
-    std::cout<<"preparation time : "<< get_cpu_time() - ts <<" seconds."<<std::endl;
+    
+    start_computation_time_ = get_cpu_time();
+    std::cout<<"preparation time : "<< start_computation_time_ - start_preparation_time_ <<" seconds."<<std::endl;
     
     switch(bissection_type_)
     {
@@ -59,21 +77,33 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     }    
     
     
+    if(results.size() == 0)
+    {
+        std::cout<<"We already load optim results (notinh in the pile)"<<std::endl;
+        return set_results();
+    }    
+    
 //     std::cout<<"il y a "<< nb_fun_ <<" contraintes."<<std::endl;
-    cpt_iter_ = 0;
     do{
         cpt_iter_++;
+        
+        if (cpt_iter_%1000000 == 0)
+        {
+            std::cout<<cpt_iter_<<" crit ! "<< optim_crit_ <<std::endl;
+            save_current_state(save_filename_);
+        }        
+        
         test = true;
         // We do not use reference because we pop_back !!
-        Result  current_value = current.back();
-        current.pop_back();
+        Result  current_value = current_vector_.back();
+        current_vector_.pop_back();
 
 //        for (int i=0;i<nb_var_;i++)
 //            std::cout<<"in["<<i<<"] = "<< current_value.in[i] <<std::endl;
 
         pb_->function(current_value.in,current_value.out);
 //        std::cout<<"crit = "<< current_value.out[nb_fun_]<<std::endl;
-        if(Inf(current_value.out[nb_fun_]) < optim_crit)
+        if(Inf(current_value.out[nb_fun_]) < optim_crit_)
         {
             check_constraint type = INSIDE;
             for (int i=0;i<nb_fun_;i++)  if(!current_value.ctr_ok[i] )
@@ -100,15 +130,15 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
             {
                 case(OUTSIDE)   :   break;
                 case(INSIDE)    :   // evaluate the criteria
-                                    if (Sup(current_value.out[nb_fun_]) < optim_crit)
+                                    if (Sup(current_value.out[nb_fun_]) < optim_crit_)
                                     {
-                                        find_one_feasible = true;
-                                        optim_crit =  Sup(current_value.out[nb_fun_]);
+                                        find_one_feasible_ = true;
+                                        optim_crit_ =  Sup(current_value.out[nb_fun_]);
                                         optim = current_value;
                                     }
                 case(OVERLAP)   :   
                                     Result low, high;
-                                    bissect(current_value, current);/*
+                                    bissect(current_value, current_vector_);/*
                                     
                                     if(bissect(current_value, low,high))
                                     {
@@ -118,24 +148,24 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
                                     break;
             }
         }
-        if(current.size() == 0) test = false;
+        if(current_vector_.size() == 0) test = false;
 
     }while(test);
 
 
-    double te = get_cpu_time();
-
+    current_time_ = get_cpu_time();
+    return set_results();/*
     
     std::cout<<"Number of Bissections : "<< cpt_iter_ <<std::endl;
     std::cout<<"Number of valid boxes : "<< nb_valid_box_ <<std::endl;
     std::cout<<"Number of possible boxes : "<< nb_maybe_box_<<std::endl;
-    std::cout<<"computation time (wo prep): "<< te - ts <<" seconds."<<std::endl;
-    std::cout<<"Time per iteration : "<< (te - ts)/cpt_iter_ <<" seconds."<<std::endl;
-    std::cout<<"total time : "<< te - tsglobal <<" seconds."<<std::endl<<std::endl;
+    std::cout<<"computation time (wo prep): "<< previous_time_ + current_time_ - start_computation_time_ <<" seconds."<<std::endl;
+    std::cout<<"Time per iteration : "<< (previous_time_ + current_time_ - start_computation_time_)/cpt_iter_ <<" seconds."<<std::endl;
+    std::cout<<"total time : "<< previous_time_ + current_time_ - start_preparation_time_ <<" seconds."<<std::endl<<std::endl;
     close_files();
-    if(find_one_feasible)
+    if(find_one_feasible_)
     {
-        std::cout<<"crit = "<< optim_crit <<std::endl;
+        std::cout<<"crit = "<< optim_crit_ <<std::endl;
         for (int i=0;i<nb_var_;i++)
             std::cout<<"input["<<i<<"] = "<< optim.in[i]<<std::endl;
     }else
@@ -145,10 +175,10 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     out.nb_bissections = cpt_iter_;
     out.nb_valid_boxes = nb_valid_box_;
     out.nb_possible_boxes = nb_maybe_box_;
-    out.computation_time = te - ts;
-    out.computation_time_wo_prep = out.computation_time+ preparation_time_;
-    out.optim = optim_crit;    
+    out.computation_time = previous_time_ + current_time_ - start_preparation_time_;
+    out.computation_time_wo_prep = previous_time_ + current_time_ - start_computation_time_;
+    out.optim = optim_crit_;    
     out.nb_intermediate = 0;
-    out.solution_found = find_one_feasible;
-    return out;
+    out.solution_found = find_one_feasible_;
+    return out;*/
 }

@@ -53,8 +53,7 @@ void BasisFunctionSolver::init(double eps)
     MogsIntervalInit();
     LazyReset();
     
-    ts = get_cpu_time();
-    tsglobal = ts;
+    start_preparation_time_ = get_cpu_time();
     precision_ = eps;
     bounds_input_ = pb_->get_input();
     bounds_ = pb_->get_bound();
@@ -79,7 +78,21 @@ void BasisFunctionSolver::init(double eps)
     
     if(solve_optim_)
         optim_ = tmp;
-    current_vector_.push_back(tmp);    
+    
+    
+    optim_crit_ = std::numeric_limits<double>::max();
+    find_one_feasible_ =false;        
+
+    if (save_and_load_)
+    {        
+        if (! load_save_filename(save_filename_,tmp))
+            current_vector_.push_back(tmp);  
+    }
+    else
+    {
+        current_vector_.push_back(tmp);    
+        cpt_iter_ = 0;
+    }
     
     
     MogsInterval::get_intermediate_to_compute(Intermediate_to_compute);
@@ -138,11 +151,10 @@ void BasisFunctionSolver::init_end()
     double before_compil = get_cpu_time() ;
     
     LazyPrepare();
-    double actual_time = get_cpu_time();
-    preparation_time_ = actual_time - ts;
-    std::cout<<"preparation time : "<< preparation_time_ <<" seconds."<<std::endl;
-    std::cout<<"Compilation time : "<< actual_time -before_compil  <<" seconds."<<std::endl;
-    ts  = get_cpu_time();
+    current_time_ = get_cpu_time();
+    preparation_duration_ = current_time_ - start_preparation_time_;
+//     std::cout<<"preparation time : "<< preparation_duration_ <<" seconds."<<std::endl;
+    start_computation_time_  = get_cpu_time();
 
     init_done = true;
 }
@@ -171,46 +183,14 @@ void BasisFunctionSolver::set_next()
     }         
 }
 
-param_optim BasisFunctionSolver::set_results    ()
-{
-    double te = get_cpu_time();
-    std::cout<<"Number of Bissections : "<< cpt_iter_ <<std::endl;
-    std::cout<<"Number of valid boxes : "<< nb_valid_box_ <<std::endl;
-    std::cout<<"Number of possible boxes : "<< nb_maybe_box_<<std::endl;
-//     std::cout<<"Size of ignored space  : "<< ignored_space_<<std::endl;
-    std::cout<<"computation time (wo prep): "<< te - ts <<" seconds."<<std::endl;
-    std::cout<<"Time per iteration : "<< (te - ts)/cpt_iter_ <<" seconds."<<std::endl;
-    std::cout<<"total time : "<< te - tsglobal <<" seconds."<<std::endl;
-    close_files();
-    if(find_one_feasible_)
-    {
-        std::cout<<"crit = "<< optim_crit_ <<std::endl;
-        for (int i=0;i<nb_var_;i++)
-            std::cout<<"input["<<i<<"] = "<< optim_.in[i]<<std::endl;
-    }else
-        std::cout<<"crit =  -1 \nno feasible solution found"<<std::endl;
-    
-    param_optim out;
-    out.nb_bissections = cpt_iter_;
-    out.nb_valid_boxes = nb_valid_box_;
-    out.nb_possible_boxes = nb_maybe_box_;
-//     out.ignored_space_ = ignored_space_;
-    out.computation_time = te - ts;
-    out.computation_time_wo_prep = out.computation_time+ preparation_time_;
-    out.optim = optim_crit_;    
-    out.nb_intermediate = nb_intermediate_;
-    out.solution_found = find_one_feasible_;
-    return out;
-}
+
 
 param_optim BasisFunctionSolver::solve_optim(double eps)
 {
     solve_optim_ = true;
     init(eps);
     
-    optim_crit_ = std::numeric_limits<double>::max();
-    find_one_feasible_ =false;
-    cpt_iter_ = 0;
+    
     bool test;
     
     switch(bissection_type_)
@@ -222,17 +202,25 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
     }    
     
     std::vector<double> bissect_weight(nb_var_);
+    
+    if(current_vector_.size() == 0)
+    {
+        std::cout<<"We already load optim results (notinh in the pile)"<<std::endl;
+        return set_results();
+    }
+    
+    
 //     uint max_iter = 1e3;
     do{
 //         std::cout<<"*****************************************"<<std::endl;
-        
-//         if (cpt_iter_%10000 == 0)
-//         {
-//             std::cout<<cpt_iter_<<" crit ! "<< optim_crit_ <<std::endl;
-//         }
-        
-        
         cpt_iter_++;
+        if (cpt_iter_%1000000 == 0)
+        {
+            std::cout<<cpt_iter_<<" crit ! "<< optim_crit_ <<std::endl;
+            save_current_state(save_filename_);
+            std::exit(10);            
+        }
+        
         test = true;
         set_next();        
         check_constraint type_optim = OVERLAP;
@@ -254,7 +242,6 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
             {
                 if(!current_value_.ctr_ok[i] )
                 {
-//                     std::cout<<"dealing with ctr "<< i<< std::endl;
                     compute_intermediate_for(i);
                     switch(infos[i]->update_from_inputs(current_value_, bounds_[i],i))    
                     {

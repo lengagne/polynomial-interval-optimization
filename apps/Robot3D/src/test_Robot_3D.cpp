@@ -6,6 +6,8 @@
 #include "Problem3D.h"
 #include "Problem3D_with_torque_limit.h"
 
+#include "construct_filename_3D.h"
+
 int main( int argc, char** argv)
 {
     std::cout<<"type_of_problem : 3D"<<std::endl;
@@ -39,6 +41,19 @@ int main( int argc, char** argv)
     std::cout<<"problem = "<< problem <<std::endl;
     std::cout<<"bissection_mode = "<< bissection_mode <<std::endl;
     std::cout<<"test = "<< test <<std::endl;
+    
+    std::string save_filename = construct_filename_3D(precision,problem,bissection_mode,test);
+    std::cout<<"save_filename = "<< save_filename <<std::endl;
+    if(test != -1 && argc == 6)
+    {
+        std::string load_file = argv[5];
+        if ( load_file != save_filename)
+        {
+            std::cerr<<"Be carefull not good filename"<<std::endl;
+            std::cerr<<load_file <<" != "<< save_filename<<std::endl;
+            std::exit(13);
+        }
+    }    
     
 	bool print=false;;
     
@@ -130,7 +145,7 @@ int main( int argc, char** argv)
     pb = new Problem3D_with_torque_limit( mogs_string(robot_file.c_str()) ,"kuka_lwr_7_link",coeff_torque,target,critere);        
     
     CompareSolver cp(pb);   
-    cp.compare("Robot3D_model_"+std::to_string(problem),precision,bissection_mode,test);
+    cp.compare("Robot3D_model_"+std::to_string(problem),precision,bissection_mode,test,save_filename);
     delete pb;
     return 0;
 }

@@ -3,6 +3,7 @@
 
 #include "Interval.h"
 #include "utils.h"
+#include <QtXml>
 
 class Result
 {
@@ -22,15 +23,15 @@ public:
     std::vector<Interval> error;
     std::vector<bool> ctr_ok;
     std::vector<bool> error_ok;
-    
-    std::vector<double> bissect_weight;
-    std::vector<double> inf_sup_proba;
-    
-//     bool info_defined = false;
-    uint nb_info;
+
     
     
     friend std::ostream& operator<< (std::ostream& stream, const Result& res);
+    
+    void load(QDomElement &El);
+    
+    void save(QDomDocument &document,
+              QDomElement &El);    
 };
 
 

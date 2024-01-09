@@ -4,11 +4,11 @@ for precision in $1
 do
     for bissection_type in `seq 0 1`
     do
-        for dof in `seq 2 4`
-        do
-            for pb10 in `seq 0 1`
-            do         
-                for pb in `seq 1 9`               
+        for pb10 in `seq 0 1`
+        do            
+            for pb in `seq 1 9` 
+            do                                       
+                for dof in `seq 2 5`
                 do
                     pbname=$(($((10*$pb10))+$pb));
                     for solveur in `seq 0 8`                    
@@ -26,7 +26,7 @@ for precision in $1
 do
     for bissection_type in `seq 0 1`
     do
-        for dof in `seq 5 8`
+        for dof in `seq 6 8`
         do
             for pb10 in `seq 0 1`
             do         
