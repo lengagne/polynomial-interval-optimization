@@ -2,7 +2,7 @@ cmake_minimum_required( VERSION 2.8 )
 project (PIO)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -std=c++0x -lstdc++ -msse2 -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -std=c++17 -lstdc++ -msse2 -fPIC")
 
 if(CRRI)
 	message("We are on the CCRI")

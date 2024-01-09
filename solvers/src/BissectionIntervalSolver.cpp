@@ -66,7 +66,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     nb_maybe_box_=0;
 
     
-    Result optim = tmp;
+    optim_ = tmp;
     
     start_computation_time_ = get_cpu_time();
     std::cout<<"preparation time : "<< start_computation_time_ - start_preparation_time_ <<" seconds."<<std::endl;
@@ -87,14 +87,13 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     
 //     std::cout<<"il y a "<< nb_fun_ <<" contraintes."<<std::endl;
     do{
-        cpt_iter_++;
         
+        cpt_iter_++;
         if (cpt_iter_%1000000 == 0)
         {
             std::cout<<cpt_iter_<<" crit ! "<< optim_crit_ <<std::endl;
             save_current_state(save_filename_);
-        }        
-        
+        }                
         test = true;
         // We do not use reference because we pop_back !!
         Result  current_value = current_vector_.back();
@@ -136,7 +135,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
                                     {
                                         find_one_feasible_ = true;
                                         optim_crit_ =  Sup(current_value.out[nb_fun_]);
-                                        optim = current_value;
+                                        optim_ = current_value;
                                     }
                 case(OVERLAP)   :   
                                     Result low, high;
@@ -156,7 +155,8 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
 
 
     current_time_ = get_cpu_time();
-    return set_results();/*
+    return set_results();
+    /*
     
     std::cout<<"Number of Bissections : "<< cpt_iter_ <<std::endl;
     std::cout<<"Number of valid boxes : "<< nb_valid_box_ <<std::endl;

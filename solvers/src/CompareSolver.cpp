@@ -7,13 +7,13 @@ void CompareSolver::compare(const std::string & filename,
                             int id,
                             const std::string& save_filename)
 {
-    std::ofstream file;
-    file.open(filename+".csv");
     double precision = p;
-    file << "nb_iteration\ttemps\tcritère\tsolver"<<std::endl;
-    
     if (id == -1)
     {
+        std::ofstream file;
+        file.open(filename+".csv");        
+        file << "nb_iteration\ttemps\tcritère\tsolver"<<std::endl;
+        
         std::cout<<"Start solver comparison"<<std::endl;
         uint nb = choice_solver_.get_nb_solver();
         std::cout<<"We will compare "<< nb <<" solveurs"<<std::endl;        
@@ -46,7 +46,6 @@ void CompareSolver::compare(const std::string & filename,
         solver->set_save_filename(save_filename);
         result = solver->solve_optim(precision);
         
-        file<<result.nb_bissections<<"\t"<<result.computation_time<<"\t"<<result.optim<<"\t"<<choice_solver_.get_solver_name(id)<<std::endl;
         delete solver;
         std::cout<<"fin du solveur "<< id <<std::endl;
         
