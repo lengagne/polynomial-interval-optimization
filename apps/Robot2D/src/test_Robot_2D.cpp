@@ -48,17 +48,16 @@ int main( int argc, char** argv)
         bissection_mode = atoi(argv[4]);
 	if(argc > 5)
         test = atoi(argv[5]);   
-    
-    std::string save_filename = construct_filename_2D(ndof,npb,precision,bissection_mode,test);
-    std::cout<<"save_filename = "<< save_filename <<std::endl;
-    if(test != -1 && argc == 7)
+
+    std::string save_filename;    
+    if(test != -1)
     {
-        std::string load_file = argv[6];
-        if ( load_file != save_filename)
+        if (argc >= 7)
         {
-            std::cerr<<"Be carefull not good filename"<<std::endl;
-            std::cerr<<load_file <<" != "<< save_filename<<std::endl;
-            std::exit(13);
+            save_filename = argv[6];
+        }else
+        {
+            save_filename =  construct_filename_2D(ndof,npb,precision,bissection_mode,test);
         }
     }
     

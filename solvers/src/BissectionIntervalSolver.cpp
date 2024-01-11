@@ -42,7 +42,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
 
     optim_crit_ = std::numeric_limits<double>::max();
     find_one_feasible_ =false;        
-
+    cpt_iter_ = 0;
     if (save_and_load_)
     {        
         std::cout<<"load file"<<std::endl;
@@ -55,18 +55,14 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     else
     {
         std::cout<<"no load file"<<std::endl;
-        current_vector_.push_back(tmp);    
-        cpt_iter_ = 0;
-    }
-    
-    
+        current_vector_.push_back(tmp);            
+        optim_ = tmp;
+    }       
 
     bool test;
     nb_valid_box_=0;
     nb_maybe_box_=0;
-
     
-    optim_ = tmp;
     
     start_computation_time_ = get_cpu_time();
     std::cout<<"preparation time : "<< start_computation_time_ - start_preparation_time_ <<" seconds."<<std::endl;
@@ -81,7 +77,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     
     if(current_vector_.size() == 0)
     {
-        std::cout<<"We already load optim results (notinh in the pile)"<<std::endl;
+        std::cout<<"We already load optim results (nothing  in the pile)"<<std::endl;
         return set_results();
     }    
     
@@ -89,10 +85,12 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     do{
         
         cpt_iter_++;
-        if (cpt_iter_%1000000 == 0)
+        if (cpt_iter_%save_each_iter_ == 0)
         {
             std::cout<<cpt_iter_<<" crit ! "<< optim_crit_ <<std::endl;
             save_current_state(save_filename_);
+            cpt_iter_ = 0;
+            saved_iter_ ++;
         }                
         test = true;
         // We do not use reference because we pop_back !!

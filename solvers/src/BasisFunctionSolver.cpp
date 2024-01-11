@@ -76,22 +76,24 @@ void BasisFunctionSolver::init(double eps)
     
     Result tmp(pb_->get_input(), nb_fun_+nb_intermediate_, pb_->get_criteria());
     
-    if(solve_optim_)
-        optim_ = tmp;
+
     
     
     optim_crit_ = std::numeric_limits<double>::max();
     find_one_feasible_ =false;        
-
+    cpt_iter_ = 0;
     if (save_and_load_)
     {        
         if (! load_save_filename(save_filename_,tmp))
+        {
             current_vector_.push_back(tmp);  
+            optim_ = tmp;
+        }
     }
     else
     {
-        current_vector_.push_back(tmp);    
-        cpt_iter_ = 0;
+        current_vector_.push_back(tmp);  
+        optim_ = tmp;
     }
     
     
@@ -205,7 +207,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
     
     if(current_vector_.size() == 0)
     {
-        std::cout<<"We may already load optim results (notinh in the pile)"<<std::endl;
+        std::cout<<"We may already load optim results (nothing in the pile)"<<std::endl;
         return set_results();
     }
     
@@ -214,11 +216,12 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
     do{
 //         std::cout<<"*****************************************"<<std::endl;
         cpt_iter_++;
-        if (cpt_iter_%1000000 == 0)
+        if (cpt_iter_%save_each_iter_ == 0)
         {
             std::cout<<cpt_iter_<<" crit ! "<< optim_crit_ <<std::endl;
-            save_current_state(save_filename_);
-            std::exit(10);            
+            save_current_state(save_filename_);   
+            cpt_iter_ = 0;
+            saved_iter_ ++;            
         }
         
         test = true;

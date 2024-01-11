@@ -41,19 +41,33 @@ int main( int argc, char** argv)
     std::cout<<"problem = "<< problem <<std::endl;
     std::cout<<"bissection_mode = "<< bissection_mode <<std::endl;
     std::cout<<"test = "<< test <<std::endl;
+
+//     std::string save_filename;    
+// //     std::string save_filename = construct_filename_3D(precision,problem,bissection_mode,test);
+// //     std::cout<<"save_filename = "<< save_filename <<std::endl;
+//     if(test != -1 && argc == 6)
+//     {
+//         save_filename = argv[5];
+// //         if ( load_file != save_filename)
+// //         {
+// //             std::cerr<<"Be carefull not good filename"<<std::endl;
+// //             std::cerr<<load_file <<" != "<< save_filename<<std::endl;
+// //             std::exit(13);
+// //         }
+//     }    
     
-    std::string save_filename = construct_filename_3D(precision,problem,bissection_mode,test);
-    std::cout<<"save_filename = "<< save_filename <<std::endl;
-    if(test != -1 && argc == 6)
+    std::string save_filename;    
+    if(test != -1)
     {
-        std::string load_file = argv[5];
-        if ( load_file != save_filename)
+        if (argc >= 6)
         {
-            std::cerr<<"Be carefull not good filename"<<std::endl;
-            std::cerr<<load_file <<" != "<< save_filename<<std::endl;
-            std::exit(13);
+            save_filename = argv[5];
+        }else
+        {
+            save_filename = construct_filename_3D(precision,problem,bissection_mode,test);
         }
-    }    
+    }
+    
     
 	bool print=false;;
     
@@ -76,21 +90,21 @@ int main( int argc, char** argv)
         case(11):
                 coeff_torque = 1.0;
                 target = 0;
-                robot_file = "../model/kuka_lwr_4dof.xml";
+                robot_file = "../../model/kuka_lwr_4dof.xml";
                 break;
         // full torque, target (0.6,0.6,0.6)
         case(2):
         case(12):    
                 coeff_torque = 1.0;
                 target = 1;
-                robot_file = "../model/kuka_lwr_4dof.xml"; 
+                robot_file = "../../model/kuka_lwr_4dof.xml"; 
                 break;
         // 10% torque, target (0.4,0.4,0.7)
         case(3):
         case(13):
                 coeff_torque = 0.1;
                 target = 0;
-                robot_file = "../model/kuka_lwr_4dof.xml";
+                robot_file = "../../model/kuka_lwr_4dof.xml";
                 break;
         
         // 10% torque, target (0.6,0.6,0.6)
@@ -98,7 +112,7 @@ int main( int argc, char** argv)
         case(14):
                 coeff_torque = 0.1;
                 target = 1;
-                robot_file = "../model/kuka_lwr_4dof.xml";
+                robot_file = "../../model/kuka_lwr_4dof.xml";
                 break;
         
         // full torque, target (0.4,0.4,0.7)
@@ -106,7 +120,7 @@ int main( int argc, char** argv)
         case(15):
                 coeff_torque = 1.0;
                 target = 0;
-                robot_file = "../model/kuka_lwr.xml";
+                robot_file = "../../model/kuka_lwr.xml";
                 break;
         
         // full torque, target (0.6,0.6,0.6)
@@ -114,7 +128,7 @@ int main( int argc, char** argv)
         case(16):
                 coeff_torque = 1.0;
                 target = 1;
-                robot_file = "../model/kuka_lwr.xml";
+                robot_file = "../../model/kuka_lwr.xml";
                 break;
 
         // 10% torque, target (0.4,0.4,0.7)
@@ -122,7 +136,7 @@ int main( int argc, char** argv)
         case(17):
                 coeff_torque = 0.1;
                 target = 0;
-                robot_file = "../model/kuka_lwr.xml";
+                robot_file = "../../model/kuka_lwr.xml";
                 break;
         
         // 10% torque, target (0.6,0.6,0.6)
@@ -130,7 +144,7 @@ int main( int argc, char** argv)
         case(18):
                 coeff_torque = 0.1;
                 target = 1;
-                robot_file = "../model/kuka_lwr.xml";
+                robot_file = "../../model/kuka_lwr.xml";
                 break;
         
         default: 

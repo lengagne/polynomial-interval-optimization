@@ -1,5 +1,8 @@
 #ifndef AbstractSolver_H
 #define AbstractSolver_H
+
+#define DEFAULT_SAVE_EACH_ITER 1000000
+
 #include <iostream>
 #include <fstream>
 
@@ -66,6 +69,8 @@ class AbstractSolver
         virtual param_optim set_results();
         
         void set_save_filename( const std::string& s);
+        
+        QString update_filename( const std::string& filename); // check the filename and update version.
 
     protected:
         AbstractCSP *pb_;
@@ -85,6 +90,8 @@ class AbstractSolver
 
         double precision_;
         unsigned long long int cpt_iter_;
+        unsigned long int save_each_iter_ = DEFAULT_SAVE_EACH_ITER;
+        unsigned long int saved_iter_ = 0;
         
         double current_time_;
         double start_preparation_time_;
@@ -103,8 +110,7 @@ class AbstractSolver
         
         bool save_and_load_ = false;
         std::string save_filename_ = "no_save";
-        
-        
+               
     private:
 
         bool file_open = false;

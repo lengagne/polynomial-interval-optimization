@@ -2,6 +2,8 @@
 #include <string.h>
 
 #include <QtXml>
+#include <QFile>
+#include <QFileInfo>
 
 bool AbstractSolver::check_size(   const Result& in)
 {
@@ -179,7 +181,13 @@ bool AbstractSolver::load_save_filename( const std::string& filename,
          
          if (Child.tagName()=="computation_time") previous_time_ = Child.firstChild().toText().data().toDouble();
          
-         if (Child.tagName()=="cpt_iter") cpt_iter_ = Child.firstChild().toText().data().toInt();
+         if (Child.tagName()=="cpt_iter")
+         {
+             cpt_iter_ = Child.attribute("nb").toLong(); 
+             save_each_iter_ = Child.attribute("save_each_iter").toLong(); 
+             saved_iter_ = Child.attribute("saved_iter_").toLong(); 
+             std::cout<<"run from iteration "<< cpt_iter_ <<std::endl;
+         }
          
          if (Child.tagName()=="pile")
          {
@@ -207,8 +215,8 @@ bool AbstractSolver::load_save_filename( const std::string& filename,
 }
 
 void AbstractSolver::save_current_state( const std::string& filename)
-{    
-    QString qFileName = QString::fromStdString(filename);
+{        
+    QString qFileName = update_filename(filename);
     QFile xmlFile(qFileName);
     if (!xmlFile.open(QFile::WriteOnly | QFile::Text ))
     {
@@ -244,8 +252,9 @@ void AbstractSolver::save_current_state( const std::string& filename)
     root.appendChild(computation_time);        
     
     QDomElement cpt_iter = document.createElement("cpt_iter");
-    text = document.createTextNode(QString::number(cpt_iter_));
-    cpt_iter.appendChild(text);
+    cpt_iter.setAttribute("cpt_iter", QString::number(cpt_iter_));
+    cpt_iter.setAttribute("save_each_iter", QString::number(save_each_iter_));
+    cpt_iter.setAttribute("saved_iter_", QString::number(saved_iter_));
     root.appendChild(cpt_iter);     
     
     QDomElement pile = document.createElement("pile");
@@ -278,12 +287,12 @@ void AbstractSolver::save_current_state( const std::string& filename)
 param_optim AbstractSolver::set_results()
 {
     current_time_ = get_cpu_time();
-    std::cout<<"Number of Bissections : "<< cpt_iter_ <<std::endl;
+    std::cout<<"Number of Bissections : "<< (saved_iter_*save_each_iter_)+ cpt_iter_ <<std::endl;
     std::cout<<"Number of valid boxes : "<< nb_valid_box_ <<std::endl;
     std::cout<<"Number of possible boxes : "<< nb_maybe_box_<<std::endl;
 //     std::cout<<"Size of ignored space  : "<< ignored_space_<<std::endl;
     std::cout<<"computation time (wo prep): "<< previous_time_ + current_time_ - start_computation_time_ <<" seconds."<<std::endl;
-    std::cout<<"Time per iteration : "<< (previous_time_ + current_time_ - start_computation_time_)/cpt_iter_ <<" seconds."<<std::endl;
+    std::cout<<"Time per iteration : "<< (previous_time_ + current_time_ - start_computation_time_)/((saved_iter_*save_each_iter_)+cpt_iter_) <<" seconds."<<std::endl;
     std::cout<<"total time : "<< previous_time_+ current_time_ - start_preparation_time_ <<" seconds."<<std::endl;
     close_files();
     if(find_one_feasible_)
@@ -297,7 +306,7 @@ param_optim AbstractSolver::set_results()
     save_current_state(save_filename_);
     
     param_optim out;
-    out.nb_bissections = cpt_iter_;
+    out.nb_bissections = (saved_iter_*save_each_iter_)+ cpt_iter_;
     out.nb_valid_boxes = nb_valid_box_;
     out.nb_possible_boxes = nb_maybe_box_;
     out.computation_time = previous_time_ + current_time_ - start_preparation_time_;
@@ -323,4 +332,22 @@ check_constraint AbstractSolver::test_Interval( const Interval &in ,
     if ( Inf(in) > Sup(bound) ||  Sup(in) < Inf(bound))
         return OUTSIDE;
     return OVERLAP;
+}
+
+QString AbstractSolver::update_filename(const std::string & filename)
+{
+    int version = 1;
+    QString newFilename;
+    QString qFileName = QString::fromStdString(filename);
+    QFileInfo fileInfo(qFileName);
+    QString baseName = fileInfo.completeBaseName(); // Nom du fichier sans extension
+    QString extension = fileInfo.suffix(); // Extension du fichier        
+    do{        
+        newFilename = baseName + "_v" + QString::number(version);
+        if (!extension.isEmpty()) {
+            newFilename += "." + extension;
+        }        
+        version++;
+    }while (QFile::exists(newFilename));
+    return newFilename;
 }

@@ -10,14 +10,16 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     
     QString repo = ".";
-    if (argc == 2)
+    if (argc >= 2)
     {
         repo = argv[1];
     }           
     
 	QDir directory(repo);
 
-    QStringList filesList = directory.entryList(QDir::Files);
+    QStringList filesList = directory.entryList(QDir::Files);    
+    filesList = filesList.filter(".out");
+    
     QString fileName;
 
     std::vector<data_format*> datas_;
@@ -29,22 +31,21 @@ int main(int argc, char *argv[])
         QString current = *it;
         {
             data_format* d = new data_format(( repo  + current).toStdString());
-//             if ( !d->time_out_)
             {
                 datas_.push_back(d);
             }
         }
     }
     
-    create_csv(datas_, "nb_iter", "ndof", "solver", "problem", repo.toStdString() + "problem");
-    create_csv(datas_, "nb_iter", "ndof", "problem", "solver", repo.toStdString() + "solver");
-
-    create_csv(datas_, "total_time", "ndof", "solver", "problem", repo.toStdString() + "problem");
-    create_csv(datas_, "total_time", "ndof", "problem", "solver", repo.toStdString() + "solver");
-
-    // to get the ratio
-    create_csv(datas_, "nb_iter", "ndof", "solver", "problem", repo.toStdString() + "problem",true);
-    create_csv(datas_, "total_time", "ndof", "solver", "problem", repo.toStdString() + "problem",true);
+//     create_csv(datas_, "nb_iter", "ndof", "solver", "problem", repo.toStdString() + "problem");
+//     create_csv(datas_, "nb_iter", "ndof", "problem", "solver", repo.toStdString() + "solver");
+// 
+//     create_csv(datas_, "total_time", "ndof", "solver", "problem", repo.toStdString() + "problem");
+//     create_csv(datas_, "total_time", "ndof", "problem", "solver", repo.toStdString() + "solver");
+// 
+//     // to get the ratio
+//     create_csv(datas_, "nb_iter", "ndof", "solver", "problem", repo.toStdString() + "problem",true);
+//     create_csv(datas_, "total_time", "ndof", "solver", "problem", repo.toStdString() + "problem",true);
 
     
     std::vector<std::string> order_latex;
@@ -60,6 +61,7 @@ int main(int argc, char *argv[])
     order_latex.push_back("nb_iter");
     order_latex.push_back("time_per_iter");
     order_latex.push_back("criteria");
+//     order_latex.push_back("filename");
     
     std::vector<std::string> common;
     common.push_back("type");

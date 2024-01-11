@@ -110,9 +110,15 @@ data_format::data_format( const std::string& filename)
         std::cout<<"rm -frv "<< filename<<std::endl;
         std::cout<<"sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"] <<std::endl;
         
-        std::cout<<"sbatch job_long.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"] <<std::endl;
+//         std::cout<<"sbatch job_long.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"] <<std::endl;
         infos["criteria"] = filename;
     }
+    
+//     for ( auto& i : infos)
+//     {
+//         std::cout<<i.first<<" - "<< i.second <<std::endl;
+//     }
+//     std::cout<<"**********************"<<std::endl;
 }
 
 data_format::data_format( const data_format& f)
@@ -344,7 +350,7 @@ void create_latex( const std::vector< data_format*> datas,
                    const std::string main_title
                  )
 {
-    std::cout<<"CREATE LATEX With "<< filename <<std::endl;
+    std::cout<<"CREATE LATEX With "<< filename <<" "<< datas.size() <<std::endl;
     std::vector< std::vector< std::string > > differences;
     for (auto& d : datas)
     {
@@ -434,7 +440,7 @@ void create_latex( const std::vector< data_format*> datas,
     }
     outfile.close();
     
-    
+    std::cout<<std::endl;
 }
 
 
@@ -453,7 +459,7 @@ void create_latex_subpart( std::ofstream& outfile,
 //     std::cout<<"looking for "<< columns[index]<<"  in "<< datas.size() <<std::endl;
     
     std::string ref = columns[index];
-    for (int i=0;i<index;i++)   std::cout<<"\t";
+//     for (int i=0;i<index;i++)   std::cout<<"\t";
 //     std::cout<<"ref = "<< ref <<std::endl;
     std::list<std::string> type_data;
     // get the common absciss
@@ -473,6 +479,7 @@ void create_latex_subpart( std::ofstream& outfile,
     
     if (ref == "problem")
         type_data = re_order( type_data,pb_order_);
+
     
     uint cpt = 0;
     for (auto& t : type_data)
@@ -488,6 +495,13 @@ void create_latex_subpart( std::ofstream& outfile,
        
         if (cpt)
             outfile<<replace(entete);
+        
+        if (ref == "solver" && local_data.size() >1)
+        {
+            std::cout<<"We have several inputs for this case in files : "<<std::endl;
+            for (auto& d : local_data)
+                std::cout<<d->infos["filename"]<<std::endl;
+        }
         
         if ( local_data.size() == 1)
         {
