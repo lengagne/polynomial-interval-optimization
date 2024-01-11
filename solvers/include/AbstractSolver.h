@@ -1,7 +1,7 @@
 #ifndef AbstractSolver_H
 #define AbstractSolver_H
 
-#define DEFAULT_SAVE_EACH_ITER 1000000
+#define DEFAULT_SAVE_EACH_ITER 10000000
 
 #include <iostream>
 #include <fstream>
@@ -70,7 +70,7 @@ class AbstractSolver
         
         void set_save_filename( const std::string& s);
         
-        QString update_filename( const std::string& filename); // check the filename and update version.
+        std::string update_filename( const std::string& filename); // check the filename and update version.
 
     protected:
         AbstractCSP *pb_;

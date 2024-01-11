@@ -96,6 +96,7 @@ void BasisFunctionSolver::init(double eps)
         optim_ = tmp;
     }
     
+    std::cout<<"save_filename = "<< save_filename_<<std::endl;
     
     MogsInterval::get_intermediate_to_compute(Intermediate_to_compute);
     MogsInterval::get_intermediate_to_update(Intermediate_to_update);

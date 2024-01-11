@@ -45,20 +45,19 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     cpt_iter_ = 0;
     if (save_and_load_)
     {        
-        std::cout<<"load file"<<std::endl;
         if (! load_save_filename(save_filename_,tmp))
         {
-            std::cout<<"FAIL to load file "<<std::endl;
             current_vector_.push_back(tmp);  
         }
     }
     else
     {
-        std::cout<<"no load file"<<std::endl;
         current_vector_.push_back(tmp);            
         optim_ = tmp;
     }       
 
+    std::cout<<"save_filename = "<< save_filename_<<std::endl;
+    
     bool test;
     nb_valid_box_=0;
     nb_maybe_box_=0;

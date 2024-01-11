@@ -12,7 +12,7 @@ std::string construct_filename_3D(
     filename += "_npb" + std::to_string(npb);    
     filename += "_bimo" + std::to_string(bissection_mode);
     filename += "_tybi" + std::to_string(type_bissection);
-    filename += ".sop"; // Save Optim Process
+    filename += "_v1.sop"; // Save Optim Process
     
     return filename;
 }

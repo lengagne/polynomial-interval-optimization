@@ -4,6 +4,7 @@
 #include <QtXml>
 #include <QFile>
 #include <QFileInfo>
+#include <QRegExp>
 
 bool AbstractSolver::check_size(   const Result& in)
 {
@@ -183,10 +184,12 @@ bool AbstractSolver::load_save_filename( const std::string& filename,
          
          if (Child.tagName()=="cpt_iter")
          {
-             cpt_iter_ = Child.attribute("nb").toLong(); 
+             cpt_iter_ = Child.attribute("cpt_iter").toLong(); 
              save_each_iter_ = Child.attribute("save_each_iter").toLong(); 
              saved_iter_ = Child.attribute("saved_iter_").toLong(); 
-             std::cout<<"run from iteration "<< cpt_iter_ <<std::endl;
+             std::cout<<"load cpt_iter_ "<< cpt_iter_ <<std::endl;
+             std::cout<<"load save_each_iter_ "<< save_each_iter_ <<std::endl;
+             std::cout<<"load saved_iter_ "<< saved_iter_ <<std::endl;
          }
          
          if (Child.tagName()=="pile")
@@ -211,12 +214,16 @@ bool AbstractSolver::load_save_filename( const std::string& filename,
     }    
     file.close();    
     
+    // update filename for saving 
+    
+    save_filename_ = update_filename(filename);
+    
     return true;
 }
 
 void AbstractSolver::save_current_state( const std::string& filename)
 {        
-    QString qFileName = update_filename(filename);
+    QString qFileName = QString::fromStdString(filename);
     QFile xmlFile(qFileName);
     if (!xmlFile.open(QFile::WriteOnly | QFile::Text ))
     {
@@ -334,13 +341,15 @@ check_constraint AbstractSolver::test_Interval( const Interval &in ,
     return OVERLAP;
 }
 
-QString AbstractSolver::update_filename(const std::string & filename)
+std::string AbstractSolver::update_filename(const std::string & filename)
 {
     int version = 1;
     QString newFilename;
     QString qFileName = QString::fromStdString(filename);
     QFileInfo fileInfo(qFileName);
-    QString baseName = fileInfo.completeBaseName(); // Nom du fichier sans extension
+     // Utiliser une expression régulière pour retirer le suffixe _vX
+    QRegExp regex("(_v\\d+)(\\.[^\\.]+)?$"); // _v suivi de chiffres, suivi éventuellement d'une extension
+    QString baseName = qFileName.replace(regex,"");
     QString extension = fileInfo.suffix(); // Extension du fichier        
     do{        
         newFilename = baseName + "_v" + QString::number(version);
@@ -349,5 +358,5 @@ QString AbstractSolver::update_filename(const std::string & filename)
         }        
         version++;
     }while (QFile::exists(newFilename));
-    return newFilename;
+    return newFilename.toStdString();
 }
