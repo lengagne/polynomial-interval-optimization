@@ -86,7 +86,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
         cpt_iter_++;
         if (cpt_iter_%save_each_iter_ == 0)
         {
-            std::cout<<cpt_iter_<<" crit ! "<< optim_crit_ <<std::endl;
+//             std::cout<<cpt_iter_<<" crit ! "<< optim_crit_ <<std::endl;
             save_current_state(save_filename_);
             cpt_iter_ = 0;
             saved_iter_ ++;
