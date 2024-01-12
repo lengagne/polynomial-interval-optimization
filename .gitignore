@@ -32,3 +32,6 @@
 *.app
 
 build
+scripts/*/*.sop
+scripts/*/*.csv
+scripts/*/*.cpp

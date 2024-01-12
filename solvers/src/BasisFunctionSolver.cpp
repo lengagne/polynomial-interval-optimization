@@ -156,7 +156,7 @@ void BasisFunctionSolver::init_end()
     LazyPrepare();
     current_time_ = get_cpu_time();
     preparation_duration_ = current_time_ - start_preparation_time_;
-//     std::cout<<"preparation time : "<< preparation_duration_ <<" seconds."<<std::endl;
+    std::cout<<"preparation time : "<< preparation_duration_ <<" seconds."<<std::endl;
     start_computation_time_  = get_cpu_time();
 
     init_done = true;
