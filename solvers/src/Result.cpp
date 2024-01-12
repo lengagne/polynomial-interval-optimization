@@ -98,48 +98,53 @@ void Result::save(  QDomDocument &document,
         inter.setAttribute("inf", QString::number(Inf(in[j]),'e',24));
         inter.setAttribute("sup", QString::number(Sup(in[j]),'e',24));
         El.appendChild(inter);
+//         std::cout<<"in["<<j<<"] = "<< in[j] <<std::endl;
     }        
     
     uint nb_out = out.size();
     El.setAttribute("nb_out", QString::number(nb_out));
-    for (int j=0;j<nb_in;j++)
+    for (int j=0;j<nb_out;j++)
     {
         QDomElement inter = document.createElement("output");
         inter.setAttribute("id", QString::number(j));
         inter.setAttribute("inf", QString::number(Inf(out[j]),'e',24));
         inter.setAttribute("sup", QString::number(Sup(out[j]),'e',24));
         El.appendChild(inter);
+//         std::cout<<"out["<<j<<"] = "<< out[j] <<std::endl;
     }   
     
     uint nb_error = error.size();
     El.setAttribute("nb_error", QString::number(nb_error));
-    for (int j=0;j<nb_in;j++)
+    for (int j=0;j<nb_error;j++)
     {
         QDomElement inter = document.createElement("error");
         inter.setAttribute("id", QString::number(j));
         inter.setAttribute("inf", QString::number(Inf(error[j]),'e',24));
         inter.setAttribute("sup", QString::number(Sup(error[j]),'e',24));
         El.appendChild(inter);
+//         std::cout<<"error["<<j<<"] = "<< error[j] <<std::endl;
     }  
     
     uint nb_ctr_ok = ctr_ok.size();
     El.setAttribute("nb_ctr_ok", QString::number(nb_ctr_ok));
-    for (int j=0;j<nb_in;j++)
+    for (int j=0;j<nb_ctr_ok;j++)
     {
         QDomElement inter = document.createElement("ctr_ok");
         inter.setAttribute("id", QString::number(j));        
         inter.setAttribute("bool", QVariant(ctr_ok[j]).toString());
         El.appendChild(inter);
+//         std::cout<<"ctr_ok["<<j<<"] = "<< ctr_ok[j] <<std::endl;
     }      
     
     uint nb_error_ok = error_ok.size();
     El.setAttribute("nb_error_ok", QString::number(nb_error_ok));
-    for (int j=0;j<nb_in;j++)
+    for (int j=0;j<nb_error_ok;j++)
     {
         QDomElement inter = document.createElement("error_ok");
         inter.setAttribute("id", QString::number(j));        
         inter.setAttribute("bool", QVariant(error_ok[j]).toString());
         El.appendChild(inter);
+//         std::cout<<"error_ok["<<j<<"] = "<< error_ok[j] <<std::endl;
     }          
 }
  

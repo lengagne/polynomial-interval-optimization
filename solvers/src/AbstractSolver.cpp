@@ -277,12 +277,9 @@ void AbstractSolver::save_current_state( const std::string& filename)
     }
     root.appendChild(pile);
     
-//     std::cout<<"SAVE optim_crit_ = "<< optim_crit_ <<std::endl;
-    
     QDomElement optim = document.createElement("optim");
     optim.setAttribute("crit", QString::number(optim_crit_,'e',24));
     optim.setAttribute("feasible", QVariant(find_one_feasible_).toString());
-    
     optim_.save(document,optim);
     root.appendChild(optim);   
     

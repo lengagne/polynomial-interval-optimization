@@ -133,6 +133,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
                                         find_one_feasible_ = true;
                                         optim_crit_ =  Sup(current_value.out[nb_fun_]);
                                         optim_ = current_value;
+//                                         save_current_state(save_filename_);
                                     }
                 case(OVERLAP)   :   
                                     Result low, high;
