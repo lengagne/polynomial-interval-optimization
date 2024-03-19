@@ -31,11 +31,13 @@ int main(int argc, char *argv[])
         QString current = *it;
         {
             data_format* d = new data_format(( repo  + current).toStdString());
-            {
-                datas_.push_back(d);
-            }
+            datas_.push_back(d);
         }
     }
+    
+    set_pourcentage( datas_);
+    
+   
     
 //     create_csv(datas_, "nb_iter", "ndof", "solver", "problem", repo.toStdString() + "problem");
 //     create_csv(datas_, "nb_iter", "ndof", "problem", "solver", repo.toStdString() + "solver");
@@ -61,11 +63,15 @@ int main(int argc, char *argv[])
     order_latex.push_back("nb_iter");
     order_latex.push_back("time_per_iter");
     order_latex.push_back("criteria");
+    order_latex.push_back("comput_time (%)");
+    order_latex.push_back("total_time (%)");    
+    order_latex.push_back("nb_iter (%)");
 //     order_latex.push_back("filename");
+//     order_latex.push_back("save_filename");   
     
     std::vector<std::string> common;
-    common.push_back("type");
     common.push_back("problem");
+    common.push_back("type");
     
     std::vector<std::string> remove;
     remove.push_back("Contraction");
@@ -74,6 +80,5 @@ int main(int argc, char *argv[])
     remove.clear();
     remove.push_back("Bissection");
     create_latex( datas_, "recap_cont_2D", order_latex,common,remove,"Contraction of problem 2D with ");
-    
     
 }

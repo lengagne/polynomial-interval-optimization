@@ -9,6 +9,5 @@
 #SBATCH --constraint=ivy 
 #SBATCH --partition=long 
 
-cd ..
-../build/apps/Robot3D/Robot3D $1 $2 $3 $4
+../../build/apps/Robot3D/Robot3D $1 $2 $3 $4 $5
 exit 0

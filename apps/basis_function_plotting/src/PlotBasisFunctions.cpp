@@ -59,43 +59,23 @@ int main( int argv, char** argc)
     for (int i=min_bfi;i<=max_bfi;i++)   vbf.push_back(i);
     
     AbstractBasisFunction* bf;
-    
-    std::ofstream outfile ("basis_functions.tex");
-    
-    outfile<<"\\begin{table}[htb]\n";
-    outfile<<"\\tiny \n";
-    outfile<<"\\begin{tabular}{|c|c|c|c|}\n \\hline \n";
-    
-    if (plot_B_invV)
-    {
-        outfile<<"type & order&  $\\mathbf B $ \\\\  \\hline \\hline\n";   
-    }else
-    {
-        outfile<<"type & order&  $\\mathbf B^{-1} $ \\\\  \\hline \\hline\n";   
-    }
-    
+
+    // create the plots    
+    std::cout<<"creating plots"<<std::endl;
     for (int j=0;j<vbf.size();j++) for (int i=0;i<vorder.size();i++) 
     {    
         uint order = vorder[i];
         uint bfi = vbf[j];
         
         std::string basis_type = choice.get_basis_type(j);
-        std::cout<<std::endl<<"basis = "<< basis_type <<std::endl;
-        std::cout<<"order = "<< order <<std::endl;
+//         std::cout<<std::endl<<"basis = "<< basis_type <<std::endl;
+//         std::cout<<"order = "<< order <<std::endl;
         choice.choose(&bf,j);
         Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> M(order+1,order+1),N(order+1,order+1);
         
         bf->get_basis_coeff_matrix(inter,order,M,N);
-        std::cout<<"Matrice = "<< M <<std::endl;
-        std::cout<<"Inverse = "<< N <<std::endl;
-        
-        if (plot_B_invV)
-        {
-            outfile<<basis_type <<" & " << order <<" &  "<< latex_matrix(M)<<" \\\\ \\hline\n";
-        }else
-        {
-            outfile<<basis_type <<" & " << order <<" &  "<< latex_matrix(N)<<" \\\\ \\hline\n";
-        }
+//         std::cout<<"Matrice = "<< M <<std::endl;
+//         std::cout<<"Inverse = "<< N <<std::endl;
         
         delete bf;
         
@@ -147,8 +127,74 @@ int main( int argv, char** argc)
         
     }
     
-    outfile<<"\\end{tabular} \n";
-    outfile<<"\\end{table}\n";
+    
+    // create latex file
+    std::cout<<"creating latex files"<<std::endl;
+    
+    std::ofstream outfile ("basis_functions.tex");
+    
+    if (plot_B_invV)
+    {
+        
+    }else
+    {
+        outfile<<"type & order&  $\\mathbf B^{-1} $ \\\\  \\hline \\hline\n";   
+    }
+    
+    for (int j=0;j<vbf.size();j++)
+    {
+        std::string basis_type = choice.get_basis_type(j);
+        choice.choose(&bf,j);
+        
+        outfile<<"\\begin{table}[htb]\n";
+        outfile<<"\\resizebox{\\textwidth}{!}{  \n";
+        outfile<<"\\begin{tabular}{|c|c|c|}\n \\hline \n";
+        outfile<<"matrice & order&  $ value $ \\\\  \\hline \\hline\n";   
+        
+        for (int k=0;k<2;k++)
+        {
+            for (int i=0;i<vorder.size();i++) 
+            {    
+                uint order = vorder[i];
+                uint bfi = vbf[j];
+                
+                
+                std::cout<<std::endl<<"basis = "<< basis_type <<std::endl;
+                std::cout<<"order = "<< order <<std::endl;
+                
+                Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> M(order+1,order+1),N(order+1,order+1);
+                
+                bf->get_basis_coeff_matrix(inter,order,M,N);
+                std::cout<<"Matrice = "<< M <<std::endl;
+                std::cout<<"Inverse = "<< N <<std::endl;
+                
+                if (i==0)
+                {
+                    if(k==0)                        
+                        outfile<<"\\multirow{"<<vorder.size()<<"}{*}{$\\mathbf B$}" <<" & ";
+                    else
+                        outfile<<"\\multirow{"<<vorder.size()<<"}{*}{$\\mathbf B^{-1}$} " <<" & ";
+                }else
+                {
+                    outfile<<" " <<" & ";
+                }
+                
+                if(k==0)                        
+                    outfile<< order <<" &  "<< latex_matrix(M)<<" \\\\ \\cline{2-3}\n";
+                else
+                    outfile<< order <<" &  "<< latex_matrix(N)<<" \\\\ \\cline{2-3}\n";
+            }
+            outfile<<"\\cline{1-2} ";
+        }
+        delete bf;    
+        outfile<<"\\end{tabular} \n";
+        outfile<<"}\n";
+        outfile<<"\\caption{Values of the matrices $\\mathbf{B}$ and $\\mathbf{B}^{-1}$ for the "<<  basis_type <<" basis functions from order 1 to 6.   \}"<<std::endl;
+        outfile<<"\\label{tab_val_"<<  basis_type <<"\}"<<std::endl;
+        outfile<<"\\end{table}\n";
+    }
+    
+
     outfile.close();
 
 }

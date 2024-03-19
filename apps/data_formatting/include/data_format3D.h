@@ -14,19 +14,10 @@ class data_format3D : public data_format
 public:
     data_format3D( const std::string& filename);
     
+    data_format3D( const data_format3D& f);
+    
+    virtual void print_re_run();
 
 };
-
-// void create_latex( const std::vector< data_format3D*> datas,
-//                    const std::string filename,
-//                    std::vector<std::string> & columns);
-// 
-// void create_latex_subpart( std::ofstream& outfile,
-//                            uint index,
-//                            std::vector<std::string> & columns,
-//                            const std::vector< data_format3D*> datas,
-//                            const std::string& entete = "");     
-// 
-// void init_order();
 
 #endif

@@ -14,7 +14,6 @@ std::list<std::string> solver_order_;
 std::list<std::string> bissect_order_;
 std::list<std::string> pb_order_;
 
-
 std::ostream& scientificFormat(std::ostream& os, double value) {
     // Calcul de l'exposant pour qu'il soit un multiple de 3
     int exponent = static_cast<int>(std::floor(std::log10(std::abs(value)) / 3) * 3);
@@ -69,6 +68,7 @@ data_format::data_format( const std::string& filename)
             add_data(line,"(D-H:M:S.ms)", "total time :");
             add_data(line,"type", "Bissection : ");
             add_data(line,"criteria", "crit = ");            
+            add_data(line,"save_filename", "save_filename = ");            
             
             if (loof_for(line,"DUE TO TIME LIMIT"))
             {
@@ -81,16 +81,16 @@ data_format::data_format( const std::string& filename)
             }
             if (loof_for(line,"CANCELLED AT"))
             {
-                time_out_ = true;                
+                fail_ = true;                
                 infos["prep_time"] = "CANCELLED";
                 infos["nb_iter"] = "CANCELLED";
                 infos["comput_time"] = "CANCELLED";
                 infos["time_per_iter"] = "CANCELLED";
-                infos["total_time"] = "CANCELLED";                   
+                infos["total_time"] = "CANCELLED";             
             }        
             if (loof_for(line,"Cannot load the library, stopping program"))
             {
-                time_out_ = true;                
+                fail_ = true;                
                 infos["prep_time"] = "CANNOT_LOAD_LIBRARY";
                 infos["nb_iter"] = "CANNOT_LOAD_LIBRARY";
                 infos["comput_time"] = "CANNOT_LOAD_LIBRARY";
@@ -98,33 +98,30 @@ data_format::data_format( const std::string& filename)
                 infos["total_time"] = "CANNOT_LOAD_LIBRARY";      
                 std::cout<<"CANNOT_LOAD_LIBRARY: ";                
             }            
+            if (loof_for (line, "RERUN WAITING"))
+            {
+                fail_ = false;
+                time_out_ = false;
+                infos["prep_time"] = "RERUN WAITING";
+                infos["nb_iter"] = "RERUN WAITING";
+                infos["comput_time"] = "RERUN WAITING";
+                infos["time_per_iter"] = "RERUN WAITING";
+                infos["total_time"] = "RERUN WAITING";                      
+            }            
         }        
     }else
     {
         std::cerr<<"error cannot found "<< filename <<std::endl;
     }   		
-    
-    if (time_out_)
-    {
-        std::cout<<"Problem "<<  infos["problem"]<< "  solver = "<< infos["solver"] <<" Bissection = "<< infos["type"] <<std::endl;
-        std::cout<<"rm -frv "<< filename<<std::endl;
-        std::cout<<"sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"] <<std::endl;
-        
-//         std::cout<<"sbatch job_long.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"] <<std::endl;
-        infos["criteria"] = filename;
-    }
-    
-//     for ( auto& i : infos)
-//     {
-//         std::cout<<i.first<<" - "<< i.second <<std::endl;
-//     }
-//     std::cout<<"**********************"<<std::endl;
+
 }
 
 data_format::data_format( const data_format& f)
 {
     filename_ = f.filename_;
     infos = f.infos;
+    fail_ = f.fail_;
+    time_out_ = f.time_out_;
 }
 
 void data_format::add_data( const std::string& line, const std::string& name, const std::string& pattern)
@@ -152,6 +149,18 @@ void data_format::add_data( const std::string& line, const std::string& name, co
     return;
 }
 
+std::string data_format::extract_filename(const std::string& chemin) {
+    // Trouve la dernière occurrence du séparateur de chemin (/ ou \) 
+    // et extrait tout ce qui suit
+    size_t position = chemin.find_last_of("/\\");
+    if (position != std::string::npos) {
+        return chemin.substr(position + 1);
+    } else {
+        // Aucun séparateur trouvé, le chemin est déjà le nom du fichier
+        return chemin;
+    }
+}
+
 bool data_format::loof_for(const std::string& line, const std::string& pattern)
 {
     size_t pos = line.find(pattern);
@@ -167,6 +176,11 @@ void data_format::plot()
     for (auto& [a,b] : infos)
         std::cout<< a <<" : "<< b <<std::endl;
     std::cout<<std::endl;
+}
+
+void data_format::print_re_run()
+{
+    std::cout<<"echo \"RERUN WAITING\" >> "<< extract_filename(infos["filename"]) <<" ;   sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"] <<std::endl;
 }
 
 void add (const std::string &in, 
@@ -376,8 +390,7 @@ void create_latex( const std::vector< data_format*> datas,
             for (int i=0;i<common.size();i++)
             {
                 local_diff.push_back( d->infos[common[i]]);
-            }
-            
+            }            
             
             for (int i=0;i<differences.size();i++)
             {
@@ -440,7 +453,7 @@ void create_latex( const std::vector< data_format*> datas,
     }
     outfile.close();
     
-    std::cout<<std::endl;
+//     std::cout<<std::endl;
 }
 
 
@@ -498,13 +511,32 @@ void create_latex_subpart( std::ofstream& outfile,
         
         if (ref == "solver" && local_data.size() >1)
         {
-            std::cout<<"We have several inputs for this case in files : "<<std::endl;
-            for (auto& d : local_data)
-                std::cout<<d->infos["filename"]<<std::endl;
+//             std::cout<<"We have several inputs for this case in files : "<<std::endl;
+//             for (auto& d : local_data)
+//                 std::cout<<d->infos["filename"]<<std::endl;
+
+            // on récupère la plus vielle
+            auto max_iter = std::max_element(local_data.begin(), local_data.end());
+            
+            
+            // Vérifier si le vecteur n'est pas vide
+            if (max_iter != local_data.end()) {
+                auto& maxValue = *max_iter;
+//                 std::cout<<"We keep "<< maxValue->infos["filename"]<<std::endl;
+                // Supprimer toutes les autres valeurs
+                local_data.clear();
+                local_data.push_back(maxValue);
+                // Afficher le résultat
+//                 std::cout << "La plus grande valeur est : " << v[0] << std::endl;
+            } 
+//             else {
+//                 std::cout << "Le vecteur est vide." << std::endl;
+//             }
         }
         
         if ( local_data.size() == 1)
         {
+            prepare_re_run(local_data);    
             data_format* d = local_data[0];
             for (int i=index;i<columns.size()-1;i++)
                 outfile << replace(d->infos[columns[i]])<<" & ";
@@ -521,7 +553,10 @@ void create_latex_subpart( std::ofstream& outfile,
             outfile <<" \\cline{"<< index+1 <<"-"<< index+2 <<"}";   
         }
         cpt ++;
+        
+        
     }    
+    
 }
 
 std::string get_bissection( const std::string in)
@@ -553,18 +588,18 @@ void init_order()
     solver_order_.push_back("BissectionBasis_Bernstein");
     solver_order_.push_back("BissectionBasis_MinVariance");
     solver_order_.push_back("BissectionBasis_BSplines");
-    solver_order_.push_back("BissectionBasis_MinNo");
-    solver_order_.push_back("BissectionBasis_ApproxMinVo");    
+    solver_order_.push_back("BissectionBasis_MinNo"); 
     solver_order_.push_back("BissectionBasis_MinVo");
+    solver_order_.push_back("BissectionBasis_ApproxMinVo");       
     solver_order_.push_back("BissectionBasis_RecursiveBSplines");
     solver_order_.push_back("BissectionBasis_RecursiveBSplines2");
     solver_order_.push_back("ContractionInterval");
     solver_order_.push_back("ContractionBasis_Bernstein");
     solver_order_.push_back("ContractionBasis_MinVariance");
     solver_order_.push_back("ContractionBasis_BSplines");
-    solver_order_.push_back("ContractionBasis_MinNo");
-    solver_order_.push_back("ContractionBasis_ApproxMinVo");
+    solver_order_.push_back("ContractionBasis_MinNo");    
     solver_order_.push_back("ContractionBasis_MinVo");
+    solver_order_.push_back("ContractionBasis_ApproxMinVo");
     solver_order_.push_back("ContractionBasis_RecursiveBSplines");
     solver_order_.push_back("ContractionBasis_RecursiveBSplines2");        
     
@@ -581,12 +616,6 @@ std::list<std::string> re_order(const std::list<std::string>& input,
                                 const std::list<std::string>& dic)
 {
     std::list<std::string> out;
-    
-//     for (auto& j:input)
-//         std::cout<<"in = "<< j <<"!"<<std::endl;
-//     
-//     for (auto& j:dic)
-//         std::cout<<"dic = "<< j <<"!"<<std::endl;    
     
     for (auto& i: dic)
     {
@@ -605,6 +634,13 @@ std::list<std::string> re_order(const std::list<std::string>& input,
         std::cout<<"out = "<< j <<std::endl;   */ 
     return out;
 }
+
+bool is_number(const std::string& s)
+{
+    long double ld;
+    return((std::istringstream(s) >> ld >> std::ws).eof());
+}
+
 
 double toDouble(std::string s){
     std::replace(s.begin(), s.end(), '.', ',');
@@ -627,7 +663,28 @@ std::string replace (const std::string &in)
     out =  std::regex_replace(out, std::regex("RecursiveBSplines"), "Recursive");
     
     out =  std::regex_replace(out, std::regex(","), ".");
-    out =  std::regex_replace(out, std::regex("_"), "\\textunderscore ");
+    out =  std::regex_replace(out, std::regex("_"), "\\textunderscore ");    
+    out =  std::regex_replace(out, std::regex("%"), "\\%");
+    
+//     if ( is_number(out))
+//     {
+//         double value = toDouble(out);
+//         if (value < 1e-3)
+//         {
+//             value *= 1e6;
+//             out = std::to_string(value) + "e-6";
+//             out =  std::regex_replace(out, std::regex(","), ".");
+//             return out;
+//         }
+//         if (value < 1)
+//         {
+//             value *= 1e3;
+//             out = std::to_string(value) + "e-3";
+//             out =  std::regex_replace(out, std::regex(","), ".");
+//             return out;
+//         }        
+//     }
+//     
     
     return out;
 }
@@ -684,7 +741,67 @@ std::string time_format( const std::string & in)
         
 //     printf("Formaté = %s\n", str);
     dureeStr = std::string(str);
-   
-
     return replace(dureeStr);    
 }
+
+void prepare_re_run(const std::vector< data_format*> datas)
+{
+    for (auto& d : datas)
+    {
+        if (d->time_out_ || d->fail_)
+        {
+            d->print_re_run();
+        }
+    }
+}
+
+std::string to_string_with_precision(const double a_value, const int n )
+{
+    std::ostringstream out;
+    out.precision(n);
+    out << std::fixed << a_value;
+    return std::move(out).str();
+}
+
+void set_pourcentage( const std::vector< data_format*> datas)
+{
+    std::vector<std::string> common_ref;
+    common_ref.push_back("precision");
+    common_ref.push_back("problem");
+    common_ref.push_back("ndof");
+    common_ref.push_back("type");
+    
+    for (auto& t : datas)
+    {
+        bool test = false;
+        // look for the reference
+        for (auto& r : datas)
+        {
+            bool test_eq = true;
+            if( r->infos["solver"] == "BissectionInterval")
+            {         
+               for (int k=0;k<common_ref.size();k++)
+               {
+                   if ( t->infos[common_ref[k]] != r->infos[common_ref[k]])
+                    {
+                        test_eq = false;
+                        break;
+                    }
+                }
+                if (test_eq)
+                {
+                    test = true;
+                    t->infos["total_time (%)"] = to_string_with_precision(100.*toDouble(t->infos["total_time"]) / toDouble(r->infos["total_time"]),2);
+                    t->infos["nb_iter (%)"] = to_string_with_precision(100.*toDouble(t->infos["nb_iter"]) / toDouble(r->infos["nb_iter"]),2);
+                    t->infos["comput_time (%)"] = to_string_with_precision(100.*toDouble(t->infos["comput_time"]) / toDouble(r->infos["comput_time"]),2);
+                    break;
+                }                
+            }
+        }
+//         if(!test)
+//         {
+//             std::cout<<"on n'a pas trouvé la référence"<<std::endl;
+//         }        
+    }    
+}
+

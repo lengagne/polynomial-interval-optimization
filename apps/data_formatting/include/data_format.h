@@ -28,15 +28,20 @@ public:
     
     void add_data( const std::string& line, const std::string& name, const std::string& pattern);    
     
+    std::string extract_filename(const std::string& chemin);
+    
     bool loof_for(const std::string& line, const std::string& pattern);
     
     void plot();
+    
+    virtual void print_re_run();
        
     std::string filename_;
     
     std::map< std::string, std::string> infos;
     
     bool time_out_ = false;
+    bool fail_ = false;
 };
 
 
@@ -84,9 +89,16 @@ std::list<std::string> re_order(const std::list<std::string>& input,
 
 double toDouble(std::string s);
 
+bool is_number(const std::string& s);
+
 std::string replace (const std::string& in);
 
 std::string time_format( const std::string & in);
 
+void prepare_re_run(const std::vector< data_format*> datas);
+
+std::string to_string_with_precision(const double a_value, const int n = 6);
+
+void set_pourcentage( const std::vector< data_format*> datas);
 
 #endif

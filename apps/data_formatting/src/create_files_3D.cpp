@@ -29,12 +29,11 @@ int main(int argc, char *argv[])
         QString current = *it;
         {
             data_format* d = new data_format3D(( repo  + current).toStdString());
-            if ( !d->time_out_)
-            {
-                datas_.push_back(d);
-            }
+            datas_.push_back(d);
         }
     }
+    
+    set_pourcentage( datas_);
     
 //     create_csv(datas_, "nb_iter", "ndof", "solver", "problem", repo.toStdString() + "problem");
 //     create_csv(datas_, "nb_iter", "ndof", "problem", "solver", repo.toStdString() + "solver");
@@ -57,11 +56,15 @@ int main(int argc, char *argv[])
     order_latex.push_back("nb_iter");
     order_latex.push_back("time_per_iter");
     order_latex.push_back("criteria");
+
+    order_latex.push_back("comput_time (%)");
+    order_latex.push_back("total_time (%)");
+    order_latex.push_back("nb_iter (%)");
 //     order_latex.push_back("filename");
     
-    std::vector<std::string> common;
-    common.push_back("type");
+    std::vector<std::string> common;    
     common.push_back("problem");
+    common.push_back("type");
     
     std::vector<std::string> remove;
     remove.push_back("Contraction");

@@ -45,7 +45,7 @@ int main( int argc, char** argv)
 	if(argc > 3)
         precision = atof(argv[3]);   
 	if(argc > 4)
-        bissection_mode = atoi(argv[4]);
+        bissection_mode = atoi(argv[4]);        //MinFirst or Maxfirst
 	if(argc > 5)
         test = atoi(argv[5]);   
 
