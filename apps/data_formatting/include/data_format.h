@@ -35,6 +35,12 @@ public:
     void plot();
     
     virtual void print_re_run();
+    
+    void set_date_time(std::string& line);
+    
+    bool operator<(const data_format& other) const ;    
+    
+    long int date_ = 0;
        
     std::string filename_;
     
@@ -42,7 +48,17 @@ public:
     
     bool time_out_ = false;
     bool fail_ = false;
+
 };
+
+// Comparaison des pointeurs
+// bool operator<(const data_format* lhs, const data_format* rhs) 
+// {
+//     // Assurez-vous de gérer le cas où les pointeurs sont null
+//     if (!lhs || !rhs) throw std::invalid_argument("Null pointer comparison");
+// 
+//     return *lhs < *rhs;
+// }
 
 
 
@@ -61,6 +77,7 @@ void create_csv(const std::vector< data_format*> datas,
 void create_latex( const std::vector< data_format*> datas,
                    const std::string filename,
                    std::vector<std::string> & columns,
+                   std::vector<std::string> & columns_average,
                    std::vector<std::string> & common,
                    std::vector<std::string> & remove,
                    const std::string main_title="empty"
@@ -83,6 +100,9 @@ std::string get_bissection( const std::string in);
 std::string get_solver( const std::string in);
 
 void init_order();
+
+std::list< std::string> look_for( const std::vector< data_format*> datas,
+                                    std::string name);
 
 std::list<std::string> re_order(const std::list<std::string>& input, 
                                 const std::list<std::string>& dic);

@@ -94,7 +94,7 @@ int main( int argv, char** argc)
         gnuplot<<"plot ";
         for (int j=0;j<order+1;j++)
         {
-            gnuplot<<" \"log.txt\" u 1:"<<j+2 <<" w l lw 2";
+            gnuplot<<" \"log.txt\" u 1:"<<j+2 <<" w l lw 8";
             gnuplot<<" title \"b"<<j+1<<"\",";
         }
         gnuplot<<std::endl;

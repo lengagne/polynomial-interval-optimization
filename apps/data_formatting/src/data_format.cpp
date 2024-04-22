@@ -70,6 +70,11 @@ data_format::data_format( const std::string& filename)
             add_data(line,"criteria", "crit = ");            
             add_data(line,"save_filename", "save_filename = ");            
             
+            if (loof_for(line, "CEST") || loof_for(line, "CET"))
+            {
+                set_date_time(line);
+            }
+            
             if (loof_for(line,"DUE TO TIME LIMIT"))
             {
                 time_out_ = true;      
@@ -181,6 +186,45 @@ void data_format::plot()
 void data_format::print_re_run()
 {
     std::cout<<"echo \"RERUN WAITING\" >> "<< extract_filename(infos["filename"]) <<" ;   sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"] <<std::endl;
+}
+
+void data_format::set_date_time(std::string& line)
+{
+    std::istringstream iss(line);
+    bool fail = false;
+
+    std::string day;
+    iss >> day;    
+    std::string month;
+    iss >> month;
+    
+    uint month_i = 0;
+    if (month =="févr.")    month_i = 2;
+    else if (month =="mars")    month_i = 3;
+    else if (month =="avril")    month_i = 4;
+    else fail = true;
+        
+    iss>> day;
+    uint day_i = std::stoi(day);
+    
+    std::string time;
+    iss>>time;
+    
+    std::string year;
+    iss>>year; //remove CET
+    iss>>year;
+        
+    date_ = (std::stoi(year)-2020)* (365*31*24*60*60) + month_i * (31*24*60*60) + day_i *(24*60*60) ;
+    
+    if (fail)
+    {
+        std::cerr<<"Cannot detect the date : "<< line<<std::endl;
+    }
+}
+
+bool data_format::operator<(const data_format& other) const 
+{
+    return date_ < other.date_;
 }
 
 void add (const std::string &in, 
@@ -339,7 +383,7 @@ void create_latex( std::ofstream& outfile,
 //     for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
 //     outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\endhead \\hline \n";        
     
-        for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
+    for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
     outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\hline \n";        
     
 //     std::cout<<"datas.size() = "<< datas.size()<<std::endl;
@@ -347,7 +391,7 @@ void create_latex( std::ofstream& outfile,
     outfile <<"\\end{tabular}\n";
     if (titre != "")
     {
-        outfile<<"\n } \n \\caption\{"<< titre<<"\}"<<std::endl;
+        outfile<<"\n } \n \\caption\{"<< titre<<"}"<<std::endl;
     }
     outfile <<"\n \\end{table}\n\n";
 //     outfile <<"\\normalsize \n";
@@ -359,6 +403,7 @@ void create_latex( std::ofstream& outfile,
 void create_latex( const std::vector< data_format*> datas,
                    const std::string filename,
                    std::vector<std::string> & columns,
+                   std::vector<std::string> & columns_average,
                    std::vector<std::string> & common,
                    std::vector<std::string> & remove,
                    const std::string main_title
@@ -417,13 +462,6 @@ void create_latex( const std::vector< data_format*> datas,
     
     for (int i=0;i<differences.size();i++)
     {
-//         for (int j=0;j<common.size();j++)
-//         {
-//             std::cout<<"\t"<< common[j]<<":"<< differences[i][j];
-//         }
-//         std::cout<<std::endl;
-        
-        
         // on trie
         std::vector< data_format*> local_datas;
         for (auto& d : datas)
@@ -451,6 +489,68 @@ void create_latex( const std::vector< data_format*> datas,
         
         create_latex( outfile, local_datas, columns, caption);
     }
+
+    std::cout<<"Now we do the average"<<std::endl;
+    // list precision and solver
+    std::list<std::string> precisions = look_for(datas,"precision");
+    precisions.sort();
+    std::list<std::string> solvers = re_order(  look_for(datas,"solver"),solver_order_);
+    std::list<std::string> ndofs = look_for(datas,"ndof");
+    ndofs.sort();
+    
+    std::vector< data_format*> average_data;
+    
+    for ( auto&p : precisions)  for ( auto&s : solvers)  for ( auto&n : ndofs)  
+    {
+        data_format* d = new data_format();
+//         std::cout<<" p = "<< p <<std::endl;
+//         std::cout<<" s = "<< s <<std::endl;
+//         std::cout<<" n= "<< n <<std::endl;
+        d->infos["precision"] = p;
+        d->infos["solver"] = s;
+        d->infos["ndof"] = n;
+        d->infos["nb_average"] = "0";
+        
+        average_data.push_back(d);
+    }
+    
+    
+    for (auto& a : average_data)    for (auto& d : datas)
+    {
+        uint nb = 0;
+        long int nb_iter = 0;
+        double comput_time = 0;
+        double prep_time = 0;
+        double total_time = 0;
+        
+        if (d->infos["precision"] == a->infos["precision"]  && 
+            d->infos["solver"] == a->infos["solver"]&&
+            d->infos["ndof"] == a->infos["ndof"] && is_number(d->infos["nb_iter"]))
+        {
+            nb ++;
+//             std::cout<<" nb_iter = "<< d->infos["nb_iter"] <<std::endl;
+            nb_iter += std::stol( d->infos["nb_iter"] );
+            total_time += toDouble(d->infos["total_time"] );
+            prep_time += toDouble(d->infos["prep_time"] );
+            comput_time += toDouble(d->infos["comput_time"] );
+            
+        }   
+        if(nb !=0)
+        {
+            a->infos["nb_iter"]  = std::to_string( nb_iter / nb);            
+            a->infos["total_time"]  = std::to_string( total_time / nb);  
+            a->infos["(D-H:M:S.ms)"] = time_format(a->infos["total_time"]);            
+            a->infos["prep_time"]  = std::to_string( prep_time / nb);    
+            a->infos["comput_time"]  = std::to_string( comput_time / nb);
+            a->infos["time_per_iter"] = total_time/nb_iter;
+        }
+    }
+    set_pourcentage(average_data);
+    
+    create_latex( outfile, average_data, columns_average, "Average of X-D problems");
+    
+    
+    
     outfile.close();
     
 //     std::cout<<std::endl;
@@ -516,13 +616,19 @@ void create_latex_subpart( std::ofstream& outfile,
 //                 std::cout<<d->infos["filename"]<<std::endl;
 
             // on récupère la plus vielle
-            auto max_iter = std::max_element(local_data.begin(), local_data.end());
+            auto max_iter = std::max_element(local_data.begin(), local_data.end(), [](data_format* lhs, data_format* rhs){ return *lhs < *rhs;});
             
             
             // Vérifier si le vecteur n'est pas vide
             if (max_iter != local_data.end()) {
                 auto& maxValue = *max_iter;
-//                 std::cout<<"We keep "<< maxValue->infos["filename"]<<std::endl;
+//                 std::cout<<"We keep "<< maxValue->infos["filename"] <<" from" <<std::endl;
+//                 for (auto& l : local_data)
+//                 {
+//                         std::cout<<"\t\t "<< l->infos["filename"] <<std::endl;
+//                 }
+                
+                
                 // Supprimer toutes les autres valeurs
                 local_data.clear();
                 local_data.push_back(maxValue);
@@ -612,6 +718,31 @@ void init_order()
         pb_order_.push_back(std::to_string(i));
 }
 
+std::list< std::string> look_for( const std::vector< data_format*> datas,
+                                    std::string name)
+{
+    std::list<std::string> out;
+    for (auto& d : datas)
+    {
+        // test precision
+        bool test = true;
+        for ( auto& p : out)
+        {
+            if (d->infos[name] == p)
+            {
+                test = false;
+                break;
+            }
+        }
+        if (test)
+        {
+//             std::cout<<"We found "<< name<<" : "<< d->infos[name] <<std::endl;
+            out.push_back( d->infos[name] );
+        }
+    }
+    return out;
+}
+
 std::list<std::string> re_order(const std::list<std::string>& input, 
                                 const std::list<std::string>& dic)
 {
@@ -637,6 +768,7 @@ std::list<std::string> re_order(const std::list<std::string>& input,
 
 bool is_number(const std::string& s)
 {
+    if (s =="") return false;
     long double ld;
     return((std::istringstream(s) >> ld >> std::ws).eof());
 }

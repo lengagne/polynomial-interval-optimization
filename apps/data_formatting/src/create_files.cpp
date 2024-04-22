@@ -69,16 +69,32 @@ int main(int argc, char *argv[])
 //     order_latex.push_back("filename");
 //     order_latex.push_back("save_filename");   
     
+    
+    std::vector<std::string> order_latex_average;
+    order_latex_average.push_back("precision");
+    order_latex_average.push_back("ndof");
+    order_latex_average.push_back("solver");    
+    order_latex_average.push_back("prep_time");
+    order_latex_average.push_back("comput_time");
+    order_latex_average.push_back("total_time");
+    order_latex_average.push_back("(D-H:M:S.ms)");
+    order_latex_average.push_back("nb_iter");
+    order_latex_average.push_back("comput_time (%)");
+    order_latex_average.push_back("total_time (%)");    
+    order_latex_average.push_back("nb_iter (%)");
+//     order_latex_average.push_back("filename");
+//     order_latex_average.push_back("save_filename");       
+    
     std::vector<std::string> common;
     common.push_back("problem");
     common.push_back("type");
     
     std::vector<std::string> remove;
     remove.push_back("Contraction");
-    create_latex( datas_, "recap_bis_2D", order_latex,common,remove,"Bissection of problem 2D with ");
+    create_latex( datas_, "recap_bis_2D", order_latex,order_latex_average,common,remove,"Bissection of problem 2D with ");
     
-    remove.clear();
-    remove.push_back("Bissection");
-    create_latex( datas_, "recap_cont_2D", order_latex,common,remove,"Contraction of problem 2D with ");
+//     remove.clear();
+//     remove.push_back("Bissection");
+//     create_latex( datas_, "recap_cont_2D", order_latex,order_latex_average,common,remove,"Contraction of problem 2D with ");
     
 }
