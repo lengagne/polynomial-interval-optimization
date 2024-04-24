@@ -96,6 +96,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
         Result  current_value = current_vector_.back();
         current_vector_.pop_back();
 
+//         std::cout<<"current_value_ = "<< current_value <<std::endl;
 //        for (int i=0;i<nb_var_;i++)
 //            std::cout<<"in["<<i<<"] = "<< current_value.in[i] <<std::endl;
 
@@ -104,18 +105,21 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
         if(Inf(current_value.out[nb_fun_]) < optim_crit_)
         {
             check_constraint type = INSIDE;
-            for (int i=0;i<nb_fun_;i++)  if(!current_value.ctr_ok[i] )
+            for (int i=0;i<nb_fun_;i++) // if(!current_value.ctr_ok[i] )
             {
 //                std::cout<<"contraintes("<<i<<") = "<< current_value.out[i] <<std::endl;
                 switch(test_Interval(current_value.out[i], bounds_[i]))  
                 {
-                    case(OUTSIDE)   :   //std::cout<<"ctr("<<i<<") OUTSIDE"<<std::endl;
+                    case(OUTSIDE)   :   
+//                                         std::cout<<"ctr("<<i<<") OUTSIDE "<< current_value.out[i]<<std::endl;
                                         type = OUTSIDE;
                                         break;
-                    case(INSIDE)    :   //std::cout<<"ctr("<<i<<") INSIDE"<<std::endl;
+                    case(INSIDE)    :   
+//                                         std::cout<<"ctr("<<i<<") INSIDE "<< current_value.out[i]<<std::endl;
                                         current_value.ctr_ok[i] = true;
                                         break;
-                    case(OVERLAP)   :   //std::cout<<"ctr("<<i<<") OVERLAP"<<std::endl;
+                    case(OVERLAP)   :   
+//                                         std::cout<<"ctr("<<i<<") OVERLAP "<< current_value.out[i]<<std::endl;
                                         type = OVERLAP;
                                         current_value.ctr_ok[i] = false;
                                         break;
@@ -133,6 +137,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
                                         find_one_feasible_ = true;
                                         optim_crit_ =  Sup(current_value.out[nb_fun_]);
                                         optim_ = current_value;
+//                                         std::cout<<"optim_crit_ = "<<current_value.out[nb_fun_]<<std::endl<<std::endl;                                        
 //                                         save_current_state(save_filename_);
                                     }
                 case(OVERLAP)   :   

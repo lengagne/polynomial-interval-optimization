@@ -58,8 +58,10 @@ void Problem3D_with_torque_limit::init()
 		input_[i] = Hull (qmin[i],qmax[i]);
 //		input_[i] = Hull (0,0);
     }
-//    input_[0] = Hull(0.5,0.5);
-//    input_[1] = Hull(0.5,0.5);
+//    input_[0] = Hull(-2.5,-2.2);
+//    input_[1] = Hull(-0.1,0.2);
+//    input_[2] = Hull(-1.8,-1.5);
+//    input_[3] = Hull(-0.1,0.2);
 
     bound_.resize(nb_fun_);
     bound_[0] = Xt + Hull (-width,width);

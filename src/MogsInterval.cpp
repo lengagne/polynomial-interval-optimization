@@ -551,9 +551,9 @@ void MogsInterval::prepare_son(const sons_type& type)
             the_sons_[nb].son->is_error();
             the_sons_[nb].son->init(Hull(-1,1),"ers_"+name_);
             break;
-        case(SON_SIN_COS_ERROR):
-            the_sons_[nb].son->is_error();
-            the_sons_[nb].son->init(Hull(-1,1),"ersc_"+name_);
+//         case(SON_SIN_COS_ERROR):
+//             the_sons_[nb].son->is_error();
+//             the_sons_[nb].son->init(Hull(-1,1),"ersc_"+name_);
             break;
         case(SON_SIGNOF_ERROR):
             the_sons_[nb].son->is_error();
@@ -601,10 +601,10 @@ void MogsInterval::update(const Interval & in)
 //                             std::cout<<"SON_SIN_ERROR"<<std::endl;
                             the_sons_[i].son->update_error_sin(in); // ,v);
                             break;
-            case(SON_SIN_COS_ERROR):  
-//                             std::cout<<"SON_SIN_COS_ERROR"<<std::endl;
-                            the_sons_[i].son->update_error_sin_cos(in); // ,v);
-                            break;
+//             case(SON_SIN_COS_ERROR):  
+// //                             std::cout<<"SON_SIN_COS_ERROR"<<std::endl;
+//                             the_sons_[i].son->update_error_sin_cos(in); // ,v);
+//                             break;
             case(SON_SIGNOF_ERROR):  
 //                             std::cout<<"SON_SIGNOF_ERROR"<<std::endl;
                             the_sons_[i].son->update_error_sign_of(in); // ,v);
@@ -895,13 +895,17 @@ void MogsInterval::update_error_cos(const Interval  & in) //, std::vector<Real>&
 {
     /// FIXME we assume the largest error is at the extremum
     Real m = Mid(in);
-    Real binf = approx_taylor_cos<Real,Real>(Inf(in),m);
-    Real bsup = approx_taylor_cos<Real,Real>(Sup(in),m);
+//     Real binf = approx_taylor_cos<Real,Real>(Inf(in),m);
+//     Real bsup = approx_taylor_cos<Real,Real>(Sup(in),m);
+// 
+//     Interval approx = Hull( Hull(binf,bsup), cos(m));
+//     Interval reel = cos(in);
+//     value_ = Hull(Hull(Inf(reel)-Inf(approx),Sup(reel)-Sup(approx)),0);
 
-    Interval approx = Hull( Hull(binf,bsup), cos(m));
-    Interval reel = cos(in);
-    value_ = Hull(Hull(Inf(reel)-Inf(approx),Sup(reel)-Sup(approx)),0);
-
+    Real inf_error = cos (Inf(in)) - approx_taylor_cos<Real,Real>(Inf(in),m);
+    Real sup_error = cos (Sup(in)) - approx_taylor_cos<Real,Real>(Sup(in),m);
+    value_ = Hull(Hull(inf_error,sup_error),0);    
+    
     update(value_);
 }
 
@@ -914,39 +918,43 @@ void MogsInterval::update_error_sin(const Interval  & in) //, std::vector<Real>&
 {
     /// FIXME we assume the largest error is at the extremum
     Real m = Mid(in);
-    Real binf = approx_taylor_sin<Real,Real>(Inf(in),m);
-    Real bsup = approx_taylor_sin<Real,Real>(Sup(in),m);
+//     Real binf = approx_taylor_sin<Real,Real>(Inf(in),m);
+//     Real bsup = approx_taylor_sin<Real,Real>(Sup(in),m);
+// 
+//     Interval approx = Hull( Hull(binf,bsup), sin(m));
+//     Interval reel = sin(in);
+//     value_ = Hull(Hull(Inf(reel)-Inf(approx),Sup(reel)-Sup(approx)),0);
 
-    Interval approx = Hull( Hull(binf,bsup), sin(m));
-    Interval reel = sin(in);
-    value_ = Hull(Hull(Inf(reel)-Inf(approx),Sup(reel)-Sup(approx)),0);
-
+    Real inf_error = sin (Inf(in)) - approx_taylor_sin<Real,Real>(Inf(in),m);
+    Real sup_error = sin (Sup(in)) - approx_taylor_sin<Real,Real>(Sup(in),m);
+    value_ = Hull(Hull(inf_error,sup_error),0);
+    
     update(value_);
 }
 
-void MogsInterval::update_error_sin_cos(const Interval  & in) //, std::vector<Real>& v )
-{
-    /// FIXME we assume the largest error is at the extremum
-
-    Real m = Mid(in);
-    Real binf = approx_taylor_cos<Real,Real>(Inf(in),m);
-    Real bsup = approx_taylor_cos<Real,Real>(Sup(in),m);
-
-    Interval approx = Hull( Hull(binf,bsup), cos(m));
-    Interval reel = cos(in);
-    Interval valuecos_ = Hull(Hull(Inf(reel)-Inf(approx),Sup(reel)-Sup(approx)),0);
-
-    binf = approx_taylor_sin<Real,Real>(Inf(in),m);
-    bsup = approx_taylor_sin<Real,Real>(Sup(in),m);
-
-    approx = Hull( Hull(binf,bsup), sin(m));
-    reel = sin(in);
-    Interval valuesin_ = Hull(Hull(Inf(reel)-Inf(approx),Sup(reel)-Sup(approx)),0);
-
-    value_ = Hull(valuesin_,valuecos_);
-
-    update(value_);
-}
+// void MogsInterval::update_error_sin_cos(const Interval  & in) //, std::vector<Real>& v )
+// {
+//     /// FIXME we assume the largest error is at the extremum
+// 
+//     Real m = Mid(in);
+//     Real binf = approx_taylor_cos<Real,Real>(Inf(in),m);
+//     Real bsup = approx_taylor_cos<Real,Real>(Sup(in),m);
+// 
+//     Interval approx = Hull( Hull(binf,bsup), cos(m));
+//     Interval reel = cos(in);
+//     Interval valuecos_ = Hull(Hull(Inf(reel)-Inf(approx),Sup(reel)-Sup(approx)),0);
+// 
+//     binf = approx_taylor_sin<Real,Real>(Inf(in),m);
+//     bsup = approx_taylor_sin<Real,Real>(Sup(in),m);
+// 
+//     approx = Hull( Hull(binf,bsup), sin(m));
+//     reel = sin(in);
+//     Interval valuesin_ = Hull(Hull(Inf(reel)-Inf(approx),Sup(reel)-Sup(approx)),0);
+// 
+//     value_ = Hull(valuesin_,valuecos_);
+// 
+//     update(value_);
+// }
 
 void MogsInterval::update_error_sign_of(const Interval & in) // , std::vector<Real>& v)
 {
@@ -1095,4 +1103,26 @@ MogsInterval sign_of(const MogsInterval& in)
     MogsInterval * er = tmp->get_son(SON_SIGNOF_ERROR);    
     return *er;    
     
+}
+
+double pow2( double a)
+{
+    return pow(a,2);
+}
+
+LazyVariable pow2( const LazyVariable& a)
+{
+    return a*a;
+}
+
+MogsInterval pow2( const MogsInterval& a)
+{
+    return a*a;
+}
+
+Interval pow2( const Interval& a)
+{
+    if ( Inf(a)<0 && Sup(a)>0)
+        return Hull( Hull( pow(Inf(a),2),pow(Sup(a),2)),0);
+    return Hull( pow(Inf(a),2),pow(Sup(a),2));
 }

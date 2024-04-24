@@ -77,6 +77,13 @@ class IntervalEstimator{
 //     std::vector< std::vector<double> > cut_direction_;
 //     std::vector< std::vector< bool > > cut_inf_;
 
+//     bool print = false;
+//     
+//     void set_print(bool in)
+//     {
+//         print = in;
+//     }
+    
 };
 
 

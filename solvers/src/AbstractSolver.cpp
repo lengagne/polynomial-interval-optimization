@@ -187,9 +187,9 @@ bool AbstractSolver::load_save_filename( const std::string& filename,
              cpt_iter_ = Child.attribute("cpt_iter").toLong(); 
              save_each_iter_ = Child.attribute("save_each_iter").toLong(); 
              saved_iter_ = Child.attribute("saved_iter_").toLong(); 
-             std::cout<<"load cpt_iter_ "<< cpt_iter_ <<std::endl;
-             std::cout<<"load save_each_iter_ "<< save_each_iter_ <<std::endl;
-             std::cout<<"load saved_iter_ "<< saved_iter_ <<std::endl;
+//              std::cout<<"load cpt_iter_ "<< cpt_iter_ <<std::endl;
+//              std::cout<<"load save_each_iter_ "<< save_each_iter_ <<std::endl;
+//              std::cout<<"load saved_iter_ "<< saved_iter_ <<std::endl;
          }
          
          if (Child.tagName()=="pile")

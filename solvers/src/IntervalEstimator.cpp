@@ -50,18 +50,15 @@ unsigned int IntervalEstimator::get_index(mem* m) const
 
 unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigned int num_out)
 {      
-//     std::cout<<"prepare_coeffs ("<<num_out<<") " <<std::endl;
     num_out_ = num_out;
     out.get_dependancies_with_order(dep_,order_);
     
     depend_intermediate_.clear();
     for (int i=0;i<dep_.size();i++)
     {        
-//         std::cout<<"dep : "<< *dep_[i]<<std::endl;
         if (dep_[i]->is_it_intermediate())
         {
             depend_intermediate_.push_back(dep_[i]->get_id_intermediate());
-//             std::cout<<"depend on intermediate : "<< dep_[i]->get_id_intermediate() <<std::endl;
         }
     }
     depend_intermediate_.sort();
@@ -93,7 +90,6 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
         Interval val = dep_[i]->value_;
         bf_->get_basis_coeff_matrix(val, order_[i],local_M_[nb_in_-i-1],local_M_inverse_[nb_in_-i-1]);
         bf_->get_time_max( local_M_[nb_in_-i-1], pmax[nb_in_-i-1]);
-//         std::cout<<"order_["<<i<<"] = "<< order_[i] <<std::endl;
     }
     
     for (int i=0;i<nb_in_;i++)  if(! dep_[nb_in_-i-1]->rely_on_error())
@@ -155,20 +151,10 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
     
     sparse_coeff_errors_.resize(nb_sparse_errors_);
     
-/*    // deal with error
-    for(std::list<unsigned int >::const_iterator it = coeff_errors_.begin(); it != coeff_errors_.end(); it++)
-    {
-//         std::cout<<"on erreur("<< num_out<<") : "<< MCT_coeff_[*it] <<std::endl;
-        LazyAddOutput(MCT_coeff_[*it],num_out_,nb_valid_coeff++);
-    }      */    
-    
-//     std::cout<<"nb_control_point_inputs_ = " << nb_control_point_inputs_ <<std::endl;
-//     std::cout<<"coeff_inputs_.size() = " << coeff_inputs_.size() <<std::endl;
-
-//     std::cout<<"TAILLE "<< coeff_inputs_.size() <<std::endl;
     if (coeff_inputs_.size() == 0)
         nb_control_point_inputs_ = 0;
-     // deal with input
+
+    // deal with input
     for (int i=0;i<nb_control_point_inputs_;i++)
     {
         LazyVariable out = 0;
@@ -177,19 +163,16 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
             double v = kron_solver_inputs_->get_value(i,*it);
             out += MCT_coeff_[mem_index_input[*it]]* v;
         }
-//         std::cout<<"on ajoute("<< num_out<<") : "<< out <<std::endl; 
+
         LazyAddOutput(out,num_out_,nb_valid_coeff++);
     }
     
-//     std::cout<<"avant error nb_valid_coeff = " << nb_valid_coeff <<std::endl;
     // deal with error
     for(std::list<unsigned int >::const_iterator it = coeff_errors_.begin(); it != coeff_errors_.end(); it++)
     {
-//         std::cout<<"on erreur("<< num_out<<") : "<< MCT_coeff_[*it] <<std::endl;
         LazyAddOutput(MCT_coeff_[*it],num_out_,nb_valid_coeff++);
     }          
 
-//     std::cout<<"apres error nb_valid_coeff = " << nb_valid_coeff <<std::endl;
     return nb_valid_coeff;
 }
 
@@ -234,11 +217,11 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
     bool inf_inside,sup_inside, both_side;
     
     Interval Iv = LazyUpdateOutput(num_out_,cpt++);
-//     std::cout<<"value(0) = "<< Iv <<std::endl;
+//     if(print) std::cout<<"value(0) = "<< Iv <<std::endl;
     for (int i=1;i<nb_control_point_inputs_;i++)
     {
         Interval value = LazyUpdateOutput(num_out_,cpt++);
-//         std::cout<<"value("<<i<<") = "<< value <<std::endl;
+//         if(print) std::cout<<"value("<<i<<") = "<< value <<std::endl;
         if (i==0)
             Iv = value;
         else
@@ -256,11 +239,6 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
         if ( inf_inside != sup_inside || both_side)
         {
             out = Iv;
-//             guess_next_bissection( i , res , before_in );
-//             std::cout<<"OVERLAP at "<< i <<" / "<< nb_control_point_inputs_<<std::endl;
-//             std::cout<<"out = "<< out <<" bound = "<< bound <<" before_in  = "<< before_in <<std::endl;        
-//             std::cout<<"on overlap avec info de bissection" <<std::endl;
-//             std::cout<<"OVERLAP inside = "<< inf_inside<< "  outside = "<< sup_inside <<" both side = "<< both_side <<std::endl;
             return OVERLAP;            
         }
     }
@@ -276,22 +254,17 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
         res.error[num_out_] = error;
     }    
 
-//     std::cout<<"error = "<< res.error[num_out_] <<std::endl;
     out = Iv + res.error[num_out_];
-//     std::cout<<"out final = "<< out <<std::endl;
     if (Intersection(out,bound))
     {
         if ( Inf(out) >= Inf(bound) &&  Sup(out) <= Sup(bound) )
         {
-//             std::cout<<"INSIDE FINAL"<<std::endl;
             return INSIDE;
         }
         else 
         {
-//             std::cout<<"OVERLAP FINAL"<<std::endl;
             return OVERLAP;
         }
     }
-//     std::cout<<"OUTSIDE FINAL"<<std::endl;
     return OUTSIDE;
 }
