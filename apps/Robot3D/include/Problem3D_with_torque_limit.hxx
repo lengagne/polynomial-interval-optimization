@@ -18,12 +18,12 @@ void Problem3D_with_torque_limit::functions(   std::vector<T> & in,
     out[0] = eff(0);
     out[1] = eff(1);
     out[2] = eff(2);
-//    com = kin->getCenterOfMAss( );
+    com = kin->getCenterOfMAss( );
 ////     mem_com(0).set_name("COM_X");
-//    out[3] = com(0);
-//    out[4] = com(1);
+    out[3] = com(0);
+    out[4] = com(1);
 
-    int cpt = 3;
+    int cpt = 5;
     for (int i=0;i<nb_dof_;i++)
         out[cpt++] = torque(i);
     // criteria

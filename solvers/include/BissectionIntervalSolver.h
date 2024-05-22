@@ -21,6 +21,7 @@ class BissectionIntervalSolver: public AbstractSolver
         virtual param_optim solve_optim(double eps=1e-3);
 
     protected:
+        
     private:
 
 };

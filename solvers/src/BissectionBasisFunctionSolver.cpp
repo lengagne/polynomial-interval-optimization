@@ -5,8 +5,7 @@
 
 BissectionBasisFunctionSolver::BissectionBasisFunctionSolver(AbstractCSP* pb, 
                                                              AbstractBasisFunction*bf,
-                                                            uint bissection_mode
-                                                            )
+                                                            uint bissection_mode)
 {
     LazyReset();
     bf_ = bf;
@@ -22,7 +21,6 @@ BissectionBasisFunctionSolver::BissectionBasisFunctionSolver(AbstractCSP* pb,
 
 BissectionBasisFunctionSolver::~BissectionBasisFunctionSolver()
 {
-    close_files();
     results.clear();
 }
 
@@ -55,7 +53,6 @@ void BissectionBasisFunctionSolver::evaluate(   const std::vector<Interval> &in,
 
 void BissectionBasisFunctionSolver::init(double eps)
 {
-    if (init_done)  return;
     BasisFunctionSolver::init(eps);
 
     infos.resize(nb_fun_);
@@ -68,6 +65,9 @@ void BissectionBasisFunctionSolver::init(double eps)
     {
         info_crit_ = new IntervalEstimator( bf_);
     }
+    
+    
+    save_filename_ = pb_->get_problem_name() + "_Precision" + std::to_string(precision_)+ "_BisMod" + std::to_string(bissection_type_)+ "_BasisFunction"+ bf_->get_name();
     
     BasisFunctionSolver::init_end();
 }

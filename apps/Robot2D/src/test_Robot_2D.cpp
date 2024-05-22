@@ -16,17 +16,7 @@
 
 int main( int argc, char** argv)
 {
-    std::cout<<"type_of_problem : 2D"<<std::endl;
-    if (argc == 2 )
-    {
-        std::string com = argv[1];
-        if (com == "help")
-        {
-            std::cout<<" You must run : \n ./Robot2D ndof nbpb precision"<<std::endl;
-            return 0;
-        }
-    }    
-    
+    std::cout<<"type_of_problem : 2D"<<std::endl;    
     if (argc ==2 && (std::string( argv[1]) == "h" || std::string( argv[1]) =="help"))
     {
         std::cout<<"Call ./Robot2D ndof problem precision bissection_mode basis_function"<<std::endl;
@@ -49,18 +39,17 @@ int main( int argc, char** argv)
 	if(argc > 5)
         test = atoi(argv[5]);   
 
-    std::string save_filename;    
+    std::string warm_start_filename;    
     if(test != -1)
     {
         if (argc >= 7)
         {
-            save_filename = argv[6];
+            warm_start_filename = argv[6];
         }else
         {
-            save_filename =  construct_filename_2D(ndof,npb,precision,bissection_mode,test);
+            warm_start_filename = "no_warm_start"; //construct_filename_2D(ndof,npb,precision,bissection_mode,test);
         }
-    }
-    
+    }    
     
     std::cout<<"******************************" <<std::endl;
     std::cout<<"ndof = "<< ndof <<std::endl;
@@ -94,7 +83,7 @@ int main( int argc, char** argv)
     }
     
     CompareSolver cp(pb);   
-    cp.compare("Robot2D_"+std::to_string(ndof)+"_ndof_pb_"+std::to_string(npb),precision,bissection_mode,test,save_filename);
+    cp.compare("Robot2D_"+std::to_string(ndof)+"_ndof_pb_"+std::to_string(npb),precision,bissection_mode,test,warm_start_filename);
         
     delete pb;
     

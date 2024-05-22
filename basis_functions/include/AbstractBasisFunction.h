@@ -34,6 +34,8 @@ class AbstractBasisFunction
         
         void get_time_max( const Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat,
                            Eigen::Matrix<double,Eigen::Dynamic,1>& tmax);
+        
+        virtual std::string get_name() const = 0;
     
     protected:
         

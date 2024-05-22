@@ -48,9 +48,7 @@ class BasisFunctionSolver: public AbstractSolver
         
         IntervalEstimator* info_crit_;
 
-        std::vector<MogsInterval> intermediate_;
-
-        bool init_done = false;                
+        std::vector<MogsInterval> intermediate_;           
         
         AbstractBasisFunction* bf_;
         

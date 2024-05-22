@@ -36,6 +36,7 @@ data_format3D::data_format3D( const std::string& filename)
             add_data(line,"criteria", "crit = ");
             add_data(line,"bissection_mode", "bissection_mode =");
             add_data(line,"save_filename", "save_filename = ");            
+            add_data(line,"robot", "robot_file = ");   
                         
             if (loof_for(line,"DUE TO TIME LIMIT"))
             {
@@ -80,7 +81,7 @@ data_format3D::data_format3D( const std::string& filename)
                 infos["total_time"] = "RERUN WAITING";                      
             }
         }        
-//         std::cout<<" reading "<< filename_ <<" fail_ = "<< fail_<< "  time_out_ = "<< time_out_ <<std::endl;
+//         std::cout<<" reading "<< filename_ <<" robot = "<< infos["robot"]<<std::endl;
     }else
     {
         std::cerr<<"error cannot found "<< filename <<std::endl;

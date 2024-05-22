@@ -5,7 +5,7 @@ void CompareSolver::compare(const std::string & filename,
                             double p,
                             uint bissection_mode,
                             int id,
-                            const std::string& save_filename)
+                            const std::string& warm_start_filename)
 {
     double precision = p;
     if (id == -1)
@@ -26,7 +26,7 @@ void CompareSolver::compare(const std::string & filename,
             std::cout<<"solver number "<<i<< std::endl;
            
             param_optim result;
-            solver->set_save_filename(save_filename);
+            solver->set_warm_start_filename(warm_start_filename);
             result = solver->solve_optim(precision);
             
             file<<result.nb_bissections<<"\t"<<result.computation_time<<"\t"<<result.optim<<"\t"<<choice_solver_.get_solver_name(i)<<std::endl;
@@ -43,7 +43,7 @@ void CompareSolver::compare(const std::string & filename,
         choice_solver_.choose(pb_,&solver,id,bissection_mode);
         std::cout<<"solver number "<<id<< std::endl;
         param_optim result;
-        solver->set_save_filename(save_filename);
+        solver->set_warm_start_filename(warm_start_filename);
         result = solver->solve_optim(precision);
         
         delete solver;

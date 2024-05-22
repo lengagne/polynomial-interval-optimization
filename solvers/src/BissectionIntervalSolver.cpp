@@ -13,11 +13,8 @@ BissectionIntervalSolver::BissectionIntervalSolver(AbstractCSP* pb,
 
 BissectionIntervalSolver::~BissectionIntervalSolver()
 {
-    close_files();
     results.clear();
 }
-
-
 
 void BissectionIntervalSolver::evaluate(const std::vector<Interval> &in,
                                         std::vector<Interval> &out)
@@ -31,6 +28,8 @@ void BissectionIntervalSolver::evaluate(const std::vector<Interval> &in,
 param_optim BissectionIntervalSolver::solve_optim(double eps)
 {
     std::cout<<"BissectionIntervalSolver::solve_optim"<<std::endl;
+    save_filename_ = pb_->get_problem_name() + "_Precision" + std::to_string(precision_)+ "_BisMod" + std::to_string(bissection_type_)+ "_Interval";
+
     start_preparation_time_ = get_cpu_time();
     precision_ = eps;
 
@@ -43,9 +42,9 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     optim_crit_ = std::numeric_limits<double>::max();
     find_one_feasible_ =false;        
     cpt_iter_ = 0;
-    if (save_and_load_)
+    if (wart_start_)
     {        
-        if (! load_save_filename(save_filename_,tmp))
+        if (! load_warm_start_filename(warm_start_filename_,tmp))
         {
             current_vector_.push_back(tmp);  
         }
@@ -56,7 +55,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
         optim_ = tmp;
     }       
 
-    std::cout<<"save_filename = "<< save_filename_<<std::endl;
+    std::cout<<"warm_start_filename = "<< warm_start_filename_<<std::endl;
     
     bool test;
     nb_valid_box_=0;
@@ -138,7 +137,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
                                         optim_crit_ =  Sup(current_value.out[nb_fun_]);
                                         optim_ = current_value;
 //                                         std::cout<<"optim_crit_ = "<<current_value.out[nb_fun_]<<std::endl<<std::endl;                                        
-//                                         save_current_state(save_filename_);
+//                                         save_current_state(warm_start_filename_);
                                     }
                 case(OVERLAP)   :   
                                     Result low, high;
@@ -159,31 +158,4 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
 
     current_time_ = get_cpu_time();
     return set_results();
-    /*
-    
-    std::cout<<"Number of Bissections : "<< cpt_iter_ <<std::endl;
-    std::cout<<"Number of valid boxes : "<< nb_valid_box_ <<std::endl;
-    std::cout<<"Number of possible boxes : "<< nb_maybe_box_<<std::endl;
-    std::cout<<"computation time (wo prep): "<< previous_time_ + current_time_ - start_computation_time_ <<" seconds."<<std::endl;
-    std::cout<<"Time per iteration : "<< (previous_time_ + current_time_ - start_computation_time_)/cpt_iter_ <<" seconds."<<std::endl;
-    std::cout<<"total time : "<< previous_time_ + current_time_ - start_preparation_time_ <<" seconds."<<std::endl<<std::endl;
-    close_files();
-    if(find_one_feasible_)
-    {
-        std::cout<<"crit = "<< optim_crit_ <<std::endl;
-        for (int i=0;i<nb_var_;i++)
-            std::cout<<"input["<<i<<"] = "<< optim.in[i]<<std::endl;
-    }else
-        std::cout<<"crit =  -1 \nno feasible solution found"<<std::endl;
-
-    param_optim out;
-    out.nb_bissections = cpt_iter_;
-    out.nb_valid_boxes = nb_valid_box_;
-    out.nb_possible_boxes = nb_maybe_box_;
-    out.computation_time = previous_time_ + current_time_ - start_preparation_time_;
-    out.computation_time_wo_prep = previous_time_ + current_time_ - start_computation_time_;
-    out.optim = optim_crit_;    
-    out.nb_intermediate = 0;
-    out.solution_found = find_one_feasible_;
-    return out;*/
 }

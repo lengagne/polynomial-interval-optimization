@@ -18,22 +18,21 @@ int main( int argc, char** argv)
     ChooseBasisFunction choice;
     ChooseSolver choice_solver;
     uint nb_basis = choice.get_nb_basis_type()+1;
-    nb_basis = 2;
     
     std::cout<<"on va evaluer "<< nb_basis <<" basis functions."<<std::endl;
-//     int ndof = 6;    
-//     Problem3D_with_torque_limit pb("../../../model/kuka_lwr.xml"        ,"kuka_lwr_7_link",1.0,0,1);
-    int ndof = 4;
-    Problem3D_with_torque_limit pb("../../../model/kuka_lwr_4dof.xml"        ,"kuka_lwr_7_link",1.0,0,1);
+    int ndof = 6;    
+    Problem3D_with_torque_limit pb("../../../model/kuka_lwr.xml"        ,"kuka_lwr_7_link",1.0,0,1);
+//     int ndof = 4;
+//     Problem3D_with_torque_limit pb("../../../model/kuka_lwr_4dof.xml"        ,"kuka_lwr_7_link",1.0,0,1);
     
     std::vector<double> diam;
-    diam.push_back(2.0);
+//     diam.push_back(2.0);
     diam.push_back(1.0);
-//     diam.push_back(0.5);
+    diam.push_back(0.5);
     diam.push_back(0.1);
-//     diam.push_back(0.05);
+    diam.push_back(0.05);
     diam.push_back(0.01);
-//     diam.push_back(0.005);
+    diam.push_back(0.005);
     diam.push_back(0.001);
     
     

@@ -86,71 +86,11 @@ bool AbstractSolver::bissect( const Result& in,
 }
 
 
-void AbstractSolver::close_files()
-{
-    if (file_open)
-    {
-        file_safe_.close();
-        file_safe_.close();
-        if(print_)
-        {
-            // dummy to plot
-            file_gnuplot_input_<<"set xrange [ "<< Inf(bounds_input_[0]) <<":"<<Sup(bounds_input_[0])<<"] "<<std::endl;
-            if( bounds_input_.size()>1)
-                file_gnuplot_input_<<"set yrange [ "<< Inf(bounds_input_[1]) <<":"<<Sup(bounds_input_[1])<<"] "<<std::endl;
-            file_gnuplot_input_<<"plot x= 0,-500+0.1*x notitle lt 3 lw 3"<<std::endl;
-
-            if( bounds_.size()>0)
-                file_gnuplot_output_<<"set xrange [ "<< Inf(bounds_[0]) <<":"<<Sup(bounds_[0])<<"] "<<std::endl;
-            if( bounds_.size()>1)
-                file_gnuplot_output_<<"set yrange [ "<< Inf(bounds_[1]) <<":"<<Sup(bounds_[1])<<"] "<<std::endl;
-            file_gnuplot_output_<<"plot x= 0,-500+0.1*x notitle lt 3 lw 3"<<std::endl;
-
-            file_gnuplot_input_.close();
-            file_gnuplot_output_.close();
-            std::string cmd1 = "gnuplot "+file_prefix_+"input.gp";
-            std::string cmd2 = "gnuplot "+file_prefix_+"output.gp";
-    //        std::cout<<"CREATING FILES"<<std::endl;
-            int dummy = system(cmd1.c_str());
-            std::cout<<"If you want to get the png for the output please type :" <<std::endl;
-            std::cout<<cmd2<<std::endl;
-        }
-        file_open = false;
-    }
-}
-
-void AbstractSolver::prepare_files(const std::string& filename)
-{
-    file_prefix_ = filename;
-    file_safe_.open(filename+"safe.txt");
-    file_maybe_.open(filename+"maybe.txt");
-    if(print_)
-    {
-        std::string cmd1 = "rm "+file_prefix_+"input.gp "+file_prefix_+"output.gp "+ filename+"safe.txt " + filename+"maybe.txt";
-        int dummy = system(cmd1.c_str());
-        file_gnuplot_input_.open(filename+"input.gp");
-        file_gnuplot_output_.open(filename+"output.gp");
-        file_gnuplot_input_<<"set terminal png  fontscale 1.0 size 1200, 800 "<<std::endl;
-        file_gnuplot_input_<<"set output '"<< filename+"input.png" <<"'"<<std::endl;
-        file_gnuplot_input_<<"# set terminal postscript enhanced color fontscale 1.0 "<<std::endl;
-        file_gnuplot_input_<<"# set output '"<< filename+"input.eps" <<"'"<<std::endl;
-        file_gnuplot_input_<<"set grid"<<std::endl;
-        file_gnuplot_output_<<"set terminal png  fontscale 1.0 size 1200, 800 "<<std::endl;
-        file_gnuplot_output_<<"set output '"<< filename+"output.png" <<"'"<<std::endl;
-        file_gnuplot_output_<<"# set terminal postscript enhanced color fontscale 1.0 "<<std::endl;
-        file_gnuplot_output_<<"# set output '"<< filename+"input.eps" <<"'"<<std::endl;
-        file_gnuplot_output_<<"set grid"<<std::endl;
-        cpt_rec_input_ = 1;
-        cpt_rec_output_ = 1;
-    }
-    file_open = true;
-}
-
-bool AbstractSolver::load_save_filename( const std::string& filename,
+bool AbstractSolver::load_warm_start_filename( const std::string& filename,
                                         const Result& res
 )
 {
-    std::cout<<"We load the current filename : "<< save_filename_ <<std::endl;
+    std::cout<<"We load the current filename : "<< warm_start_filename_ <<std::endl;
   // Convertir std::string en QString
     QString qFileName = QString::fromStdString(filename);
     // Créer un objet QFile
@@ -216,14 +156,14 @@ bool AbstractSolver::load_save_filename( const std::string& filename,
     
     // update filename for saving 
     
-    save_filename_ = update_filename(filename);
+    warm_start_filename_ = update_filename(filename);
     
     return true;
 }
 
 void AbstractSolver::save_current_state( const std::string& filename)
 {        
-    QString qFileName = QString::fromStdString(filename);
+    QString qFileName = QString::fromStdString(filename+".sop");
     QFile xmlFile(qFileName);
     if (!xmlFile.open(QFile::WriteOnly | QFile::Text ))
     {
@@ -298,7 +238,6 @@ param_optim AbstractSolver::set_results()
     std::cout<<"computation time (wo prep): "<< previous_time_ + current_time_ - start_computation_time_ <<" seconds."<<std::endl;
     std::cout<<"Time per iteration : "<< (previous_time_ + current_time_ - start_computation_time_)/((saved_iter_*save_each_iter_)+cpt_iter_) <<" seconds."<<std::endl;
     std::cout<<"total time : "<< previous_time_+ current_time_ - start_preparation_time_ <<" seconds."<<std::endl;
-    close_files();
     if(find_one_feasible_)
     {
         std::cout<<"crit = "<< optim_crit_ <<std::endl;
@@ -322,10 +261,16 @@ param_optim AbstractSolver::set_results()
     return out;
 }
 
-void AbstractSolver::set_save_filename( const std::string& s)
+void AbstractSolver::set_warm_start_filename( const std::string& s)
 {
-    save_and_load_ = true;
-    save_filename_ = s;
+    if (s == "no_warm_start")
+    {
+        wart_start_ = false;        
+    }else
+    {
+        wart_start_ = true;
+        warm_start_filename_ = s;
+    }
 }
 
 check_constraint AbstractSolver::test_Interval( const Interval &in ,

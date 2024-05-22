@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     
 	QDir directory(repo);
 
-    QStringList filesList = directory.entryList(QDir::Files);
+    QStringList filesList = directory.entryList(QStringList() << "slurm*.out", QDir::Files); // directory.entryList(QDir::Files);
     QString fileName;
 
     std::vector<data_format*> datas_;
@@ -56,7 +56,6 @@ int main(int argc, char *argv[])
     order_latex.push_back("nb_iter");
     order_latex.push_back("time_per_iter");
     order_latex.push_back("criteria");
-
     order_latex.push_back("comput_time (%)");
     order_latex.push_back("total_time (%)");
     order_latex.push_back("nb_iter (%)");
@@ -64,6 +63,7 @@ int main(int argc, char *argv[])
     
     
     std::vector<std::string> order_latex_average;
+//     order_latex_average.push_back("robot");
     order_latex_average.push_back("precision");
     order_latex_average.push_back("solver");    
     order_latex_average.push_back("prep_time");
@@ -77,9 +77,12 @@ int main(int argc, char *argv[])
 //     order_latex_average.push_back("filename");
 //     order_latex_average.push_back("save_filename"); 
     
+    
+    
     std::vector<std::string> common;    
     common.push_back("problem");
     common.push_back("type");
+    
     
     std::vector<std::string> remove;
     remove.push_back("Contraction");

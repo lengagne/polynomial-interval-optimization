@@ -20,13 +20,11 @@ ContractionBasisFunctionSolver::ContractionBasisFunctionSolver(AbstractCSP* pb,
 
 ContractionBasisFunctionSolver::~ContractionBasisFunctionSolver()
 {
-    close_files();
     results.clear();
 }
 
 void ContractionBasisFunctionSolver::init(double eps)
 {
-    if (init_done)  return;
     BasisFunctionSolver::init(eps);
     
     output_Interval_value.resize(nb_fun_);

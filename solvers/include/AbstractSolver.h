@@ -41,25 +41,16 @@ class AbstractSolver
                                        const Interval & bound);
         
 
-        void close_files();
-        
         virtual void evaluate(  const std::vector<Interval>& in,
                                 std::vector<Interval> & out) = 0;
                                 
-        bool load_save_filename( const std::string& s,
+        bool load_warm_start_filename( const std::string& s,
                                 const Result & res  // is initialized
         );     
         
         virtual param_optim solve_optim(double eps=1e-3) = 0;
-        
-        void prepare_files(const std::string& filename);
                                 
-        void save_current_state( const std::string& filename = "current_state_optim");
-
-        void set_precision_gnuplot(const double a)
-        {
-            precision_gnuplot_ = a;
-        }
+        void save_current_state( const std::string& filename = "OptimTemporaryFile");
 
         void set_print(bool in)
         {
@@ -68,7 +59,7 @@ class AbstractSolver
         
         virtual param_optim set_results();
         
-        void set_save_filename( const std::string& s);
+        void set_warm_start_filename( const std::string& s);
         
         std::string update_filename( const std::string& filename); // check the filename and update version.
 
@@ -108,24 +99,14 @@ class AbstractSolver
         
         uint bissection_type_ = 0;
         
-        bool save_and_load_ = false;
-        std::string save_filename_ = "no_save";
+        bool wart_start_ = false;
+        std::string warm_start_filename_ = "no_warm_start";
+        std::string save_filename_ = "OptimTemporaryFile";
+    
                
     private:
 
-        bool file_open = false;
-        std::ofstream file_safe_;
-        std::ofstream file_maybe_;
-        std::ofstream file_gnuplot_input_;
-        std::ofstream file_gnuplot_output_;
-        double precision_gnuplot_ = 0.9e-3;
-        std::string file_prefix_;
         unsigned int cpt_rec_input_, cpt_rec_output_;
-        
-        
-
-        
-
 };
 
 #endif // AbstractSolver_H

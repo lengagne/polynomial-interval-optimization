@@ -65,21 +65,24 @@ void BasisFunctionSolver::init(double eps)
     optim_crit_ = std::numeric_limits<double>::max();
     find_one_feasible_ =false;        
     cpt_iter_ = 0;
-    if (save_and_load_)
-    {        
-        if (! load_save_filename(save_filename_,tmp))
+    if (wart_start_)
+    {   
+        std::cout<<"Try to read "<< warm_start_filename_ <<std::endl;
+        if (! load_warm_start_filename(warm_start_filename_,tmp))
         {
+            std::cout<<"Failed to load file "<< warm_start_filename_ <<std::endl;
             current_vector_.push_back(tmp);  
             optim_ = tmp;
         }
     }
     else
     {
+        std::cout<<"No warm start"<<std::endl;
         current_vector_.push_back(tmp);  
         optim_ = tmp;
     }
     
-    std::cout<<"save_filename = "<< save_filename_<<std::endl;
+    std::cout<<"warm_start_filename = "<< warm_start_filename_<<std::endl;
     
     MogsInterval::get_intermediate_to_compute(Intermediate_to_compute);
     MogsInterval::get_intermediate_to_update(Intermediate_to_update);
@@ -126,13 +129,12 @@ void BasisFunctionSolver::init_end()
        
     double before_compil = get_cpu_time() ;
     
-    LazyPrepare();
+    LazyPrepare(save_filename_,true);
     current_time_ = get_cpu_time();
     preparation_duration_ = current_time_ - start_preparation_time_;
     std::cout<<"preparation time : "<< preparation_duration_ <<" seconds."<<std::endl;
     start_computation_time_  = get_cpu_time();
 
-    init_done = true;
 }
 void BasisFunctionSolver::set_next()
 {    

@@ -22,6 +22,8 @@ Problem3D::Problem3D(   const mogs_string &filename,
     Yt = 0.4;
     Zt = 0.7;
     get_criteria_ = true;
+    
+    pb_name_ = "3D_Problem_Ndof"+std::to_string(nb_dof_);
 }
 
 void Problem3D::init()

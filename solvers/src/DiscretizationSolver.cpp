@@ -20,7 +20,6 @@ DiscretizationSolver::DiscretizationSolver(AbstractCSP* pb)
 
 DiscretizationSolver::~DiscretizationSolver()
 {
-    close_files();
     results.clear();
 }
 
@@ -134,7 +133,6 @@ param_optim DiscretizationSolver::solve_optim(double eps)
     std::cout<<"computation time (wo prep): "<< te - ts <<" seconds."<<std::endl;
     std::cout<<"Time per iteration : "<< (te - ts)/cpt_iter_ <<" seconds."<<std::endl;
     std::cout<<"total time : "<< te - tsglobal <<" seconds."<<std::endl<<std::endl;
-    close_files();
     
     if(find_one_feasible)
     {

@@ -6,8 +6,8 @@
 #include "MinVariance.h"
 #include "BernsteinFunction.h"
 #include "BSplinesFunction.h"
-#include "RecursiveBSplinesFunction.h"
-#include "RecursiveBSplinesFunction2.h"
+#include "RecursiveFunction.h"
+#include "Recursive2Function.h"
 
 
 ChooseBasisFunction::ChooseBasisFunction()
@@ -26,8 +26,8 @@ ChooseBasisFunction::ChooseBasisFunction()
 #endif    
     basis_functions_[cpt++] = "ApproxMinVo";    // 5    
 
-    basis_functions_[cpt++] = "RecursiveBSplines";// 6 
-    basis_functions_[cpt++] = "RecursiveBSplines2";// 7 
+    basis_functions_[cpt++] = "Recursive";// 6 
+    basis_functions_[cpt++] = "Recursive2";// 7 
 }
 
 void ChooseBasisFunction::choose(AbstractBasisFunction** bf, 
@@ -81,14 +81,14 @@ void ChooseBasisFunction::choose(AbstractBasisFunction** bf,
    
     if (index == cpt ++)    //  6
     {
-        *bf = new RecursiveBSplinesFunction(); 
+        *bf = new RecursiveFunction(); 
         return;
     }
 
 
     if (index == cpt ++)    //  7
     {
-        *bf = new RecursiveBSplinesFunction2(); 
+        *bf = new Recursive2Function(); 
         return;
     }    
         std::cerr<<"Error in FILE "<< __FILE__<<" at line "<< __LINE__<<" the index "<<index <<" is not defined yet"<<std::endl;

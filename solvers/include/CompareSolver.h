@@ -24,7 +24,7 @@ class CompareSolver
                         double precision = 0.001,
                         uint bissection_mode = 0,   // assumes inf bound bissection
                         int id = -1             ,   // -1 means that all the tests are performed
-                        const std::string& save_filename ="no_save"  // filename used to save in case of one test performed
+                        const std::string& warm_start_filename ="no_warm_start"  // filename used to save in case of one test performed
                     );
 
 

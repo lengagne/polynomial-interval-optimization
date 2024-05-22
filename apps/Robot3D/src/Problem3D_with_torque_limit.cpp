@@ -43,12 +43,14 @@ Problem3D_with_torque_limit::Problem3D_with_torque_limit(   const mogs_string &f
     get_criteria_ = true;
     coeff_torque_ = coeff_torque;
     crit_ = crit;
+    
+    pb_name_ = "3D_ProblemTorque_Ndof"+std::to_string(nb_dof_)+"_Target"+std::to_string(target)+"_CoeffTorque"+std::to_string(coeff_torque_)+"_Criteria"+std::to_string(crit_);
 }
 
 void Problem3D_with_torque_limit::init()
 {
     nb_var_ = nb_dof_;
-    nb_fun_ = 3 + nb_dof_;
+    nb_fun_ = 5 + nb_dof_;
 
     input_.resize(nb_dof_);
     std::vector<double> qmin(nb_dof_),qmax(nb_dof_),tmax(nb_dof_);;
@@ -67,8 +69,12 @@ void Problem3D_with_torque_limit::init()
     bound_[0] = Xt + Hull (-width,width);
     bound_[1] = Yt + Hull (-width,width);
     bound_[2] = Zt + Hull (-width,width);
+    
+    bound_[3] = Hull (-0.1,0.1);
+    bound_[4] = Hull (-0.1,0.1);
+    
     dkin_->model->getTorqueLimit(tmax);
-    int cpt = 3;
+    int cpt = 5;
     for(int i=0;i<nb_dof_;i++)
         bound_[cpt++] = coeff_torque_* Hull(-tmax[i],tmax[i]);
 }

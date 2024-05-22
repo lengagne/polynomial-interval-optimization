@@ -40,31 +40,16 @@ int main( int argc, char** argv)
     std::cout<<"precision = "<< precision <<std::endl;
     std::cout<<"problem = "<< problem <<std::endl;
     std::cout<<"bissection_mode = "<< bissection_mode <<std::endl;
-    std::cout<<"test = "<< test <<std::endl;
-
-//     std::string save_filename;    
-// //     std::string save_filename = construct_filename_3D(precision,problem,bissection_mode,test);
-// //     std::cout<<"save_filename = "<< save_filename <<std::endl;
-//     if(test != -1 && argc == 6)
-//     {
-//         save_filename = argv[5];
-// //         if ( load_file != save_filename)
-// //         {
-// //             std::cerr<<"Be carefull not good filename"<<std::endl;
-// //             std::cerr<<load_file <<" != "<< save_filename<<std::endl;
-// //             std::exit(13);
-// //         }
-//     }    
-    
-    std::string save_filename;    
+    std::cout<<"test = "<< test <<std::endl;    
+    std::string warm_start_filename;    
     if(test != -1)
     {
         if (argc >= 6)
         {
-            save_filename = argv[5];
+            warm_start_filename = argv[5];
         }else
         {
-            save_filename = construct_filename_3D(precision,problem,bissection_mode,test);
+            warm_start_filename = "no_warm_start"; // = construct_filename_3D(precision,problem,bissection_mode,test);
         }
     }
     
@@ -90,21 +75,21 @@ int main( int argc, char** argv)
         case(11):
                 coeff_torque = 1.0;
                 target = 0;
-                robot_file = "../../../model/kuka_lwr_4dof.xml";
+                robot_file = "../../model/kuka_lwr_4dof.xml";
                 break;
         // full torque, target (0.6,0.6,0.6)
         case(2):
         case(12):    
                 coeff_torque = 1.0;
                 target = 1;
-                robot_file = "../../../model/kuka_lwr_4dof.xml"; 
+                robot_file = "../../model/kuka_lwr_4dof.xml"; 
                 break;
         // 10% torque, target (0.4,0.4,0.7)
         case(3):
         case(13):
                 coeff_torque = 0.1;
                 target = 0;
-                robot_file = "../../../model/kuka_lwr_4dof.xml";
+                robot_file = "../../model/kuka_lwr_4dof.xml";
                 break;
         
         // 10% torque, target (0.6,0.6,0.6)
@@ -112,7 +97,7 @@ int main( int argc, char** argv)
         case(14):
                 coeff_torque = 0.1;
                 target = 1;
-                robot_file = "../../../model/kuka_lwr_4dof.xml";
+                robot_file = "../../model/kuka_lwr_4dof.xml";
                 break;
         
         // full torque, target (0.4,0.4,0.7)
@@ -120,7 +105,7 @@ int main( int argc, char** argv)
         case(15):
                 coeff_torque = 1.0;
                 target = 0;
-                robot_file = "../../../model/kuka_lwr.xml";
+                robot_file = "../../model/kuka_lwr.xml";
                 break;
         
         // full torque, target (0.6,0.6,0.6)
@@ -128,7 +113,7 @@ int main( int argc, char** argv)
         case(16):
                 coeff_torque = 1.0;
                 target = 1;
-                robot_file = "../../../model/kuka_lwr.xml";
+                robot_file = "../../model/kuka_lwr.xml";
                 break;
 
         // 10% torque, target (0.4,0.4,0.7)
@@ -136,7 +121,7 @@ int main( int argc, char** argv)
         case(17):
                 coeff_torque = 0.1;
                 target = 0;
-                robot_file = "../../../model/kuka_lwr.xml";
+                robot_file = "../../model/kuka_lwr.xml";
                 break;
         
         // 10% torque, target (0.6,0.6,0.6)
@@ -144,7 +129,7 @@ int main( int argc, char** argv)
         case(18):
                 coeff_torque = 0.1;
                 target = 1;
-                robot_file = "../../../model/kuka_lwr.xml";
+                robot_file = "../../model/kuka_lwr.xml";
                 break;
         
         default: 
@@ -159,7 +144,7 @@ int main( int argc, char** argv)
     pb = new Problem3D_with_torque_limit( mogs_string(robot_file.c_str()) ,"kuka_lwr_7_link",coeff_torque,target,critere);        
     
     CompareSolver cp(pb);   
-    cp.compare("Robot3D_model_"+std::to_string(problem),precision,bissection_mode,test,save_filename);
+    cp.compare("Robot3D_model_"+std::to_string(problem),precision,bissection_mode,test,warm_start_filename);
     delete pb;
     return 0;
 }

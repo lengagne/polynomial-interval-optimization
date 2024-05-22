@@ -69,6 +69,8 @@ data_format::data_format( const std::string& filename)
             add_data(line,"type", "Bissection : ");
             add_data(line,"criteria", "crit = ");            
             add_data(line,"save_filename", "save_filename = ");            
+            add_data(line,"nb_intermediate", "nb_intermediate_ = ");      
+            
             
             if (loof_for(line, "CEST") || loof_for(line, "CET"))
             {
@@ -202,6 +204,7 @@ void data_format::set_date_time(std::string& line)
     if (month =="févr.")    month_i = 2;
     else if (month =="mars")    month_i = 3;
     else if (month =="avril")    month_i = 4;
+    else if (month =="mai")    month_i = 5;
     else fail = true;
         
     iss>> day;
@@ -509,43 +512,57 @@ void create_latex( const std::vector< data_format*> datas,
         d->infos["precision"] = p;
         d->infos["solver"] = s;
         d->infos["ndof"] = n;
-        d->infos["nb_average"] = "0";
+        d->infos["nb_average"] = "0";        
+        d->infos["total_time (%)"] = "0";
+        d->infos["nb_iter (%)"] = "0";
+        d->infos["comput_time (%)"] = "0";
         
         average_data.push_back(d);
     }
     
-    
-    for (auto& a : average_data)    for (auto& d : datas)
+    for (auto& a : average_data)
     {
         uint nb = 0;
         long int nb_iter = 0;
         double comput_time = 0;
         double prep_time = 0;
         double total_time = 0;
-        
-        if (d->infos["precision"] == a->infos["precision"]  && 
-            d->infos["solver"] == a->infos["solver"]&&
-            d->infos["ndof"] == a->infos["ndof"] && is_number(d->infos["nb_iter"]))
+        double total_time_percent = 0.0;
+        double nb_iter_percent = 0.0;
+        double comput_time_percent = 0.0;
+        for (auto& d : datas)
         {
-            nb ++;
-//             std::cout<<" nb_iter = "<< d->infos["nb_iter"] <<std::endl;
-            nb_iter += std::stol( d->infos["nb_iter"] );
-            total_time += toDouble(d->infos["total_time"] );
-            prep_time += toDouble(d->infos["prep_time"] );
-            comput_time += toDouble(d->infos["comput_time"] );
             
-        }   
+            if (d->infos["precision"] == a->infos["precision"]  && 
+                d->infos["solver"] == a->infos["solver"]&&
+                d->infos["ndof"] == a->infos["ndof"] && is_number(d->infos["nb_iter"]))
+            {
+                nb ++;
+                nb_iter += std::stol( d->infos["nb_iter"] );
+                total_time += toDouble(d->infos["total_time"] );
+                prep_time += toDouble(d->infos["prep_time"] );
+                comput_time += toDouble(d->infos["comput_time"] );
+                total_time_percent += toDouble(d->infos["total_time (%)"] );
+                nb_iter_percent += toDouble(d->infos["nb_iter (%)"] );
+                comput_time_percent += toDouble(d->infos["comput_time (%)"] );
+            }
+        }
+        
+//         std::cout<<"nb = "<< nb <<std::endl;
         if(nb !=0)
         {
-            a->infos["nb_iter"]  = std::to_string( nb_iter / nb);            
+            a->infos["nb_iter"]  = to_string_with_precision(nb_iter / nb,0);            
             a->infos["total_time"]  = std::to_string( total_time / nb);  
             a->infos["(D-H:M:S.ms)"] = time_format(a->infos["total_time"]);            
             a->infos["prep_time"]  = std::to_string( prep_time / nb);    
             a->infos["comput_time"]  = std::to_string( comput_time / nb);
-            a->infos["time_per_iter"] = total_time/nb_iter;
+            a->infos["time_per_iter"] = to_string_with_precision(total_time/nb,2);
+            a->infos["total_time (%)"] = to_string_with_precision(total_time_percent/nb,2);
+            a->infos["nb_iter (%)"]  = to_string_with_precision(nb_iter_percent/nb,2);
+            a->infos["comput_time (%)"] = to_string_with_precision(comput_time_percent/nb,2);
         }
     }
-    set_pourcentage(average_data);
+//     set_pourcentage(average_data);
     
     create_latex( outfile, average_data, columns_average, "Average of X-D problems");
     
