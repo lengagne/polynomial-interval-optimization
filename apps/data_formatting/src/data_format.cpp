@@ -84,7 +84,7 @@ data_format::data_format( const std::string& filename)
                 infos["nb_iter"] = "TIMEOUT";
                 infos["comput_time"] = "TIMEOUT";
                 infos["time_per_iter"] = "TIMEOUT";
-                infos["total_time"] = "TIMEOUT";                   
+                infos["total_time"] = filename;
             }
             if (loof_for(line,"CANCELLED AT"))
             {
@@ -93,7 +93,7 @@ data_format::data_format( const std::string& filename)
                 infos["nb_iter"] = "CANCELLED";
                 infos["comput_time"] = "CANCELLED";
                 infos["time_per_iter"] = "CANCELLED";
-                infos["total_time"] = "CANCELLED";             
+                infos["total_time"] = filename;
             }        
             if (loof_for(line,"Cannot load the library, stopping program"))
             {
@@ -102,8 +102,8 @@ data_format::data_format( const std::string& filename)
                 infos["nb_iter"] = "CANNOT_LOAD_LIBRARY";
                 infos["comput_time"] = "CANNOT_LOAD_LIBRARY";
                 infos["time_per_iter"] = "CANNOT_LOAD_LIBRARY";
-                infos["total_time"] = "CANNOT_LOAD_LIBRARY";      
-                std::cout<<"CANNOT_LOAD_LIBRARY: ";                
+                infos["total_time"] = filename;
+ 
             }            
             if (loof_for (line, "RERUN WAITING"))
             {
@@ -113,8 +113,18 @@ data_format::data_format( const std::string& filename)
                 infos["nb_iter"] = "RERUN WAITING";
                 infos["comput_time"] = "RERUN WAITING";
                 infos["time_per_iter"] = "RERUN WAITING";
-                infos["total_time"] = "RERUN WAITING";                      
-            }            
+                infos["total_time"] = filename;
+            }    
+            if (loof_for (line, "Some of your processes may have been killed"))
+            {
+                fail_ = true;
+                time_out_ = false;
+                infos["prep_time"] = "MEMORY ISSUE";
+                infos["nb_iter"] = "MEMORY ISSUE";
+                infos["comput_time"] = "MEMORY ISSUE";
+                infos["time_per_iter"] = "MEMORY ISSUE";
+                infos["total_time"] = filename;
+            }                 
         }        
     }else
     {
@@ -187,7 +197,13 @@ void data_format::plot()
 
 void data_format::print_re_run()
 {
-    std::cout<<"echo \"RERUN WAITING\" >> "<< extract_filename(infos["filename"]) <<" ;   sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"] <<std::endl;
+    if (infos["prep_time"] == "MEMORY ISSUE")
+    {
+        std::cout<<"rm -v "<< extract_filename(infos["filename"]) <<" ;   sbatch job_extra_memory.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"] <<std::endl;        
+    }else
+    {
+        std::cout<<"echo \"RERUN WAITING\" >> "<< extract_filename(infos["filename"]) <<" ;   sbatch job.sh "<< infos["ndof"]<<" "<< infos["problem"]<<" " << infos["precision"]<<" " << get_bissection(infos["type"]) <<" "<< get_solver(infos["solver"])<<" "<< infos["save_file"] <<std::endl;
+    }
 }
 
 void data_format::set_date_time(std::string& line)
@@ -408,8 +424,10 @@ void create_latex( const std::vector< data_format*> datas,
                    std::vector<std::string> & columns,
                    std::vector<std::string> & columns_average,
                    std::vector<std::string> & common,
+                   std::vector<std::string> & average_on,
                    std::vector<std::string> & remove,
-                   const std::string main_title
+                   const std::string main_title,
+                   const std::string average_title
                  )
 {
     std::cout<<"CREATE LATEX With "<< filename <<" "<< datas.size() <<std::endl;
@@ -492,79 +510,136 @@ void create_latex( const std::vector< data_format*> datas,
         
         create_latex( outfile, local_datas, columns, caption);
     }
-
-    std::cout<<"Now we do the average"<<std::endl;
+    
     // list precision and solver
-    std::list<std::string> precisions = look_for(datas,"precision");
-    precisions.sort();
-    std::list<std::string> solvers = re_order(  look_for(datas,"solver"),solver_order_);
-    std::list<std::string> ndofs = look_for(datas,"ndof");
-    ndofs.sort();
+    int nb_average_on = average_on.size();
+    
+    std::vector< std::vector<std::string> > list_on_average( nb_average_on);
+    std::vector<int> sizes(nb_average_on);
+    std::vector<int> counter(nb_average_on);
+    for (int i=0;i<nb_average_on;i++)
+    {
+        std::list<std::string> list_to_vec;
+        list_to_vec = look_for(datas,average_on[i]);
+        if (average_on[i] == "precision" || average_on[i] == "ndof")
+        {
+            list_to_vec.sort();
+        }else if (average_on[i] == "solver")   
+        {
+            list_to_vec = re_order(list_to_vec,solver_order_);
+        }
+        
+        list_on_average[i] = std::vector<std::string>(list_to_vec.begin(),list_to_vec.end());
+        sizes[i] = list_on_average[i].size();
+        counter[i] = 0;
+//         std::cout<<"We found "<< list_on_average[i].size() <<" different values for "<< average_on[i]<<std::endl;
+    }
+    
+//     std::list<std::string> precisions = look_for(datas,"precision");
+//     precisions.sort();
+//     std::list<std::string> solvers = re_order(  look_for(datas,"solver"),solver_order_);
+//     std::list<std::string> ndofs = look_for(datas,"ndof");
+//     ndofs.sort();
+
+
     
     std::vector< data_format*> average_data;
     
-    for ( auto&p : precisions)  for ( auto&s : solvers)  for ( auto&n : ndofs)  
+    while( counter[0] < sizes[0])
     {
         data_format* d = new data_format();
-//         std::cout<<" p = "<< p <<std::endl;
-//         std::cout<<" s = "<< s <<std::endl;
-//         std::cout<<" n= "<< n <<std::endl;
-        d->infos["precision"] = p;
-        d->infos["solver"] = s;
-        d->infos["ndof"] = n;
-        d->infos["nb_average"] = "0";        
-        d->infos["total_time (%)"] = "0";
-        d->infos["nb_iter (%)"] = "0";
-        d->infos["comput_time (%)"] = "0";
-        
+        for (int i=0;i<nb_average_on;i++)
+        {
+            d->infos[average_on[i]] = list_on_average[i][counter[i]];
+        }
+
+        for (int i=0;i<columns_average.size();i++)
+        {
+            d->infos[columns_average[i]] = "0";
+        }        
         average_data.push_back(d);
+        int cpt = nb_average_on-1;
+        counter[cpt] ++;
+        while(cpt>0)
+        {
+            if (counter[cpt] >= sizes[cpt])
+            {
+                counter[cpt] =0;
+                counter[cpt-1]++;
+            }
+            cpt--;
+        }
     }
-    
+
     for (auto& a : average_data)
     {
         uint nb = 0;
-        long int nb_iter = 0;
-        double comput_time = 0;
-        double prep_time = 0;
-        double total_time = 0;
-        double total_time_percent = 0.0;
-        double nb_iter_percent = 0.0;
-        double comput_time_percent = 0.0;
+        std::vector<double> values(columns_average.size());
+        for (int i=0;i<columns_average.size();i++)
+            values[i] = 0.0;
         for (auto& d : datas)
         {
+            bool test = true;
+            for (int i=0;i<nb_average_on;i++)
+            {
+                if (d->infos[average_on[i]] != a->infos[average_on[i]])
+                {
+                    test = false;
+                    break;
+                }
+            }
             
-            if (d->infos["precision"] == a->infos["precision"]  && 
-                d->infos["solver"] == a->infos["solver"]&&
-                d->infos["ndof"] == a->infos["ndof"] && is_number(d->infos["nb_iter"]))
+            if (test)
             {
                 nb ++;
-                nb_iter += std::stol( d->infos["nb_iter"] );
-                total_time += toDouble(d->infos["total_time"] );
-                prep_time += toDouble(d->infos["prep_time"] );
-                comput_time += toDouble(d->infos["comput_time"] );
-                total_time_percent += toDouble(d->infos["total_time (%)"] );
-                nb_iter_percent += toDouble(d->infos["nb_iter (%)"] );
-                comput_time_percent += toDouble(d->infos["comput_time (%)"] );
+                for (int i=0;i<columns_average.size();i++)
+                {
+                    if (columns_average[i] != "(D-H:M:S.ms)")
+                        values[i] += toDouble(d->infos[columns_average[i]]);
+                    
+                }
+//                 nb_iter += std::stol( d->infos["nb_iter"] );
+//                 total_time += toDouble(d->infos["total_time"] );
+//                 prep_time += toDouble(d->infos["prep_time"] );
+//                 comput_time += toDouble(d->infos["comput_time"] );
+//                 total_time_percent += toDouble(d->infos["total_time (%)"] );
+//                 nb_iter_percent += toDouble(d->infos["nb_iter (%)"] );
+//                 comput_time_percent += toDouble(d->infos["comput_time (%)"] );
             }
         }
         
-//         std::cout<<"nb = "<< nb <<std::endl;
         if(nb !=0)
         {
-            a->infos["nb_iter"]  = to_string_with_precision(nb_iter / nb,0);            
-            a->infos["total_time"]  = std::to_string( total_time / nb);  
+            for (int i=0;i<columns_average.size();i++)
+            {
+                if (columns_average[i] == "nb_iter")
+                    a->infos[columns_average[i]] = std::to_string((int) values[i]/nb);
+                else
+                {
+                    a->infos[columns_average[i]] = std::to_string( values[i]/nb);
+                    //a->infos[columns_average[i]] = to_string_with_precision( values[i]/nb,2);
+                }
+            }
+//             a->infos["nb_iter"]  = to_string_with_precision(nb_iter / nb,0);            
+//             a->infos["total_time"]  = std::to_string( total_time / nb);  
             a->infos["(D-H:M:S.ms)"] = time_format(a->infos["total_time"]);            
-            a->infos["prep_time"]  = std::to_string( prep_time / nb);    
-            a->infos["comput_time"]  = std::to_string( comput_time / nb);
-            a->infos["time_per_iter"] = to_string_with_precision(total_time/nb,2);
-            a->infos["total_time (%)"] = to_string_with_precision(total_time_percent/nb,2);
-            a->infos["nb_iter (%)"]  = to_string_with_precision(nb_iter_percent/nb,2);
-            a->infos["comput_time (%)"] = to_string_with_precision(comput_time_percent/nb,2);
+//             a->infos["prep_time"]  = std::to_string( prep_time / nb);    
+//             a->infos["comput_time"]  = std::to_string( comput_time / nb);
+//             a->infos["time_per_iter"] = to_string_with_precision(total_time/nb,2);
+//             a->infos["total_time (%)"] = to_string_with_precision(total_time_percent/nb,2);
+//             a->infos["nb_iter (%)"]  = to_string_with_precision(nb_iter_percent/nb,2);
+//             a->infos["comput_time (%)"] = to_string_with_precision(comput_time_percent/nb,2);
         }
     }
 //     set_pourcentage(average_data);
     
-    create_latex( outfile, average_data, columns_average, "Average of X-D problems");
+    std::vector<std::string> col;
+    for (int i=0;i<average_on.size();i++)
+        col.push_back(average_on[i]);
+    for (int i=0;i<columns_average.size();i++)
+        col.push_back(columns_average[i]);
+    
+    create_latex( outfile, average_data, col,average_title);
     
     
     
@@ -671,15 +746,12 @@ void create_latex_subpart( std::ofstream& outfile,
             {
                 outfile <<" \\hline \n";   
             }
-            outfile<<"\\multirow{"<<local_data.size()<<"}{*}{"<< t <<"} & ";
+            outfile<<"\\multirow{"<<local_data.size()<<"}{*}{"<< replace(t) <<"} & ";
             create_latex_subpart ( outfile, index+1, columns, local_data, entete+" & ");
             outfile <<" \\cline{"<< index+1 <<"-"<< index+2 <<"}";   
         }
         cpt ++;
-        
-        
     }    
-    
 }
 
 std::string get_bissection( const std::string in)
@@ -714,8 +786,8 @@ void init_order()
     solver_order_.push_back("BissectionBasis_MinNo"); 
     solver_order_.push_back("BissectionBasis_MinVo");
     solver_order_.push_back("BissectionBasis_ApproxMinVo");       
-    solver_order_.push_back("BissectionBasis_RecursiveBSplines");
-    solver_order_.push_back("BissectionBasis_RecursiveBSplines2");
+    solver_order_.push_back("BissectionBasis_Recursive");
+    solver_order_.push_back("BissectionBasis_Recursive2");
     solver_order_.push_back("ContractionInterval");
     solver_order_.push_back("ContractionBasis_Bernstein");
     solver_order_.push_back("ContractionBasis_MinVariance");
@@ -723,8 +795,8 @@ void init_order()
     solver_order_.push_back("ContractionBasis_MinNo");    
     solver_order_.push_back("ContractionBasis_MinVo");
     solver_order_.push_back("ContractionBasis_ApproxMinVo");
-    solver_order_.push_back("ContractionBasis_RecursiveBSplines");
-    solver_order_.push_back("ContractionBasis_RecursiveBSplines2");        
+    solver_order_.push_back("ContractionBasis_Recursive");
+    solver_order_.push_back("ContractionBasis_Recursive2");        
     
     bissect_order_.clear();
     bissect_order_.push_back("MinFirst");
@@ -798,7 +870,7 @@ double toDouble(std::string s){
 
 std::string replace (const std::string &in)
 {
-    
+//         std::cout<<"in = "<< in <<std::endl;
 //     out =  std::regex_replace(out, std::regex("Bissection"), "Bis_");
 //     out =  std::regex_replace(out, std::regex("BissectionBasis"), "Bis");
 //     out =  std::regex_replace(out, std::regex("ContractionBasis"), "Cont");
@@ -834,7 +906,7 @@ std::string replace (const std::string &in)
 //         }        
 //     }
 //     
-    
+//     std::cout<<"out = "<< out <<std::endl;
     return out;
 }
 

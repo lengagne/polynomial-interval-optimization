@@ -100,7 +100,9 @@ int main( int argc, char** argv)
         }        
         for (int i=0;i<nb_basis;i++)
         {                        
+            std::cout<<"choose_solver"<<std::endl;
             choice_solver.choose(&pb,&solver,i,0);  
+            std::cout<<"solver chosen"<<std::endl;
             outfile_diam<<" & "<< replace(choice_solver.get_solver_name(i));
             outfile_value<<" & "<< replace(choice_solver.get_solver_name(i));
             

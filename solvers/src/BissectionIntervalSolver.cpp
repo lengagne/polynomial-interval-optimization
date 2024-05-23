@@ -27,11 +27,13 @@ void BissectionIntervalSolver::evaluate(const std::vector<Interval> &in,
 
 param_optim BissectionIntervalSolver::solve_optim(double eps)
 {
+    precision_ = eps;
+    
     std::cout<<"BissectionIntervalSolver::solve_optim"<<std::endl;
     save_filename_ = pb_->get_problem_name() + "_Precision" + std::to_string(precision_)+ "_BisMod" + std::to_string(bissection_type_)+ "_Interval";
 
     start_preparation_time_ = get_cpu_time();
-    precision_ = eps;
+    
 
     current_vector_.clear();
     bounds_ = pb_->get_bound();
@@ -42,7 +44,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     optim_crit_ = std::numeric_limits<double>::max();
     find_one_feasible_ =false;        
     cpt_iter_ = 0;
-    if (wart_start_)
+    if (warm_start_)
     {        
         if (! load_warm_start_filename(warm_start_filename_,tmp))
         {
@@ -55,7 +57,8 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
         optim_ = tmp;
     }       
 
-    std::cout<<"warm_start_filename = "<< warm_start_filename_<<std::endl;
+    std::cout<<"warm_start_filename = "<< warm_start_filename_<<std::endl;    
+    std::cout<<"save_filename = "<< save_filename_<<".sop"<<std::endl;
     
     bool test;
     nb_valid_box_=0;
@@ -79,6 +82,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
         return set_results();
     }    
     
+    save_current_state(save_filename_);
 //     std::cout<<"il y a "<< nb_fun_ <<" contraintes."<<std::endl;
     do{
         

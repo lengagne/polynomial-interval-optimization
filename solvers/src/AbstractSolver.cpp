@@ -265,10 +265,10 @@ void AbstractSolver::set_warm_start_filename( const std::string& s)
 {
     if (s == "no_warm_start")
     {
-        wart_start_ = false;        
+        warm_start_ = false;        
     }else
     {
-        wart_start_ = true;
+        warm_start_ = true;
         warm_start_filename_ = s;
     }
 }

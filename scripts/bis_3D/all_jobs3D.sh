@@ -1,6 +1,8 @@
 #!/bin/bash
 
-for precision in $1
+params=(0.01 0.001)
+
+for precision in "${params[@]}"
 do
     for bissection_mode in `seq 0 1`
     do
@@ -11,15 +13,14 @@ do
                 pbname=$(($((10*$pb10))+$pb));  
                 for solveur in `seq 0 8`                
                 do        
-#                 sbatch job3D.sh $precision $pbname $bissection_mode $solveur
-                sh job3D.sh $precision $pbname $bissection_mode $solveur
+                sbatch job3D.sh $precision $pbname $bissection_mode $solveur
                 done
             done
         done
     done
 done
 
-for precision in $1
+for precision in "${params[@]}"
 do
     for bissection_mode in `seq 0 1`
     do

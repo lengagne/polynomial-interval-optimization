@@ -45,6 +45,10 @@ int main(int argc, char *argv[])
 //     create_csv(datas_, "nb_iter", "ndof", "solver", "problem", repo.toStdString() + "problem",true);
 //     create_csv(datas_, "total_time", "ndof", "solver", "problem", repo.toStdString() + "problem",true);
 
+
+    std::vector<std::string> common;    
+    common.push_back("problem");
+    common.push_back("type");
     
     std::vector<std::string> order_latex;
     order_latex.push_back("precision");
@@ -61,11 +65,12 @@ int main(int argc, char *argv[])
     order_latex.push_back("nb_iter (%)");
 //     order_latex.push_back("filename");
     
+    std::vector<std::string> average_on;
+    average_on.push_back("robot");
+    average_on.push_back("precision");    
+    average_on.push_back("solver");    
     
-    std::vector<std::string> order_latex_average;
-//     order_latex_average.push_back("robot");
-    order_latex_average.push_back("precision");
-    order_latex_average.push_back("solver");    
+    std::vector<std::string> order_latex_average;        
     order_latex_average.push_back("prep_time");
     order_latex_average.push_back("comput_time");
     order_latex_average.push_back("total_time");
@@ -79,14 +84,12 @@ int main(int argc, char *argv[])
     
     
     
-    std::vector<std::string> common;    
-    common.push_back("problem");
-    common.push_back("type");
+    
     
     
     std::vector<std::string> remove;
     remove.push_back("Contraction");
-    create_latex( datas_, "recap_bis_3D", order_latex,order_latex_average,common,remove,"Bissection of problem 3D with ");
+    create_latex( datas_, "recap_bis_3D", order_latex,order_latex_average,common,average_on,remove,"Bissection of problem 3D with ", "Average for 3D Problems");
     
 //     remove.clear();
 //     remove.push_back("Bissection");

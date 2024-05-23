@@ -65,7 +65,7 @@ void BasisFunctionSolver::init(double eps)
     optim_crit_ = std::numeric_limits<double>::max();
     find_one_feasible_ =false;        
     cpt_iter_ = 0;
-    if (wart_start_)
+    if (warm_start_)
     {   
         std::cout<<"Try to read "<< warm_start_filename_ <<std::endl;
         if (! load_warm_start_filename(warm_start_filename_,tmp))
@@ -129,7 +129,7 @@ void BasisFunctionSolver::init_end()
        
     double before_compil = get_cpu_time() ;
     
-    LazyPrepare(save_filename_,true);
+    LazyPrepare(save_filename_,warm_start_);
     current_time_ = get_cpu_time();
     preparation_duration_ = current_time_ - start_preparation_time_;
     std::cout<<"preparation time : "<< preparation_duration_ <<" seconds."<<std::endl;
@@ -153,16 +153,18 @@ void BasisFunctionSolver::set_next()
 param_optim BasisFunctionSolver::solve_optim(double eps)
 {
     solve_optim_ = true;
-    init(eps);
-    
     switch(bissection_type_)
     {
         case(0):    std::cout<<"Bissection : MinFirst"<<std::endl;  break;
         case(1):    std::cout<<"Bissection : MaxFirst"<<std::endl;  break;
 //         case(2):    std::cout<<"Bissection : Smart"<<std::endl;  break;
         default :   std::cerr<<"Bissection type not defined "<<std::endl;   std::exit(63);  break;
-    }    
+    }   
     
+    init(eps);
+    
+    std::cout<<"save_filename = "<< save_filename_ <<".sop"<<std::endl;
+    save_current_state(save_filename_);
     std::vector<double> bissect_weight(nb_var_);
     
     if(current_vector_.size() == 0)
@@ -175,7 +177,7 @@ param_optim BasisFunctionSolver::solve_optim(double eps)
         cpt_iter_++;
         if (cpt_iter_%save_each_iter_ == 0)
         {
-            save_current_state(save_filename_);   
+            save_current_state(save_filename_);
             cpt_iter_ = 0;
             saved_iter_ ++;            
         }

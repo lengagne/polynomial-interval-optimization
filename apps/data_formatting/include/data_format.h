@@ -79,8 +79,10 @@ void create_latex( const std::vector< data_format*> datas,
                    std::vector<std::string> & columns,
                    std::vector<std::string> & columns_average,
                    std::vector<std::string> & common,
+                   std::vector<std::string> & common_average,
                    std::vector<std::string> & remove,
-                   const std::string main_title="empty"
+                   const std::string main_title="empty",
+                   const std::string average_title="empty"
                  );
 
 void create_latex( const std::vector< data_format*> datas,

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=bis_3D_long
+#SBATCH --job-name=b3D_long
 #SBATCH --mail-user=sebastien.lengagne@uca.fr
 #SBATCH --mail-type=FAIL
 #SBATCH --ntasks=1

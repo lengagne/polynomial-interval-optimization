@@ -99,7 +99,7 @@ class AbstractSolver
         
         uint bissection_type_ = 0;
         
-        bool wart_start_ = false;
+        bool warm_start_ = false;
         std::string warm_start_filename_ = "no_warm_start";
         std::string save_filename_ = "OptimTemporaryFile";
     

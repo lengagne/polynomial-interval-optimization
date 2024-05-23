@@ -45,7 +45,7 @@ data_format3D::data_format3D( const std::string& filename)
                 infos["nb_iter"] = "TIMEOUT";
                 infos["comput_time"] = "TIMEOUT";
                 infos["time_per_iter"] = "TIMEOUT";
-                infos["total_time"] = "TIMEOUT";                   
+                infos["total_time"] = filename;
 //                 std::cout<<"TIMEOUT: ";
             }
             if (loof_for(line,"CANCELLED AT"))
@@ -55,7 +55,7 @@ data_format3D::data_format3D( const std::string& filename)
                 infos["nb_iter"] = "CANCELLED";
                 infos["comput_time"] = "CANCELLED";
                 infos["time_per_iter"] = "CANCELLED";
-                infos["total_time"] = "CANCELLED";      
+                infos["total_time"] = filename;
 //                 std::cout<<"CANCELLED: ";
             }         
             
@@ -66,7 +66,7 @@ data_format3D::data_format3D( const std::string& filename)
                 infos["nb_iter"] = "CANNOT_LOAD_LIBRARY";
                 infos["comput_time"] = "CANNOT_LOAD_LIBRARY";
                 infos["time_per_iter"] = "CANNOT_LOAD_LIBRARY";
-                infos["total_time"] = "CANNOT_LOAD_LIBRARY";      
+                infos["total_time"] = filename;
 //                 std::cout<<"CANNOT_LOAD_LIBRARY: ";                
             }
             
@@ -80,6 +80,16 @@ data_format3D::data_format3D( const std::string& filename)
                 infos["time_per_iter"] = "RERUN WAITING";
                 infos["total_time"] = "RERUN WAITING";                      
             }
+            if (loof_for (line, "Some of your processes may have been killed"))
+            {
+                fail_ = true;
+                time_out_ = false;
+                infos["prep_time"] = "MEMORY ISSUE";
+                infos["nb_iter"] = "MEMORY ISSUE";
+                infos["comput_time"] = "MEMORY ISSUE";
+                infos["time_per_iter"] = "MEMORY ISSUE";
+                infos["total_time"] = filename;                   
+            }                 
         }        
 //         std::cout<<" reading "<< filename_ <<" robot = "<< infos["robot"]<<std::endl;
     }else
