@@ -81,14 +81,16 @@ void create_latex( const std::vector< data_format*> datas,
                    std::vector<std::string> & common,
                    std::vector<std::string> & common_average,
                    std::vector<std::string> & remove,
-                   const std::string main_title="empty",
-                   const std::string average_title="empty"
+                   const std::string& main_title="empty",
+                   const std::string& average_title="empty",
+                   const std::string& label="label"
                  );
 
 void create_latex( const std::vector< data_format*> datas,
                    const std::string filename,
                    std::vector<std::string> & columns,
-                   const std::string &titre =""
+                   const std::string &titre ="",
+                   const std::string &label ="label"
                  );
 
 void create_latex_subpart( std::ofstream& outfile,
@@ -105,6 +107,8 @@ void init_order();
 
 std::list< std::string> look_for( const std::vector< data_format*> datas,
                                     std::string name);
+
+std::vector< data_format*> remove_extra_info( const std::vector< data_format*>& datas);
 
 std::list<std::string> re_order(const std::list<std::string>& input, 
                                 const std::list<std::string>& dic);

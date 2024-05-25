@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     
     std::vector<std::string> remove;
     remove.push_back("Contraction");
-    create_latex( datas_, "recap_bis_2D", order_latex,order_latex_average,common,average_on,remove,"Bissection of problem 2D with ","Average of 2D problems");
+    create_latex( datas_, "recap_bis_2D", order_latex,order_latex_average,common,average_on,remove,"Bissection of problem 2D with ","Average of 2D problems","pb2d");
     
 //     remove.clear();
 //     remove.push_back("Bissection");

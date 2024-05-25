@@ -67,10 +67,8 @@ int main( int argc, char** argv)
     std::vector<Interval> q(6);
     
     std::vector<double> middle(6);
-    middle[0] = -2.35;
-    middle[1] = -0.15;
-    middle[2] = -1.75;
-    middle[3] =  1.05;
+    for (int i=0;i<6;i++)
+        middle[i] = 0.5;
     
     AbstractSolver* solver;
     

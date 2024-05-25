@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     
     std::vector<std::string> remove;
     remove.push_back("Contraction");
-    create_latex( datas_, "recap_bis_3D", order_latex,order_latex_average,common,average_on,remove,"Bissection of problem 3D with ", "Average for 3D Problems");
+    create_latex( datas_, "recap_bis_3D", order_latex,order_latex_average,common,average_on,remove,"Bissection of problem 3D with ", "Average for 3D Problems","pb3d");
     
 //     remove.clear();
 //     remove.push_back("Bissection");

@@ -35,6 +35,8 @@ void BissectionBasisFunctionSolver::evaluate(   const std::vector<Interval> &in,
     current_vector_.push_back(tmp);
     set_next();
     
+    
+    
     for (int i=0;i<nb_fun_;i++)
     {
         compute_intermediate_for(i);

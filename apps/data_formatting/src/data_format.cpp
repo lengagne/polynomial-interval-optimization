@@ -380,7 +380,8 @@ void create_csv(const std::vector< data_format*> datas,
 void create_latex( std::ofstream& outfile,
                    const std::vector< data_format*> datas,
                    std::vector<std::string> & columns,
-                   const std::string &titre
+                   const std::string &titre,
+                   const std::string &label
                  )
 {
     
@@ -410,9 +411,10 @@ void create_latex( std::ofstream& outfile,
     outfile <<"\\end{tabular}\n";
     if (titre != "")
     {
-        outfile<<"\n } \n \\caption\{"<< titre<<"}"<<std::endl;
+        outfile<<" } \n \\caption\{"<< titre<<"}"<<std::endl;
+        outfile<<" \\label\{fig"<< label<<"}"<<std::endl;
     }
-    outfile <<"\n \\end{table}\n\n";
+    outfile <<"\\end{table}\n\n";
 //     outfile <<"\\normalsize \n";
 //     outfile <<"\\end{longtable}\n\n";
 //     std::cout<<"end of table"<<std::endl;
@@ -426,8 +428,9 @@ void create_latex( const std::vector< data_format*> datas,
                    std::vector<std::string> & common,
                    std::vector<std::string> & average_on,
                    std::vector<std::string> & remove,
-                   const std::string main_title,
-                   const std::string average_title
+                   const std::string& main_title,
+                   const std::string& average_title,
+                   const std::string& label
                  )
 {
     std::cout<<"CREATE LATEX With "<< filename <<" "<< datas.size() <<std::endl;
@@ -508,7 +511,7 @@ void create_latex( const std::vector< data_format*> datas,
                 caption += ", ";
         }
         
-        create_latex( outfile, local_datas, columns, caption);
+        create_latex( outfile, local_datas, columns, caption,label + "_"+ std::to_string(i+1));
     }
     
     // list precision and solver
@@ -589,7 +592,7 @@ void create_latex( const std::vector< data_format*> datas,
                 }
             }
             
-            if (test)
+            if (test && d->infos["criteria"] != "-1")
             {
                 nb ++;
                 for (int i=0;i<columns_average.size();i++)
@@ -639,7 +642,7 @@ void create_latex( const std::vector< data_format*> datas,
     for (int i=0;i<columns_average.size();i++)
         col.push_back(columns_average[i]);
     
-    create_latex( outfile, average_data, col,average_title);
+    create_latex( outfile, average_data, col,average_title,"average_"+label);
     
     
     
