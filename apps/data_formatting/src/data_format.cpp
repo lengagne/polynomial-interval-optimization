@@ -221,6 +221,7 @@ void data_format::set_date_time(std::string& line)
     else if (month =="mars")    month_i = 3;
     else if (month =="avril")    month_i = 4;
     else if (month =="mai")    month_i = 5;
+    else if (month =="juin")    month_i = 6;
     else fail = true;
         
     iss>> day;
@@ -643,12 +644,7 @@ void create_latex( const std::vector< data_format*> datas,
         col.push_back(columns_average[i]);
     
     create_latex( outfile, average_data, col,average_title,"average_"+label);
-    
-    
-    
     outfile.close();
-    
-//     std::cout<<std::endl;
 }
 
 

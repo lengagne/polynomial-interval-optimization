@@ -25,6 +25,8 @@ class BissectionBasisFunctionSolver: public BasisFunctionSolver
         virtual void init(double eps);
         
         virtual void update_input();
+        
+        bool init_done_ = false;
 
 };
 

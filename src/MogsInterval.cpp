@@ -728,20 +728,27 @@ MogsInterval MogsInterval::operator+ (const MogsInterval& I) const
 
 void MogsInterval::operator+= (const MogsInterval& I)
 {
-    for(std::map<mem*,LazyVariable>::const_iterator itmem = I.dependances_.begin(); itmem != I.dependances_.end(); itmem++)
-        dependances_[itmem->first] += itmem->second;
+//     std::cout<<"debut MogsInterval operator+= this "<< *this <<std::endl;
+//     std::cout<<"debut MogsInterval operator+= I    "<< I <<std::endl;
+    *this = *this + I;
+//     for(std::map<mem*,LazyVariable>::const_iterator itmem = I.dependances_.begin(); itmem != I.dependances_.end(); itmem++)
+//         dependances_[itmem->first] += itmem->second;    
 
-   if(guess_size() > MAXSIZE)
+//     std::cout<<"fin MogsInterval operator+= "<< *this <<std::endl;    
+    if(guess_size() > MAXSIZE)
     {
+//         std::cout<<"guess size"<<std::endl;
         *this =  add_intermediate(*this);
     }
+    
+//     std::cout<<"fin MogsInterval operator+= "<< *this <<std::endl;
 }
 
 void MogsInterval::operator-= (const MogsInterval& I)
 {
     for(std::map<mem*,LazyVariable>::const_iterator itmem = I.dependances_.begin(); itmem != I.dependances_.end(); itmem++)
         dependances_[itmem->first] -= itmem->second;
-   if(guess_size() > MAXSIZE)
+    if(guess_size() > MAXSIZE)
     {
         *this =  add_intermediate(*this);
     }
@@ -768,7 +775,7 @@ MogsInterval MogsInterval::operator* (const LazyVariable& d) const
     MogsInterval out = *this;
     for(std::map<mem*,LazyVariable>::iterator itmem = out.dependances_.begin(); itmem != out.dependances_.end(); itmem++)
         itmem->second *= d;
-   if(out.guess_size() > MAXSIZE)
+    if(out.guess_size() > MAXSIZE)
     {
         return add_intermediate(out);
     }
@@ -778,6 +785,8 @@ MogsInterval MogsInterval::operator* (const LazyVariable& d) const
 
 MogsInterval MogsInterval::operator* (const MogsInterval& in) const
 {
+//     std::cout<<"Operator * this : "<< *this <<std::endl;
+//     std::cout<<"Operator * in : "<< in <<std::endl;
     if (in == 0.0)
     {
         return 0.0;
@@ -872,7 +881,7 @@ MogsInterval MogsInterval::operator* (const MogsInterval& in) const
         MogsInterval new_intermediate = add_intermediate(out);
         return new_intermediate;
     }
-    
+//     std::cout<<"Operator * out : "<< out <<std::endl;
     return out;
 }
 

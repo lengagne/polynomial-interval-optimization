@@ -15,7 +15,7 @@ BissectionBasisFunctionSolver::BissectionBasisFunctionSolver(AbstractCSP* pb,
     pb_->init();
     nb_fun_ = pb_->get_nb_out();
     nb_var_ = pb_->get_nb_in();
-    
+    init_done_ = false;
     bissection_type_ = bissection_mode;
 }
 
@@ -34,9 +34,7 @@ void BissectionBasisFunctionSolver::evaluate(   const std::vector<Interval> &in,
     tmp.in = in;   
     current_vector_.push_back(tmp);
     set_next();
-    
-    
-    
+        
     for (int i=0;i<nb_fun_;i++)
     {
         compute_intermediate_for(i);
@@ -55,23 +53,27 @@ void BissectionBasisFunctionSolver::evaluate(   const std::vector<Interval> &in,
 
 void BissectionBasisFunctionSolver::init(double eps)
 {
-    BasisFunctionSolver::init(eps);
-
-    infos.resize(nb_fun_);
-    for (int i=0;i<nb_fun_;i++)
+    if (!init_done_)
     {
-        infos[i] = new IntervalEstimator(bf_);
-    }
+        BasisFunctionSolver::init(eps);
 
-    if(solve_optim_)
-    {
-        info_crit_ = new IntervalEstimator( bf_);
+        infos.resize(nb_fun_);
+        for (int i=0;i<nb_fun_;i++)
+        {
+            infos[i] = new IntervalEstimator(bf_);
+        }
+
+        if(solve_optim_)
+        {
+            info_crit_ = new IntervalEstimator( bf_);
+        }
+        
+        
+        save_filename_ = pb_->get_problem_name() + "_Precision" + std::to_string(precision_)+ "_BisMod" + std::to_string(bissection_type_)+ "_BasisFunction"+ bf_->get_name();
+        
+        BasisFunctionSolver::init_end();
+        init_done_ = true;
     }
-    
-    
-    save_filename_ = pb_->get_problem_name() + "_Precision" + std::to_string(precision_)+ "_BisMod" + std::to_string(bissection_type_)+ "_BasisFunction"+ bf_->get_name();
-    
-    BasisFunctionSolver::init_end();
 }
 
 

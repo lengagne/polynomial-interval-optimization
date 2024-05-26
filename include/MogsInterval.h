@@ -11,11 +11,7 @@
 #include "Kronecker.h"
 
 
-#define MAXSIZE 200
-
-#define LazyVariable LazyVariable
-
-// typedef double Real;
+#define MAXSIZE 50
 
 typedef enum {SON_COS_ERROR, SON_SIN_ERROR, SON_SIGNOF_ERROR /*,DIVIDE_ERROR,*/} sons_type;
 

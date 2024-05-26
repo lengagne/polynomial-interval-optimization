@@ -40,6 +40,5 @@ void Problem3D_with_torque_limit::functions(   std::vector<T> & in,
          {
             out[cpt] += torque(i)*torque(i);
          }
-
     }
 }
