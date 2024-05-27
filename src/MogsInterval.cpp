@@ -733,11 +733,9 @@ void MogsInterval::operator+= (const MogsInterval& I)
     for(std::map<mem*,LazyVariable>::const_iterator itmem = I.dependances_.begin(); itmem != I.dependances_.end(); itmem++)
     {
         dependances_[itmem->first] += itmem->second;    
-    }
-    
+    }    
     // We must need to add this line to consider new variable !!
     id_ = nb_mogs_intervals_++;
-
     if(guess_size() > MAXSIZE)
     {
         *this =  add_intermediate(*this);
@@ -748,6 +746,8 @@ void MogsInterval::operator-= (const MogsInterval& I)
 {
     for(std::map<mem*,LazyVariable>::const_iterator itmem = I.dependances_.begin(); itmem != I.dependances_.end(); itmem++)
         dependances_[itmem->first] -= itmem->second;
+    // We must need to add this line to consider new variable !!
+    id_ = nb_mogs_intervals_++;    
     if(guess_size() > MAXSIZE)
     {
         *this =  add_intermediate(*this);
