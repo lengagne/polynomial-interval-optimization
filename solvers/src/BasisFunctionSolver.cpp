@@ -54,7 +54,8 @@ void BasisFunctionSolver::init(double eps)
 
     for (unsigned int i=0;i<nb_var_;i++)
     {
-        input_Interval[i].init( bounds_input_[i], "in_"+std::to_string(i));
+//         std::cout<<"init input "<< i <<std::endl;
+        input_Interval[i].init( bounds_input_[i], "input_"+std::to_string(i));
     }
     pb_->prepare_non_linear(input_Interval);
     pb_->function(input_Interval,output_Interval);

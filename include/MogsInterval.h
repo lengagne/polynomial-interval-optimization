@@ -11,7 +11,7 @@
 #include "Kronecker.h"
 
 
-#define MAXSIZE 200
+#define MAXSIZE 20
 
 #define LazyVariable LazyVariable
 
@@ -67,6 +67,29 @@ public:
 };
 
 std::ostream& operator<< (std::ostream& stream, const mem& m);
+
+class MogsInterval;
+
+bool compareMogsById(MogsInterval* a, MogsInterval* b) ;
+
+struct compareMemPtr {
+    bool operator()(const mem* a, const mem* b) const {
+        
+        auto it1 = a->sons.begin();
+        auto it2 = b->sons.begin();
+        while (it1 != a->sons.end() && it2 != b->sons.end()) {
+            if (compareMogsById(*it1, *it2)) {
+                return false; // list1 a un élément plus petit
+            }
+            if (compareMogsById(*it2, *it1)) {
+                return true;  // list2 a un élément plus petit
+            }
+            ++it1;
+            ++it2;
+        }        
+        return ( a->sons < b->sons);
+    }
+};
 
 bool operator==(const mem& a, const mem&b);
 
@@ -292,7 +315,7 @@ class MogsInterval
         // data
         std::string name_;
         Interval value_;
-        std::map<mem*,LazyVariable> dependances_;
+        std::map<mem*,LazyVariable,compareMemPtr> dependances_;
 
         std::vector<sons> the_sons_;
         bool is_output_ = false;
@@ -307,6 +330,8 @@ class MogsInterval
         unsigned int id_intermediate_ = 0;
 
 };
+
+
 
 // return the maximal dependancies for each outut (and return into 1)
 void merge_dependancies(std::vector<MogsInterval*> &dep1,

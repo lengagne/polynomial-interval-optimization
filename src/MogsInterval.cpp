@@ -234,6 +234,7 @@ MogsInterval::MogsInterval(const MogsInterval & in):value_(in.value_), name_(in.
                                                     is_input_(in.is_input_),
                                                     /*level_(in.level_),*/
                                                     is_an_intermediare(in.is_an_intermediare),
+                                                    id_(in.id_),
                                                     id_intermediate_(in.id_intermediate_)
 {
     id_ = nb_mogs_intervals_++;
@@ -672,6 +673,7 @@ MogsInterval MogsInterval::operator= (const MogsInterval& in)
         is_input_ = in.is_input_;
 //         level_ = in.level_;
         is_an_intermediare = in.is_an_intermediare;
+        id_ = in.id_;
         id_intermediate_ = in.id_intermediate_;
         if(is_input_)
         {
@@ -830,7 +832,7 @@ MogsInterval MogsInterval::operator* (const MogsInterval& in) const
                 tmp->sons.push_back(*it);
                 tmp->sons.push_back(*it);
             }
-            tmp->sons.sort();
+            tmp->sons.sort(compareMogsById);
             mem* good = interval_chief_.check_input(tmp);
             out.dependances_[good] += it1->second * it1->second;
 
@@ -844,7 +846,7 @@ MogsInterval MogsInterval::operator* (const MogsInterval& in) const
                 tmp->sons.push_back(*it);
                 for(std::list<MogsInterval*>::const_iterator it = m2.sons.begin(); it != m2.sons.end(); it++)
                 tmp->sons.push_back(*it);
-                tmp->sons.sort();
+                tmp->sons.sort(compareMogsById);
                 mem* good = interval_chief_.check_input(tmp);
                 out.dependances_[good] += it1->second * it2->second *2.0;
             }
@@ -871,7 +873,7 @@ MogsInterval MogsInterval::operator* (const MogsInterval& in) const
 
             for(std::list<MogsInterval*>::const_iterator it = m2.sons.begin(); it != m2.sons.end(); it++)
                 tmp->sons.push_back(*it);
-            tmp->sons.sort();
+            tmp->sons.sort(compareMogsById);
             mem* good = interval_chief_.check_input(tmp);
             out.dependances_[good] += it1->second * it2->second;
         }
@@ -1135,3 +1137,11 @@ Interval pow2( const Interval& a)
         return Hull( Hull( pow(Inf(a),2),pow(Sup(a),2)),0);
     return Hull( pow(Inf(a),2),pow(Sup(a),2));
 }
+
+bool compareMogsById(MogsInterval* a, MogsInterval* b)
+{
+    if (a->id_ < b->id_)    return true;
+    if (a->id_ > b->id_)    return false;
+    return a->name_ < b->name_;
+}
+

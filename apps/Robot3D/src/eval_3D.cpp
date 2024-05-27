@@ -23,7 +23,7 @@ int main( int argc, char** argv)
     
     std::cout<<"on va evaluer "<< nb_basis <<" basis functions."<<std::endl;
     int ndof = 6;    
-    Problem3D_with_torque_limit pb("../../../model/kuka_lwr.xml"        ,"kuka_lwr_7_link",1.0,0,1);
+    Problem3D_with_torque_limit pb("../../../model/kuka_lwr.xml"        ,"kuka_lwr_3_link",1.0,0,1);
 //     int ndof = 4;
 //     Problem3D_with_torque_limit pb("../../../model/kuka_lwr_4dof.xml"        ,"kuka_lwr_7_link",1.0,0,1);
     
@@ -34,15 +34,16 @@ int main( int argc, char** argv)
 //     diam.push_back(0.1);
 //     diam.push_back(0.05);
 //     diam.push_back(0.01);
-//     diam.push_back(0.005);
+//     diam.push_back(0.005);    
+    diam.push_back(0.001);
     diam.push_back(0.001);
     
     
     std::vector<Interval> out_inter;
-    std::vector<Interval> q(6);
+    std::vector<Interval> q(ndof);
     
-    std::vector<double> middle(6);
-    for (int i=0;i<6;i++)
+    std::vector<double> middle(ndof);
+    for (int i=0;i<ndof;i++)
         middle[i] = 0.5;
     
     AbstractSolver* solver;
@@ -55,12 +56,15 @@ int main( int argc, char** argv)
     }
     for (int i=0;i<nb_max_basis;i++)    
     {
-        choice_solver.choose(&pb,&solver,i,0);          
+//         choice_solver.choose(&pb,&solver,i,0);          
   
         for (int j=0;j<diam.size();j++)
         {  
+            std::cout<<"**************************************"<<std::endl;
+            std::cout<<"**************************************"<<std::endl;
+            
 //             LazyReset();
-//             choice_solver.choose(&pb,&solver,i,0);          
+            choice_solver.choose(&pb,&solver,i,0);          
             for (int k=0;k<ndof;k++)
             {
                 q[k] = middle[k]+Hull(-diam[j],diam[j]);
@@ -83,9 +87,12 @@ int main( int argc, char** argv)
                 std::cout<<"TORQUE("<<j<<") = "<< out_inter[5+j]<<"  D = "<< Diam(out_inter[5+j])<<std::endl;
             std::cout<<"CRITERE = "<< out_inter[5+ndof]<<"  D = "<< Diam(out_inter[5+ndof])<<std::endl;            
                         
-//             delete solver;
+            
+            std::string cmd = "mv *Lazy*.cpp  code_"+ std::to_string(i) + "_" + std::to_string(j) + ".cpp -v" ;
+            system(cmd.c_str());
+            delete solver;
         }   
-        delete solver;
+//         delete solver;
     }
 
     std::ofstream outfile_diam ("eval_3D_diam.tex");

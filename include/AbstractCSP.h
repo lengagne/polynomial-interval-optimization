@@ -74,7 +74,7 @@ class AbstractCSP
 
         std::vector<Interval> input_, bound_;
 
-        std::vector<std::string> input_name_, output_name_;
+//         std::vector<std::string> input_name_, output_name_;
 };
 
 #endif // ABSTRACTCSP_H
