@@ -23,7 +23,7 @@ int main( int argc, char** argv)
     
     std::cout<<"on va evaluer "<< nb_basis <<" basis functions."<<std::endl;
     int ndof = 6;    
-    Problem3D_with_torque_limit pb("../../../model/kuka_lwr.xml"        ,"kuka_lwr_3_link",1.0,0,1);
+//     Problem3D_with_torque_limit pb("../../../model/kuka_lwr.xml"        ,"kuka_lwr_7_link",1.0,0,1);
 //     int ndof = 4;
 //     Problem3D_with_torque_limit pb("../../../model/kuka_lwr_4dof.xml"        ,"kuka_lwr_7_link",1.0,0,1);
     
@@ -64,6 +64,7 @@ int main( int argc, char** argv)
             std::cout<<"**************************************"<<std::endl;
             
 //             LazyReset();
+            Problem3D_with_torque_limit pb("../../../model/kuka_lwr.xml"        ,"kuka_lwr_7_link",1.0,0,1);
             choice_solver.choose(&pb,&solver,i,0);          
             for (int k=0;k<ndof;k++)
             {

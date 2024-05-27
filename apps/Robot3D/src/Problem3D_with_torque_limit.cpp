@@ -47,6 +47,16 @@ Problem3D_with_torque_limit::Problem3D_with_torque_limit(   const mogs_string &f
     pb_name_ = "3D_ProblemTorque_Ndof"+std::to_string(nb_dof_)+"_Target"+std::to_string(target)+"_CoeffTorque"+std::to_string(coeff_torque_)+"_Criteria"+std::to_string(crit_);
 }
 
+Problem3D_with_torque_limit::~Problem3D_with_torque_limit()
+{
+    delete robot_;
+
+    delete dkin_;
+    delete Ikin_;
+    delete ICkin_;
+    delete MIkin_;    
+}
+
 void Problem3D_with_torque_limit::init()
 {
     nb_var_ = nb_dof_;

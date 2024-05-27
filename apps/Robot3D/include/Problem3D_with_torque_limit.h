@@ -15,6 +15,8 @@ class Problem3D_with_torque_limit : public AbstractCSP
                                     double coeff_torque = 1.0,
                                     unsigned int target = 0,
                                     unsigned int crit = 0);
+        
+        ~Problem3D_with_torque_limit();
 
         template < typename T >
         void functions( std::vector<T> & in,

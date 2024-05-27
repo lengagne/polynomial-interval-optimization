@@ -232,10 +232,8 @@ MogsInterval::MogsInterval(const double & d)
 MogsInterval::MogsInterval(const MogsInterval & in):value_(in.value_), name_(in.name_),
                                                     the_sons_(in.the_sons_),is_an_error_(in.is_an_error_),
                                                     is_input_(in.is_input_),
-                                                    /*level_(in.level_),*/
                                                     is_an_intermediare(in.is_an_intermediare),
-                                                    id_(in.id_),
-                                                    id_intermediate_(in.id_intermediate_)
+                                                   id_intermediate_(in.id_intermediate_)
 {
     id_ = nb_mogs_intervals_++;
     for(std::map<mem*,LazyVariable>::const_iterator itmem = in.dependances_.begin(); itmem != in.dependances_.end(); itmem++)
@@ -763,12 +761,15 @@ MogsInterval MogsInterval::operator* (const double& d) const
         return 0.0;        
     }
     if (d==1.0)
+    {
         return *this;
+    }
     
     MogsInterval out = *this;
     out.value_ *= d;
     for(std::map<mem*,LazyVariable>::iterator itmem = out.dependances_.begin(); itmem != out.dependances_.end(); itmem++)
         itmem->second *= d;
+
     return out;
 }
 
