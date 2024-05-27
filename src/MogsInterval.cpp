@@ -717,7 +717,9 @@ MogsInterval MogsInterval::operator+ (const MogsInterval& I) const
     for(std::map<mem*,LazyVariable>::const_iterator itmem = dependances_.begin(); itmem != dependances_.end(); itmem++)
         out.dependances_[itmem->first] = itmem->second;
     for(std::map<mem*,LazyVariable>::const_iterator itmem = I.dependances_.begin(); itmem != I.dependances_.end(); itmem++)
+    {
         out.dependances_[itmem->first] += itmem->second;
+    }
     if(out.guess_size() > MAXSIZE)
     {
         MogsInterval new_intermediate = add_intermediate(out);
@@ -728,20 +730,18 @@ MogsInterval MogsInterval::operator+ (const MogsInterval& I) const
 
 void MogsInterval::operator+= (const MogsInterval& I)
 {
-//     std::cout<<"debut MogsInterval operator+= this "<< *this <<std::endl;
-//     std::cout<<"debut MogsInterval operator+= I    "<< I <<std::endl;
-    *this = *this + I;
-//     for(std::map<mem*,LazyVariable>::const_iterator itmem = I.dependances_.begin(); itmem != I.dependances_.end(); itmem++)
-//         dependances_[itmem->first] += itmem->second;    
-
-//     std::cout<<"fin MogsInterval operator+= "<< *this <<std::endl;    
-    if(guess_size() > MAXSIZE)
+    for(std::map<mem*,LazyVariable>::const_iterator itmem = I.dependances_.begin(); itmem != I.dependances_.end(); itmem++)
     {
-//         std::cout<<"guess size"<<std::endl;
-        *this =  add_intermediate(*this);
+        dependances_[itmem->first] += itmem->second;    
     }
     
-//     std::cout<<"fin MogsInterval operator+= "<< *this <<std::endl;
+    // We must need to add this line to consider new variable !!
+    id_ = nb_mogs_intervals_++;
+
+    if(guess_size() > MAXSIZE)
+    {
+        *this =  add_intermediate(*this);
+    }
 }
 
 void MogsInterval::operator-= (const MogsInterval& I)
@@ -893,7 +893,7 @@ std::ostream& operator<< (std::ostream& stream, const MogsInterval& inter)
     stream<<std::endl;
     unsigned int cpt=1;
     for(std::map<mem*,LazyVariable>::const_iterator itmem = inter.dependances_.begin(); itmem != inter.dependances_.end(); itmem++)
-        stream<<"\t M("<<cpt++<<") = " << itmem->second<<"\t" << *(itmem->first)<<std::endl;
+        stream<<"\t M("<<cpt++<<") = " << itmem->second<<"\t type : " << *(itmem->first)<<std::endl;
     
 //     stream<<"  nb sons = "<< inter.the_sons_.size();
     

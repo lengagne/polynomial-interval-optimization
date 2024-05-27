@@ -13,6 +13,8 @@
 
 #define MAXSIZE 50
 
+#define LazyVariable LazyVariable
+
 typedef enum {SON_COS_ERROR, SON_SIN_ERROR, SON_SIGNOF_ERROR /*,DIVIDE_ERROR,*/} sons_type;
 
 typedef enum  { INSIDE, OUTSIDE, OVERLAP }  check_constraint;
