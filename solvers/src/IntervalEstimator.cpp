@@ -50,7 +50,7 @@ unsigned int IntervalEstimator::get_index(mem* m) const
 
 unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigned int num_out)
 {      
-    std::cout<<"prepare_coeffs("<<num_out<<") = "<< out <<std::endl;
+//     std::cout<<"prepare_coeffs("<<num_out<<") = "<< out <<std::endl;
     num_out_ = num_out;
     out.get_dependancies_with_order(dep_,order_);
     
