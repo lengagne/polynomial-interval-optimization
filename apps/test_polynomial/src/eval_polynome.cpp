@@ -18,7 +18,7 @@ int main( int argc, char** argv)
 
     AbstractCSP* pb = new ProblemPoly();
     CompareSolver cp(pb);   
-    cp.compare("EvalPoly_",precision);
+    cp.compare("EvalPoly_",precision,0.01);
     delete pb;
 
     return 0;

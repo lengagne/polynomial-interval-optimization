@@ -50,10 +50,10 @@ unsigned int IntervalEstimator::get_index(mem* m) const
 
 unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigned int num_out)
 {      
-//     std::cout<<"prepare_coeffs("<<num_out<<") = "<< out <<std::endl;
+//     std::cout<<"prepare_coeffs("<<num_out<<") : "<< out <<std::endl;
     num_out_ = num_out;
     out.get_dependancies_with_order(dep_,order_);
-    
+//     std::cout<<"step A prepare_coeffs("<<num_out<<")"<<std::endl;
     depend_intermediate_.clear();
     for (int i=0;i<dep_.size();i++)
     {        
@@ -63,7 +63,7 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
         }
     }
     depend_intermediate_.sort();
-    
+//     std::cout<<"step B prepare_coeffs("<<num_out<<")"<<std::endl;
     nb_in_ = dep_.size();
     if(nb_in_ == 0)
     {
@@ -83,7 +83,7 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
     for (int j=0;j<nb_in_;j++)
         local_M_[nb_in_-j-1].resize(order_[j]+1,order_[j]+1);
 
-    
+//     std::cout<<"step C prepare_coeffs("<<num_out<<")"<<std::endl;
     std::vector< Eigen::Matrix<double,Eigen::Dynamic,1> > pmax(nb_in_);
     
     for( int i=0;i<nb_in_;i++)
@@ -101,7 +101,7 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
     
     kron_solver_inputs_ = new Kronecker(local_M_inverse_inputs_);
     kron_solver_errors_ = new Kronecker(local_M_inverse_);
-
+//     std::cout<<"step D prepare_coeffs("<<num_out<<")"<<std::endl;
     nb_control_point_inputs_ = kron_solver_inputs_->get_nb_control_point();
     kron_solver_inputs_->set_maximum_position(pos_max_);
 
@@ -124,7 +124,7 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
 
     uint nb_valid_coeff = 0;
     nb_sparse_errors_ = 0;
-    
+//     std::cout<<"step E prepare_coeffs("<<num_out<<")"<<std::endl;
     for( std::map<mem*,LazyVariable>::const_iterator it = out.dependances_.begin(); it != out.dependances_.end();it++)
     {        
         unsigned int index = get_index(it->first );        
@@ -144,7 +144,7 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
             }
         }
     }
-
+//     std::cout<<"step F prepare_coeffs("<<num_out<<")"<<std::endl;
     coeff_errors_.sort();
     coeff_inputs_.sort();
     
@@ -155,6 +155,7 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
     if (coeff_inputs_.size() == 0)
         nb_control_point_inputs_ = 0;
 
+//     std::cout<<"step G prepare_coeffs("<<num_out<<")"<<std::endl;
     // deal with input
     for (int i=0;i<nb_control_point_inputs_;i++)
     {
@@ -167,13 +168,14 @@ unsigned int IntervalEstimator::prepare_coeffs( const MogsInterval& out, unsigne
 
         LazyAddOutput(out,num_out_,nb_valid_coeff++);
     }
-    
+//     std::cout<<"step H prepare_coeffs("<<num_out<<")"<<std::endl;
     // deal with error
     for(std::list<unsigned int >::const_iterator it = coeff_errors_.begin(); it != coeff_errors_.end(); it++)
     {
         LazyAddOutput(MCT_coeff_[*it],num_out_,nb_valid_coeff++);
     }          
 
+//     std::cout<<"fin prepare_coeffs("<<num_out<<")"<<std::endl;
     return nb_valid_coeff;
 }
 
@@ -207,7 +209,6 @@ Interval IntervalEstimator::update_from_inputs( )
 // check_constraint IntervalEstimator::update_from_inputs( Interval& out, Interval& bound)
 check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& bound, uint index_ctr)
 {  
-//     std::cout<<"Check "<< index_ctr <<std::endl;
     Interval& out = res.out[index_ctr];
     double MAX =  std::numeric_limits<double>::max();
     double MIN = -std::numeric_limits<double>::max();
@@ -218,11 +219,13 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
     bool inf_inside,sup_inside, both_side;
     
     Interval Iv = LazyUpdateOutput(num_out_,cpt++);
-//     if(print) std::cout<<"value(0) = "<< Iv <<std::endl;
+// //     if(print)
+//         std::cout<<"value(0) = "<< Iv <<std::endl;
     for (int i=1;i<nb_control_point_inputs_;i++)
     {
         Interval value = LazyUpdateOutput(num_out_,cpt++);
-//         if(print) std::cout<<"value("<<i<<") = "<< value <<std::endl;
+// //         if(print)
+//             std::cout<<"value("<<i<<") = "<< value <<std::endl;
         if (i==0)
             Iv = value;
         else

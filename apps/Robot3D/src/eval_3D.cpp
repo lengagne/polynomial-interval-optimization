@@ -36,7 +36,7 @@ int main( int argc, char** argv)
 //     diam.push_back(0.01);
 //     diam.push_back(0.005);    
     diam.push_back(0.001);
-    diam.push_back(0.001);
+//     diam.push_back(0.001);
     
     
     std::vector<Interval> out_inter;

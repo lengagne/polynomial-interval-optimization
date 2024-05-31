@@ -1,7 +1,7 @@
 #!/bin/bash
 params=(0.01 0.001)
 
-for dof in `seq 2 5`
+for dof in `seq 2 4`
 do
     for precision in "${params[@]}"
     do
@@ -22,7 +22,7 @@ do
     done
 done
 
-for dof in `seq 6 6`
+for dof in `seq 5 6`
 do
     for precision in "${params[@]}"
     do

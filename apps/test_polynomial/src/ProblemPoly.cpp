@@ -17,7 +17,7 @@ void ProblemPoly::init()
 
     
     bound_.resize(nb_fun_);
-    bound_[0] = Hull (0,1e6);
+    bound_[0] = Hull (0,2);
     
     output_name_.push_back("F(x)");
     output_name_.push_back("criteria");
