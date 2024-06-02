@@ -26,5 +26,6 @@ void ProblemPoly::init()
 
 void ProblemPoly::prepare_non_linear( std::vector<MogsInterval>& in)
 {
-
+    in[0].prepare_son(SON_COS_ERROR);
+    in[0].prepare_son(SON_SIN_ERROR);
 }

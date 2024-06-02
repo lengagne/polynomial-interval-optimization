@@ -218,12 +218,17 @@ check_constraint IntervalEstimator::update_from_inputs( Result& res, Interval& b
     unsigned int cpt = 0;
     bool inf_inside,sup_inside, both_side;
     
+    
+    
+//     std::cout<<"index_ctr = "<< index_ctr <<std::endl;    
     Interval Iv = LazyUpdateOutput(num_out_,cpt++);
+//     LazyPrintAll();
 // //     if(print)
 //         std::cout<<"value(0) = "<< Iv <<std::endl;
     for (int i=1;i<nb_control_point_inputs_;i++)
     {
         Interval value = LazyUpdateOutput(num_out_,cpt++);
+//         LazyPrintAll();
 // //         if(print)
 //             std::cout<<"value("<<i<<") = "<< value <<std::endl;
         if (i==0)

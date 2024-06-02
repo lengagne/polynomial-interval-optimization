@@ -127,7 +127,7 @@ MinVariance::MinVariance(): OptimizedBasisFunction("MinVariance")
                 break;
          
             case(6):
-//         // roots
+//              roots                    
 //             root[0][0] = -1
 //             root[0][1] = -0.862505
 //             root[0][2] = -0.0893251
@@ -194,8 +194,13 @@ MinVariance::MinVariance(): OptimizedBasisFunction("MinVariance")
             default:
                 break;
         }
-        mat_order_[i]= re_order(M);
+        mat_order_[i]= re_order(M);                
         mat_inverse_order_[i] = mat_order_[i].inverse();
+
+//         if ( ! check_matrix_is_one(mat_order_[i]) )
+        check_matrix_quasi_null_coeff(mat_order_[i],mat_inverse_order_[i]);
+        
+        
     }    
 }
        

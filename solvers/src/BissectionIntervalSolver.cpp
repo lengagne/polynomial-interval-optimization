@@ -34,7 +34,14 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
 
     start_preparation_time_ = get_cpu_time();
     
-
+    switch(bissection_type_)
+    {
+        case(0):    std::cout<<"Bissection : MinFirst"<<std::endl;  break;
+        case(1):    std::cout<<"Bissection : MaxFirst"<<std::endl;  break;
+        default :   std::cerr<<"Bissection type not defined "<<std::endl;   std::exit(63);  break;
+    }    
+    
+    
     current_vector_.clear();
     bounds_ = pb_->get_bound();
     bounds_input_ = pb_->get_input();
@@ -67,14 +74,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     
     start_computation_time_ = get_cpu_time();
     std::cout<<"preparation time : "<< start_computation_time_ - start_preparation_time_ <<" seconds."<<std::endl;
-    
-    switch(bissection_type_)
-    {
-        case(0):    std::cout<<"Bissection : MinFirst"<<std::endl;  break;
-        case(1):    std::cout<<"Bissection : MaxFirst"<<std::endl;  break;
-        default :   std::cerr<<"Bissection type not defined "<<std::endl;   std::exit(63);  break;
-    }    
-    
+
     
     if(current_vector_.size() == 0)
     {

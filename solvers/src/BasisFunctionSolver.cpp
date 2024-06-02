@@ -37,7 +37,7 @@ void BasisFunctionSolver::get_all_intermediate_dependancies(const std::list<uint
 void BasisFunctionSolver::init(double eps)
 {
     MogsIntervalInit();
-    LazyReset();
+//     LazyReset();
     
     start_preparation_time_ = get_cpu_time();
     precision_ = eps;

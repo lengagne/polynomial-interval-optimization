@@ -1,4 +1,27 @@
 #include "AbstractBasisFunction.h"
+
+
+#include <iomanip>
+#include <iostream>
+#include <limits>
+ 
+void AbstractBasisFunction::check_matrix_quasi_null_coeff(  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat,
+                                                            Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat_inverse)
+{
+    int size = mat_inverse.rows();
+
+    for (int i=0;i<size;i++)    for (int j=0;j<size;j++)
+    {
+        if (mat_inverse(i,j) != 0.0 && mat_inverse(i,j) < BS_THRESHOLD && mat_inverse(i,j) > -BS_THRESHOLD)
+        {
+            mat_inverse(i,j) = 0.;
+        }
+        if (mat_inverse(i,j) != 1.0 && mat_inverse(i,j) < 1.0+BS_THRESHOLD && mat_inverse(i,j) > 1.0-BS_THRESHOLD)
+        {
+            mat_inverse(i,j) = 1.;
+        }
+    }    
+}
        
 void AbstractBasisFunction::get_basis_coeff_matrix( const Interval& inter,
                                                     uint order,
@@ -22,9 +45,6 @@ void AbstractBasisFunction::get_basis_coeff_matrix( const Interval& inter,
         mat = mat_order_[order];
         mat_inverse = mat_inverse_order_[order];
     }
-    
-    
-    
 }
 
 void AbstractBasisFunction::get_time_max( const Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>& mat,

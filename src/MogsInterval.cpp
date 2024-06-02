@@ -897,8 +897,8 @@ MogsInterval MogsInterval::operator* (const MogsInterval& in) const
 std::ostream& operator<< (std::ostream& stream, const MogsInterval& inter)
 {
     stream<<"("<<inter.name_<<") = "<< inter.value_;
-    stream<<"  mid = "<< inter.middle_;
-    stream<<"  diam = "<< inter.diam_;
+//     stream<<"  mid = "<< inter.middle_;
+//     stream<<"  diam = "<< inter.diam_;
     stream<<std::endl;
     unsigned int cpt=1;
     for(std::map<mem*,LazyVariable>::const_iterator itmem = inter.dependances_.begin(); itmem != inter.dependances_.end(); itmem++)
