@@ -9,6 +9,8 @@
 
 std::ostream& scientificFormat(std::ostream& os, double value);
 
+std::ostream& scientificFormat(std::ostream& os, std::string& s);
+
 class data_format
 {
 public:
@@ -65,14 +67,14 @@ public:
 void add (const std::string &in, 
           std::list<std::string> & vec);
 
-void create_csv(const std::vector< data_format*> datas,
-                const std::string& ordonnee,
-                const std::string& abscisse,
-                const std::string& parameter,
-                const std::string& filetype,
-                const std::string& filename,
-                bool ratio =false
-               );
+// void create_csv(const std::vector< data_format*> datas,
+//                 const std::string& ordonnee,
+//                 const std::string& abscisse,
+//                 const std::string& parameter,
+//                 const std::string& filetype,
+//                 const std::string& filename,
+//                 bool ratio =false
+//                );
 
 void create_latex( const std::vector< data_format*> datas,
                    const std::string filename,

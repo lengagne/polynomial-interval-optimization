@@ -11,7 +11,7 @@ do
             for pb in `seq 1 4`
             do
                 pbname=$(($((10*$pb10))+$pb));  
-                for solveur in `seq 0 8`                
+                for solveur in `seq 1 8`                
                 do        
                 sbatch job3D.sh $precision $pbname $bissection_mode $solveur
                 done
@@ -29,7 +29,7 @@ do
             for pb in `seq 5 8`
             do
                 pbname=$(($((10*$pb10))+$pb));  
-                for solveur in `seq 0 8`                
+                for solveur in `seq 1 8`                
                 do        
                 sbatch job3D_long.sh $precision $pbname $bissection_mode $solveur
                 done

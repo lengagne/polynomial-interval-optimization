@@ -37,6 +37,12 @@ data_format3D::data_format3D( const std::string& filename)
             add_data(line,"bissection_mode", "bissection_mode =");
             add_data(line,"save_filename", "save_filename = ");            
             add_data(line,"robot", "robot_file = ");   
+            
+            if (loof_for(line, "CEST") || loof_for(line, "CET"))
+            {
+                set_date_time(line);
+            }
+                        
                         
             if (loof_for(line,"DUE TO TIME LIMIT"))
             {
@@ -78,7 +84,7 @@ data_format3D::data_format3D( const std::string& filename)
                 infos["nb_iter"] = "RERUN WAITING";
                 infos["comput_time"] = "RERUN WAITING";
                 infos["time_per_iter"] = "RERUN WAITING";
-                infos["total_time"] = "RERUN WAITING";                      
+                infos["total_time"] = filename;                   
             }
             if (loof_for (line, "Some of your processes may have been killed"))
             {
