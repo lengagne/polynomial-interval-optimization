@@ -768,7 +768,10 @@ void create_latex_subpart( std::ofstream& outfile,
             {
                 outfile <<" \\hline \n";   
             }
-            outfile<<"\\multirow{"<<local_data.size()<<"}{*}{"<< replace(t) <<"} & ";
+            int nblin = local_data.size();
+            if (nblin > 9)  nblin = 9;
+            
+            outfile<<"\\multirow{"<<nblin <<"}{*}{"<< replace(t) <<"} & ";
             create_latex_subpart ( outfile, index+1, columns, local_data, entete+" & ");
             outfile <<" \\cline{"<< index+1 <<"-"<< index+2 <<"}";   
         }

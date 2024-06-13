@@ -100,6 +100,7 @@ target_link_libraries(	PIO_BasisFunctions
                         ${TCMALLOC_LIBRARIES}
                         ${IPOPT_LIBRARIES}
                         ${QT_LIBRARIES}
+#                         PIO
                         )
 
 target_link_libraries(	PIO_Solvers
@@ -248,7 +249,7 @@ target_link_libraries(	PIO
 # get_property(Include_Directories DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 SET(PIO_INCLUDE_DIRS ${INSTALL_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${TCMALLOC_INCLUDE_DIRS} ${LazyCPP_INCLUDE_DIRS} CACHE INTERNAL "")
 SET(PIO_LIBRARY_DIRS  ${CMAKE_INSTALL_LIBDIR}/lib  CACHE INTERNAL "")
-SET(PIO_LIBRARIES PIO CACHE INTERNAL "")
+SET(PIO_LIBRARIES PIO_BasisFunctions PIO CACHE INTERNAL "")
 SET(PIO_FLAGS ${CMAKE_CXX_FLAGS} CACHE INTERNAL "")
 SET(PIO_FOUND "TRUE" CACHE INTERNAL "")
 # 

@@ -8,6 +8,11 @@ class ChooseBasisFunction
 public:
     ChooseBasisFunction();
     
+    ~ChooseBasisFunction()
+    {
+        
+    }
+    
     void choose(AbstractBasisFunction** bf, 
                 uint index);
 

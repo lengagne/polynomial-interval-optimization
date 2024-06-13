@@ -269,7 +269,11 @@ void BasisFunctionNLP::finalize_solution (SolverReturn status,
     file<<std::endl<<std::endl;
     
     file<<"crit : "<< obj1 <<std::endl;
+    
 
+    std::cout<<"crit : "<< obj1 <<std::endl;
+
+    std::cout<<"final_mat_ = "<< final_mat_ <<std::endl;
     
     file.close();
 //     double_pb_->ApproximateRoots();

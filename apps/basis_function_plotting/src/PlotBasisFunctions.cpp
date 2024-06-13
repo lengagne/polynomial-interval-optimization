@@ -48,7 +48,7 @@ int main( int argv, char** argc)
     uint min_order = 1;
     if (argv>1)
         min_order = atoi(argc[1]);    
-    uint max_order = 10;
+    uint max_order = 6;
     if (argv>2)
         max_order = atoi(argc[2]);
     

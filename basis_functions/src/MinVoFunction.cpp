@@ -155,7 +155,7 @@ MinVoFunction::MinVoFunction(): OptimizedBasisFunction("MinVo")
                 M(6,6) = 1.06062566325538387701499;                
                 break;
 
-                //                 M(0,0) = 0.124999999969926764431527;
+//                 M(0,0) = 0.124999999969926764431527;
 //                 M(0,1) = 0.750000000060146332359068;
 //                 M(0,2) = 0.124999999969926750553739;
 //                 M(1,0) = -0.433012701857493742529925;
@@ -168,6 +168,7 @@ MinVoFunction::MinVoFunction(): OptimizedBasisFunction("MinVo")
             default:
                 break;
         }
+        
         mat_order_[i]= re_order(M);
         mat_inverse_order_[i] = mat_order_[i].inverse();
     }    
