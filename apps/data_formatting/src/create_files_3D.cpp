@@ -13,7 +13,13 @@ int main(int argc, char *argv[])
     if (argc == 2)
     {
         repo = argv[1];
-    }           
+    }     
+    std::string type = "Bissection";
+    if (argc>=3)
+    {
+        type = argv[2];        
+    }   
+    std::cout<<"type = "<< type <<std::endl;
     
 	QDir directory(repo);
 
@@ -76,6 +82,7 @@ int main(int argc, char *argv[])
     order_latex_average.push_back("total_time");
     order_latex_average.push_back("(D-H:M:S.ms)");
     order_latex_average.push_back("nb_iter");
+    order_latex_average.push_back("time_per_iter");
     order_latex_average.push_back("comput_time (%)");
     order_latex_average.push_back("total_time (%)");    
     order_latex_average.push_back("nb_iter (%)");
@@ -83,13 +90,24 @@ int main(int argc, char *argv[])
 //     order_latex_average.push_back("save_filename"); 
     
     
-    
+    std::string filename = "recap_bis_3D";
+    std::string title_frame = "Bissection of problem 3D with ";
+    std::string average_name = "Average of Bissection for 3D problems";
+    std::string label = "pb3d";
+    if (type == "Contraction")
+    {
+        filename = "recap_cont_3D";
+        title_frame = "Contraction of problem 3D with ";
+        average_name = "Average of Contraction for 3D problems";
+        label = "pc3d";        
+    }    
     
     
     
     std::vector<std::string> remove;
-    remove.push_back("Contraction");
-    create_latex( datas_, "recap_bis_3D", order_latex,order_latex_average,common,average_on,remove,"Bissection of problem 3D with ", "Average for 3D Problems","pb3d");
+//     remove.push_back("Contraction");
+    create_latex( datas_, filename, order_latex,order_latex_average,common,average_on,remove,title_frame,average_name,label);
+// //     create_latex( datas_, "recap_bis_3D", order_latex,order_latex_average,common,average_on,remove,"Bissection of problem 3D with ", "Average for 3D Problems","pb3d");
     
 //     remove.clear();
 //     remove.push_back("Bissection");

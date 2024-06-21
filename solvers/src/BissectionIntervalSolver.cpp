@@ -89,7 +89,6 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
         cpt_iter_++;
         if (cpt_iter_%save_each_iter_ == 0)
         {
-//             std::cout<<cpt_iter_<<" crit ! "<< optim_crit_ <<std::endl;
             save_current_state(save_filename_);
             cpt_iter_ = 0;
             saved_iter_ ++;
@@ -145,7 +144,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
                                     }
                 case(OVERLAP)   :   
                                     Result low, high;
-                                    bissect(current_value, current_vector_);/*
+                                    bissect(current_value,current_vector_);/*
                                     
                                     if(bissect(current_value, low,high))
                                     {

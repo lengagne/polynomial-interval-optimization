@@ -20,21 +20,53 @@ ContractionIntervalSolver::~ContractionIntervalSolver()
     results.clear();
 }
 
+void ContractionIntervalSolver::evaluate(const std::vector<Interval> &in,
+                                        std::vector<Interval> &out)
+{
+    Result tmp;
+    tmp.in = in;
+    out.resize(nb_fun_);
+    pb_->function(tmp.in,out);
+}
+
+
 param_optim ContractionIntervalSolver::solve_optim(double eps)
 {
-   std::cout<<"ContractionIntervalSolver::solve_optim"<<std::endl;
-    double ts = get_cpu_time();
-    double tsglobal = ts;
     precision_ = eps;
-    bounds_input_ = pb_->get_input();
+    std::cout<<"ContractionIntervalSolver::solve_optim"<<std::endl;
+    save_filename_ = pb_->get_problem_name() + "_Precision" + std::to_string(precision_)+ "_BisMod" + std::to_string(bissection_type_)+ "_ContractionInterval";    
+    
+    start_preparation_time_ = get_cpu_time();
+    
+    switch(bissection_type_)
+    {
+        case(0):    std::cout<<"Bissection : MinFirst"<<std::endl;  break;
+        case(1):    std::cout<<"Bissection : MaxFirst"<<std::endl;  break;
+        default :   std::cerr<<"Bissection type not defined "<<std::endl;   std::exit(63);  break;
+    }        
+    
+    current_vector_.clear();
     bounds_ = pb_->get_bound();
-
-    std::vector<Result> current;
-    bounds_ = pb_->get_bound();
     bounds_input_ = pb_->get_input();
-
     Result tmp(pb_->get_input(), nb_fun_, pb_->get_criteria());
-    current.push_back(tmp);
+    optim_crit_ = std::numeric_limits<double>::max();
+    find_one_feasible_ =false;        
+    cpt_iter_ = 0;
+    if (warm_start_)
+    {        
+        if (! load_warm_start_filename(warm_start_filename_,tmp))
+        {
+            current_vector_.push_back(tmp);  
+        }
+    }
+    else
+    {
+        current_vector_.push_back(tmp);            
+        optim_ = tmp;
+    }       
+    std::cout<<"warm_start_filename = "<< warm_start_filename_<<std::endl;    
+    std::cout<<"save_filename = "<< save_filename_<<".sop"<<std::endl;
+        
 
     bool test;
     nb_valid_box_=0;
@@ -54,14 +86,23 @@ param_optim ContractionIntervalSolver::solve_optim(double eps)
     bool find_one_feasible =false;
     Result optim = tmp;
 
-    std::cout<<"preparation time : "<< get_cpu_time() - ts <<" seconds."<<std::endl;
+    start_computation_time_ = get_cpu_time();
+    std::cout<<"preparation time : "<< start_computation_time_ - start_preparation_time_ <<" seconds."<<std::endl;
+    
     cpt_iter_ = 0;
     do{
         cpt_iter_++;
+        if (cpt_iter_%save_each_iter_ == 0)
+        {
+            save_current_state(save_filename_);
+            cpt_iter_ = 0;
+            saved_iter_ ++;
+        }          
+        
         test = true;
         // We do not use reference because we pop_back !!
-        Result  current_value = current.back();
-        current.pop_back();
+        Result  current_value = current_vector_.back();
+        current_vector_.pop_back();
 
         for (int i=0;i<nb_var_;i++)
         {
@@ -134,7 +175,7 @@ param_optim ContractionIntervalSolver::solve_optim(double eps)
                                     {
                                         find_one_feasible = true;
                                         optim_crit =  Sup(tmp_crit);
-                                        if(! bissect(current_value,current))
+                                        if(! bissect(current_value,current_vector_))
                                         {
                                             optim = current_value;
                                         }
@@ -149,7 +190,7 @@ param_optim ContractionIntervalSolver::solve_optim(double eps)
 // 
                                     }else if (Inf(tmp_crit) < optim_crit)
                                     {
-                                        bissect(current_value,current);
+                                        bissect(current_value,current_vector_);
 //                                         Result low, high;
 //                                         if(bissect(current_value, low,high))
 //                                         {
@@ -160,7 +201,7 @@ param_optim ContractionIntervalSolver::solve_optim(double eps)
                                     }
                                     break;
                 case(OVERLAP)   :   //std::cout<<"OVERLAP"<<std::endl<<std::endl;
-                                    bissect(current_value,current);/*
+                                    bissect(current_value,current_vector_);/*
                                     Result low, high;
                                     if(bissect(current_value, low,high))
                                     {
@@ -170,16 +211,15 @@ param_optim ContractionIntervalSolver::solve_optim(double eps)
                                     break;
             }
         }
-        if(current.size() == 0) test = false;
+        if(current_vector_.size() == 0) test = false;
     }while(test);
-    double te = get_cpu_time();
     
-    switch(bissection_type_)
-    {
-        case(0):    std::cout<<"Bissection : MinFirst"<<std::endl;  break;
-        case(1):    std::cout<<"Bissection : MaxFirst"<<std::endl;  break;
-        default :   std::cerr<<"Bissection type not defined "<<std::endl;   std::exit(63);  break;
-    }
+    current_time_ = get_cpu_time();
+    return set_results();    
+    
+/*    double te = get_cpu_time();
+    
+
     
     std::cout<<"Number of Bissections : "<< cpt_iter_ <<std::endl;
     std::cout<<"Number of valid boxes : "<< nb_valid_box_ <<std::endl;
@@ -205,5 +245,5 @@ param_optim ContractionIntervalSolver::solve_optim(double eps)
     out.optim = optim_crit;    
     out.nb_intermediate = 0;
     out.solution_found = find_one_feasible;
-    return out;    
+    return out;   */ 
 }

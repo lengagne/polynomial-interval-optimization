@@ -44,8 +44,8 @@ class AbstractSolver
         virtual void evaluate(  const std::vector<Interval>& in,
                                 std::vector<Interval> & out) = 0;
                                 
-        bool load_warm_start_filename( const std::string& s,
-                                const Result & res  // is initialized
+        bool load_warm_start_filename(  const std::string& s,
+                                        const Result & res  // is initialized
         );     
         
         virtual param_optim solve_optim(double eps=1e-3) = 0;

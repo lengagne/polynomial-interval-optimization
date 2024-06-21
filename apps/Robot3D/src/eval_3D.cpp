@@ -28,16 +28,22 @@ int main( int argc, char** argv)
 //     Problem3D_with_torque_limit pb("../../../model/kuka_lwr_4dof.xml"        ,"kuka_lwr_7_link",1.0,0,1);
     
     std::vector<double> diam;
-//     diam.push_back(2.0);
+    diam.push_back(2.0);
     diam.push_back(1.0);
+    diam.push_back(0.8);
     diam.push_back(0.5);
+    diam.push_back(0.3);
     diam.push_back(0.1);
+    diam.push_back(0.08);
     diam.push_back(0.05);
+    diam.push_back(0.03);
     diam.push_back(0.01);
+    diam.push_back(0.008);    
     diam.push_back(0.005);    
+    diam.push_back(0.003);    
     diam.push_back(0.001);    
     
-    std::vector<Interval> out_inter;
+    std::vector<Interval> out_inter(6+ndof);
     std::vector<Interval> q(ndof);
     
     std::vector<double> middle(ndof);
@@ -67,7 +73,7 @@ int main( int argc, char** argv)
 //             choice_solver.choose(&pb,&solver,i,0);          
             for (int k=0;k<ndof;k++)
             {
-                q[k] = middle[k]+Hull(-diam[j],diam[j]);
+                q[k] = middle[k]+Hull(-diam[j]/2,diam[j]/2);
             }                  
            
             solver->evaluate(q,out_inter);
@@ -163,5 +169,25 @@ int main( int argc, char** argv)
     
     outfile_diam.close();
     outfile_value.close();
+    
+    
+    
+    // create the csv file for the diam
+    std::ofstream csv_file ("tableau_diam_3D.csv");
+    
+    csv_file <<"#diam_type";
+    for (int i =0;i<nb_max_basis;i++)
+        csv_file<<"\t"<<choice_solver.get_solver_name(i);
+    csv_file<<std::endl;
+    
+    for (int j=0;j<diam.size();j++)
+    {
+        csv_file <<diam[j];
+        for (int i=0;i<nb_max_basis;i++)
+            csv_file<<"\t"<< ( Diam(resultats[i][j][ndof+5]) / Diam(resultats[0][j][ndof+5]))*100 ;
+        csv_file<<std::endl;
+    }
+    
+    csv_file.close();
     return 0;
 }

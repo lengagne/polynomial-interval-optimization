@@ -19,7 +19,7 @@ class MinNoFunction: public OptimizedBasisFunction
         
         std::string get_name() const
         {
-            return "ApproxMinNo";
+            return "MinNo";
         }
         
     protected:

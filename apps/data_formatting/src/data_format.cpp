@@ -282,126 +282,11 @@ void add (const std::string &in,
     }
 }
 
-// void create_csv(const std::vector< data_format*> datas,
-//                 const std::string& ordonnee,
-//                 const std::string& abscisse,
-//                 const std::string& parameter,
-//                 const std::string& filetype,
-//                 const std::string& filename,
-//                 bool ratio
-//                )
-// {
-//     std::list<std::string> type_inputs;
-//     
-//     for (auto& d : datas)
-//     {
-//         std::string t  = d->infos[filetype];
-//         add( t, type_inputs);
-//     }
-//     
-//     for ( auto& t : type_inputs)
-//     {
-//         std::vector< data_format*> local_data;
-//         for (auto& d : datas)   if (t ==  d->infos[filetype])
-//         {
-//             local_data.push_back(d);
-//         }
-//         
-// //         std::cout<< t<<std::endl;
-//         
-//         std::list<std::string> type_abscisse;
-//         // get the common absciss
-//         for (auto& d : local_data)
-//         {
-//             std::string t  = d->infos[abscisse];
-//             add( t, type_abscisse);            
-//             type_abscisse.sort();            
-//         }
-//         
-//         std::list<std::string> type_parameter;
-//         // get the common absciss
-//         for (auto& d : local_data)
-//         {
-//             std::string t  = d->infos[parameter];
-//             add( t, type_parameter);    
-//             
-//             if ( parameter != "solver")
-//             {
-//                 type_parameter.sort();            
-//             }else
-//             {
-//                 type_parameter = solver_order_;
-//             }
-//         }        
-//         
-//         
-//         // create_file
-//         std::string complete_filename ="";
-//         complete_filename += filename+"_"+ ordonnee + "_"+t;
-//         if (ratio)
-//             complete_filename +="_ratio";
-//         complete_filename += ".csv";
-//                
-//         std::ofstream outfile (complete_filename);
-//         outfile<<"#"<< ordonnee<<"/"<< parameter;
-//         if (ratio)  outfile<<"%";
-//         outfile << "\t";
-//         for (auto& p : type_parameter)
-//             outfile<<p<<"\t";
-//         outfile<<std::endl;
-// 
-//         for (auto& a : type_abscisse)
-//         {
-//             outfile << a <<"\t";
-//             for (auto& p : type_parameter)
-//             {                
-//                 double coeff = 1.0;
-//                 if (ratio)
-//                 {
-//                     std::string ref = type_parameter.front();
-//                     for (auto& d : local_data)
-//                     {
-//                         if (d->infos[abscisse] == a && d->infos[parameter] == ref)
-//                         {
-//                             
-//                             if (d->infos.find(ordonnee) != d->infos.end()) {
-//                                 coeff = toDouble ( d->infos[ordonnee]) ;
-//                             }                            
-//                         }
-//                     }
-//                 }
-//                 
-//                 for (auto& d : local_data)
-//                 {
-//                     if (d->infos[abscisse] == a && d->infos[parameter] == p)
-//                     {
-//                         if (d->infos.find(ordonnee) != d->infos.end()) {
-//                             if (ratio)
-//                             {
-//                                 outfile<< toDouble(d->infos[ordonnee])/coeff * 100 <<"\t";
-//                             }else
-//                             {
-//                                 outfile<< d->infos[ordonnee]<<"\t";
-//                             }
-//                         } else {
-//                             outfile<< "?\t";
-//                         }
-//                         
-//                         break;
-//                     }
-//                 }
-//             }
-//             outfile<< std::endl;;
-//         }
-//     }
-// }
-
 void create_latex( std::ofstream& outfile,
                    const std::vector< data_format*> datas,
                    std::vector<std::string> & columns,
                    const std::string &titre,
-                   const std::string &label
-                 )
+                   const std::string &label)
 {
     
 //     std::cout<<"create table"<<std::endl;
@@ -465,7 +350,7 @@ void create_latex( const std::vector< data_format*> datas,
 //                 std::cout<<"info : "<< info.first<<" -- " << info.second <<std::endl;
                 if (info.first.find(remove[i]) != std::string::npos ||  info.second.find(remove[i]) != std::string::npos)
                 {
-//                     std::cout<<"on ignore "<< info.first<<" -- " << info.second <<" due to "<< remove[i] <<std::endl;
+                    std::cout<<"on ignore "<< info.first<<" -- " << info.second <<" due to "<< remove[i] <<std::endl;
                     add = false;
                     break;
                 }
@@ -556,15 +441,7 @@ void create_latex( const std::vector< data_format*> datas,
         counter[i] = 0;
 //         std::cout<<"We found "<< list_on_average[i].size() <<" different values for "<< average_on[i]<<std::endl;
     }
-    
-//     std::list<std::string> precisions = look_for(datas,"precision");
-//     precisions.sort();
-//     std::list<std::string> solvers = re_order(  look_for(datas,"solver"),solver_order_);
-//     std::list<std::string> ndofs = look_for(datas,"ndof");
-//     ndofs.sort();
-
-
-    
+     
     std::vector< data_format*> average_data;
     
     while( counter[0] < sizes[0])
@@ -611,7 +488,7 @@ void create_latex( const std::vector< data_format*> datas,
                 }
             }
             
-            if (test && d->infos["criteria"] != "-1")
+            if (test) //&& d->infos["criteria"] != "-1")
             {
                 nb ++;
                 for (int i=0;i<columns_average.size();i++)
@@ -912,6 +789,10 @@ std::string replace (const std::string &in)
     out =  std::regex_replace(out, std::regex("_"), "\\textunderscore ");    
     out =  std::regex_replace(out, std::regex("%"), "\\%");
 
+    out =  std::regex_replace(out, std::regex("MinNo"), "MinNorm");
+    out =  std::regex_replace(out, std::regex("MinVo"), "MinVolume");
+    
+    
     return out;
 }
 
@@ -1004,7 +885,7 @@ void set_pourcentage( const std::vector< data_format*> datas)
         for (auto& r : datas)
         {
             bool test_eq = true;
-            if( r->infos["solver"] == "BissectionInterval")
+            if( r->infos["solver"] == "BissectionInterval" || r->infos["solver"] == "ContractionInterval")
             {         
                for (int k=0;k<common_ref.size();k++)
                {

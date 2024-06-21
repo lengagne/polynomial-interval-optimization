@@ -19,7 +19,7 @@ int main( int argc, char** argv)
     std::cout<<"type_of_problem : 2D"<<std::endl;    
     if (argc ==2 && (std::string( argv[1]) == "h" || std::string( argv[1]) =="help"))
     {
-        std::cout<<"Call ./Robot2D ndof problem precision bissection_mode basis_function"<<std::endl;
+        std::cout<<"Call ./Robot2D ndof problem precision bissection_mode basis_function MogsMaxSize=50 filename="""<<std::endl;
         exit(0);
     }    
     
@@ -28,6 +28,7 @@ int main( int argc, char** argv)
     double precision = 0.001;
     uint bissection_mode = 0;
     int test = -1;
+    uint mogs_max_size = 50;
 	if(argc > 1)
         ndof = atoi(argv[1]);
 	if(argc > 2)
@@ -38,13 +39,17 @@ int main( int argc, char** argv)
         bissection_mode = atoi(argv[4]);        //MinFirst or Maxfirst
 	if(argc > 5)
         test = atoi(argv[5]);   
-
+	if(argc > 6)
+    {
+        mogs_max_size = atoi(argv[6]);   
+        MogsIntervalSetMaxSize(mogs_max_size);
+    }
     std::string warm_start_filename;    
     if(test != -1)
     {
-        if (argc >= 7)
+        if (argc >= 8)
         {
-            warm_start_filename = argv[6];
+            warm_start_filename = argv[7];
         }else
         {
             warm_start_filename = "no_warm_start"; //construct_filename_2D(ndof,npb,precision,bissection_mode,test);
