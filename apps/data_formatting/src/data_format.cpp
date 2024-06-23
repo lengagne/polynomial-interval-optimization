@@ -612,7 +612,7 @@ void create_latex_subpart( std::ofstream& outfile,
             double max_prep_time = 0;
             for (auto& d : local_data)
             {
-                std::cout<<d->infos["filename"]<<" ("<<d->infos["solver"]<<")  ("<<d->infos["prep_time"]<<") date = "<< d->date_ <<std::endl;
+//                 std::cout<<d->infos["filename"]<<" ("<<d->infos["solver"]<<")  ("<<d->infos["prep_time"]<<") date = "<< d->date_ <<std::endl;
                 double pt = toDouble(d->infos["prep_time"]);
             if (pt > max_prep_time) max_prep_time = pt;
                 
@@ -624,7 +624,7 @@ void create_latex_subpart( std::ofstream& outfile,
             // Vérifier si le vecteur n'est pas vide
             if (max_iter != local_data.end()) {
                 auto& maxValue = *max_iter;
-                std::cout<<"We keep "<< maxValue->infos["filename"] <<" : ("<<maxValue->infos["prep_time"]<<")" <<std::endl;
+//                 std::cout<<"We keep "<< maxValue->infos["filename"] <<" : ("<<maxValue->infos["prep_time"]<<")" <<std::endl;
                 maxValue->infos["prep_time"] = std::to_string(max_prep_time);
 //                 for (auto& l : local_data)
 //                 {
@@ -902,7 +902,7 @@ void set_pourcentage( const std::vector< data_format*> datas)
         for (auto& r : datas)
         {
             bool test_eq = true;
-            if( r->infos["solver"] == "BissectionInterval" || r->infos["solver"] == "ContractionInterval")
+            if( is_number(r->infos["total_time"]) && (r->infos["solver"] == "BissectionInterval" || r->infos["solver"] == "ContractionInterval" ))
             {         
                for (int k=0;k<common_ref.size();k++)
                {
@@ -914,6 +914,7 @@ void set_pourcentage( const std::vector< data_format*> datas)
                 }
                 if (test_eq)
                 {
+//                     std::cout<<"reference pourcentage : "<< r->infos["total_time"] <<std::endl;
                     test = true;
                     t->infos["total_time (%)"] = to_string_with_precision(100.*toDouble(t->infos["total_time"]) / toDouble(r->infos["total_time"]),2);
                     t->infos["nb_iter (%)"] = to_string_with_precision(100.*toDouble(t->infos["nb_iter"]) / toDouble(r->infos["nb_iter"]),2);
