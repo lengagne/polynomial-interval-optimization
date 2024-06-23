@@ -47,7 +47,7 @@ data_format3D::data_format3D( const std::string& filename)
             if (loof_for(line,"DUE TO TIME LIMIT"))
             {
                 time_out_ = true;      
-                infos["prep_time"] = "TIMEOUT";
+//                 infos["prep_time"] = "TIMEOUT";
                 infos["nb_iter"] = "TIMEOUT";
                 infos["comput_time"] = "TIMEOUT";
                 infos["time_per_iter"] = "TIMEOUT";
@@ -57,7 +57,7 @@ data_format3D::data_format3D( const std::string& filename)
             if (loof_for(line,"CANCELLED AT"))
             {
                 fail_ = true;                
-                infos["prep_time"] = "CANCELLED";
+//                 infos["prep_time"] = "CANCELLED";
                 infos["nb_iter"] = "CANCELLED";
                 infos["comput_time"] = "CANCELLED";
                 infos["time_per_iter"] = "CANCELLED";
@@ -68,7 +68,7 @@ data_format3D::data_format3D( const std::string& filename)
             if (loof_for(line,"Cannot load the library, stopping program"))
             {
                 fail_ = true;                
-                infos["prep_time"] = "CANNOT_LOAD_LIBRARY";
+//                 infos["prep_time"] = "CANNOT_LOAD_LIBRARY";
                 infos["nb_iter"] = "CANNOT_LOAD_LIBRARY";
                 infos["comput_time"] = "CANNOT_LOAD_LIBRARY";
                 infos["time_per_iter"] = "CANNOT_LOAD_LIBRARY";
@@ -80,7 +80,7 @@ data_format3D::data_format3D( const std::string& filename)
             {
                 fail_ = false;
                 time_out_ = false;
-                infos["prep_time"] = "RERUN WAITING";
+//                 infos["prep_time"] = "RERUN WAITING";
                 infos["nb_iter"] = "RERUN WAITING";
                 infos["comput_time"] = "RERUN WAITING";
                 infos["time_per_iter"] = "RERUN WAITING";
@@ -90,7 +90,7 @@ data_format3D::data_format3D( const std::string& filename)
             {
                 fail_ = true;
                 time_out_ = false;
-                infos["prep_time"] = "MEMORY ISSUE";
+//                 infos["prep_time"] = "MEMORY ISSUE";
                 infos["nb_iter"] = "MEMORY ISSUE";
                 infos["comput_time"] = "MEMORY ISSUE";
                 infos["time_per_iter"] = "MEMORY ISSUE";

@@ -72,7 +72,14 @@ data_format::data_format( const std::string& filename)
     {
 //         std::cout<<" reading "<< filename_ <<std::endl;
         while(getline(file,line))
-        {
+        {                       
+            
+            if (loof_for(line, "CEST") || loof_for(line, "CET"))
+            {
+                set_date_time(line);
+                
+            }            
+            
             add_data(line,"save_file", "save_filename =");
             add_data(line,"ndof", "ndof =");
             add_data(line,"problem", "npb =");
@@ -90,15 +97,12 @@ data_format::data_format( const std::string& filename)
             add_data(line,"nb_intermediate", "nb_intermediate_ = ");      
             
             
-            if (loof_for(line, "CEST") || loof_for(line, "CET"))
-            {
-                set_date_time(line);
-            }
+
             
             if (loof_for(line,"DUE TO TIME LIMIT"))
             {
                 time_out_ = true;      
-                infos["prep_time"] = "TIMEOUT";
+//                 infos["prep_time"] = "TIMEOUT";
                 infos["nb_iter"] = "TIMEOUT";
                 infos["comput_time"] = "TIMEOUT";
                 infos["time_per_iter"] = "TIMEOUT";
@@ -107,7 +111,7 @@ data_format::data_format( const std::string& filename)
             else if (loof_for(line,"CANCELLED AT"))
             {
                 fail_ = true;                
-                infos["prep_time"] = "CANCELLED";
+//                 infos["prep_time"] = "CANCELLED";
                 infos["nb_iter"] = "CANCELLED";
                 infos["comput_time"] = "CANCELLED";
                 infos["time_per_iter"] = "CANCELLED";
@@ -116,7 +120,7 @@ data_format::data_format( const std::string& filename)
             if (loof_for(line,"Cannot load the library, stopping program"))
             {
                 fail_ = true;                
-                infos["prep_time"] = "CANNOT_LOAD_LIBRARY";
+//                 infos["prep_time"] = "CANNOT_LOAD_LIBRARY";
                 infos["nb_iter"] = "CANNOT_LOAD_LIBRARY";
                 infos["comput_time"] = "CANNOT_LOAD_LIBRARY";
                 infos["time_per_iter"] = "CANNOT_LOAD_LIBRARY";
@@ -127,7 +131,7 @@ data_format::data_format( const std::string& filename)
             {
                 fail_ = false;
                 time_out_ = false;
-                infos["prep_time"] = "RERUN WAITING";
+//                 infos["prep_time"] = "RERUN WAITING";
                 infos["nb_iter"] = "RERUN WAITING";
                 infos["comput_time"] = "RERUN WAITING";
                 infos["time_per_iter"] = "RERUN WAITING";
@@ -137,7 +141,7 @@ data_format::data_format( const std::string& filename)
             {
                 fail_ = true;
                 time_out_ = false;
-                infos["prep_time"] = "MEMORY ISSUE";
+//                 infos["prep_time"] = "MEMORY ISSUE";
                 infos["nb_iter"] = "MEMORY ISSUE";
                 infos["comput_time"] = "MEMORY ISSUE";
                 infos["time_per_iter"] = "MEMORY ISSUE";
@@ -260,8 +264,14 @@ void data_format::set_date_time(std::string& line)
     }
 }
 
-bool data_format::operator<(const data_format& other) const 
+bool data_format::operator<( data_format& other) 
 {
+    
+    if (date_ == other.date_)
+    {
+        return infos["filename"] < other.infos["filename"];
+    }
+    
     return date_ < other.date_;
 }
 
@@ -598,9 +608,15 @@ void create_latex_subpart( std::ofstream& outfile,
         if (ref == "solver" && local_data.size() >1)
         {
 //             std::cout<<"We have several inputs for this case in files : "<<std::endl;
-//             for (auto& d : local_data)
-//                 std::cout<<d->infos["filename"]<<std::endl;
-
+            
+            double max_prep_time = 0;
+            for (auto& d : local_data)
+            {
+                std::cout<<d->infos["filename"]<<" ("<<d->infos["solver"]<<")  ("<<d->infos["prep_time"]<<") date = "<< d->date_ <<std::endl;
+                double pt = toDouble(d->infos["prep_time"]);
+            if (pt > max_prep_time) max_prep_time = pt;
+                
+            }
             // on récupère la plus vielle
             auto max_iter = std::max_element(local_data.begin(), local_data.end(), [](data_format* lhs, data_format* rhs){ return *lhs < *rhs;});
             
@@ -608,7 +624,8 @@ void create_latex_subpart( std::ofstream& outfile,
             // Vérifier si le vecteur n'est pas vide
             if (max_iter != local_data.end()) {
                 auto& maxValue = *max_iter;
-//                 std::cout<<"We keep "<< maxValue->infos["filename"] <<" from" <<std::endl;
+                std::cout<<"We keep "<< maxValue->infos["filename"] <<" : ("<<maxValue->infos["prep_time"]<<")" <<std::endl;
+                maxValue->infos["prep_time"] = std::to_string(max_prep_time);
 //                 for (auto& l : local_data)
 //                 {
 //                         std::cout<<"\t\t "<< l->infos["filename"] <<std::endl;

@@ -40,7 +40,7 @@ public:
     
     void set_date_time(std::string& line);
     
-    bool operator<(const data_format& other) const ;    
+    bool operator<( data_format& other)  ;    
     
     long int date_ = 0;
        

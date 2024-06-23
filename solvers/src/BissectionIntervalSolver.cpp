@@ -4,6 +4,7 @@
 BissectionIntervalSolver::BissectionIntervalSolver(AbstractCSP* pb,
                                                     uint bissection_mode)
 {
+    int dummy = system("date");
     pb_ = pb;
     pb_->init();
     nb_fun_ = pb_->get_nb_out();

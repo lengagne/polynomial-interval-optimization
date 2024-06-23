@@ -2,7 +2,7 @@
 #include <QCoreApplication>
 #include <QFileDialog>
 #include <QDebug>
-
+#include <regex>
 #include "data_format.h"
 
 int main(int argc, char *argv[])
@@ -36,7 +36,22 @@ int main(int argc, char *argv[])
         QString current = *it;
         {
             data_format* d = new data_format(( repo  + current).toStdString());
-            datas_.push_back(d);
+            
+            
+            // use to limit to degree 2 to 5 // FIXME : REMOVE ME after
+            if (d->infos["ndof"] == "6")
+            {
+//                 std::cout<<"We do not consider : "<< d->infos["filename"]<<std::endl;
+                if (d->infos["total_time"] == "-1")
+                {
+                    std::string name = std::regex_replace(d->infos["filename"], std::regex("../data/bis_2D/slurm-"), "");
+                    name = std::regex_replace(name, std::regex(".out"), "");
+                    std::cout<<"scancel  "<< name <<std::endl;
+                }
+            }else
+            {           
+                datas_.push_back(d);
+            }
         }
     }
     
