@@ -16,7 +16,8 @@ std::list<std::string> pb_order_;
 
 bool is_double(const std::string& s)
 {
-    std::istringstream iss(s);
+    std::string ss =  std::regex_replace(s, std::regex(","), ".");
+    std::istringstream iss(ss);
     double d;
     return iss >> d >> std::ws && iss.eof();
 }
@@ -626,6 +627,16 @@ void create_latex_subpart( std::ofstream& outfile,
                 auto& maxValue = *max_iter;
 //                 std::cout<<"We keep "<< maxValue->infos["filename"] <<" : ("<<maxValue->infos["prep_time"]<<")" <<std::endl;
                 maxValue->infos["prep_time"] = std::to_string(max_prep_time);
+                
+                double t1 = toDouble(maxValue->infos["comput_time"]);
+                double t2 = toDouble(maxValue->infos["total_time"]);
+                
+                if (t1 + max_prep_time > t2)
+                {
+//                     std::cout<<"We replace total time for "<< maxValue->infos["filename"]  <<std::endl,
+                    maxValue->infos["total_time"] = std::to_string( (int) t1 + max_prep_time ); // (int) we assume very big number (no need for coma precision)
+                }
+                
 //                 for (auto& l : local_data)
 //                 {
 //                         std::cout<<"\t\t "<< l->infos["filename"] <<std::endl;
@@ -647,14 +658,39 @@ void create_latex_subpart( std::ofstream& outfile,
         {
             prepare_re_run(local_data);    
             data_format* d = local_data[0];
-            for (int i=index;i<columns.size()-1;i++)
+            for (int i=index;i<columns.size();i++)
             {
-//                 std::string v = replace(d->infos[columns[i]]);
-//                 scientificFormat(outfile,v);
-//                 outfile <<" & ";
-                outfile <<replace(d->infos[columns[i]])<< std::scientific<< std::setprecision(3)<<" & ";
+//                 std::cout<<"columns["<<i<<"] = "<< columns[i] <<std::endl;
+                if (columns[i] == "prep_time" || columns[i] == "time_per_iter")
+                {
+                    outfile <<toScientificString(d->infos[columns[i]]) ;
+                }else if (columns[i] == "comput_time (%)"|| columns[i] == "total_time (%)"|| columns[i] == "nb_iter (%)")
+                {
+                    std::cout<<"d->infos["<<columns[i]<<"] = "<< d->infos[columns[i]] <<std::endl;
+                    std::cout<<"d->infos["<<columns[i]<<"] = "<< toPercentageString(d->infos[columns[i]])<<std::endl<<std::endl;
+                    outfile <<toPercentageString(d->infos[columns[i]]) ; 
+                }else if (columns[i] == "comput_time" || columns[i] == "total_time")
+                {
+                    outfile <<toDoubleTimeString(d->infos[columns[i]]) ;
+                }else if (columns[i] == "comput_time" || columns[i] == "criteria")
+                {
+                    if (d->infos[columns[i]] == "-1")
+                        outfile <<" infeasible ";
+                    else
+                        outfile <<toScientificString(d->infos[columns[i]],2);
+                }else
+                {
+                    outfile <<replace(d->infos[columns[i]])<< std::scientific<< std::setprecision(3);
+                }
+                
+                if (i == columns.size()-1)
+                {
+                    outfile<< " \\\\ " ;
+                }else
+                {
+                    outfile<< " &" ;
+                }
             }
-            outfile << replace(d->infos[columns[columns.size()-1]]) <<"\\\\ "; 
             outfile <<" \\cline{"<< index+1 <<"-"<< columns.size() <<"}\n";               
         }else
         {
@@ -786,6 +822,75 @@ double toDouble(std::string s){
     std::replace(s.begin(), s.end(), '.', ',');
     return std::atof(s.c_str());
 }
+
+std::string toDoubleTimeString (std::string s)
+{
+    double val = toDouble(s);
+    if (val < 1)
+        return toScientificString(s);
+    if (val < 10)
+        return to_string_with_precision(val,3);
+    if (val < 100)
+        return to_string_with_precision(val,2);    
+    if (val < 1000)
+        return to_string_with_precision(val,1);
+    else
+    {
+        int v = val;
+        return std::to_string(v);
+    }
+}
+
+std::string toPercentageString(std::string s)
+{
+    if (is_double(s))
+    {
+        double val = toDouble(s);
+        if (val <= 0.0)
+        {
+            std::cout<<"is negative"<<std::endl;
+            return s;
+        }
+        int p = 0;
+        
+        while ( val > pow(10,p++));
+        while ( val < pow(10,p--));
+        
+        int pp = 2 -p;
+        if (pp < 1) pp = 1;
+        return to_string_with_precision(val,pp);
+    }
+    std::cout<<"is not double "<<std::endl;
+    return "";
+}
+
+std::string toScientificString (std::string s, uint offset )
+{
+    double val = toDouble(s);
+    int expo=0;
+    
+    while ( val > pow(10,expo+3))
+    {
+        expo += 3;
+    }
+    
+    while ( val < pow(10,expo))
+        expo -= 3;    
+    
+    double m = val / pow(10,expo);
+    std::string out;
+    if (m < 10)
+        out = to_string_with_precision(m,offset+2);
+    else if (m < 100)
+        out = to_string_with_precision(m,offset+1);    
+    else
+        out = to_string_with_precision(m,offset);    
+    if (expo != 0 )
+        out += "e" + std::to_string(expo);
+    
+    return out;
+}
+
 
 std::string replace (const std::string &in)
 {
@@ -919,6 +1024,9 @@ void set_pourcentage( const std::vector< data_format*> datas)
                     t->infos["total_time (%)"] = to_string_with_precision(100.*toDouble(t->infos["total_time"]) / toDouble(r->infos["total_time"]),2);
                     t->infos["nb_iter (%)"] = to_string_with_precision(100.*toDouble(t->infos["nb_iter"]) / toDouble(r->infos["nb_iter"]),2);
                     t->infos["comput_time (%)"] = to_string_with_precision(100.*toDouble(t->infos["comput_time"]) / toDouble(r->infos["comput_time"]),2);
+                    
+                    std::cout<<"nb_iter (%) : "<< t->infos["nb_iter (%)"] <<std::endl;
+                    
                     break;
                 }                
             }

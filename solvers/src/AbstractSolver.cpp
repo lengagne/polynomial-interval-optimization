@@ -237,7 +237,7 @@ param_optim AbstractSolver::set_results()
 //     std::cout<<"Size of ignored space  : "<< ignored_space_<<std::endl;
     std::cout<<"computation time (wo prep): "<< previous_time_ + current_time_ - start_computation_time_ <<" seconds."<<std::endl;
     std::cout<<"Time per iteration : "<< (previous_time_ + current_time_ - start_computation_time_)/((saved_iter_*save_each_iter_)+cpt_iter_) <<" seconds."<<std::endl;
-    std::cout<<"total time : "<< previous_time_+ current_time_ - start_preparation_time_ <<" seconds."<<std::endl;
+    std::cout<<"total time : "<< previous_time_+ (current_time_ - start_preparation_time_) + preparation_duration_ <<" seconds."<<std::endl;
     if(find_one_feasible_)
     {
         std::cout<<"crit = "<< optim_crit_ <<std::endl;

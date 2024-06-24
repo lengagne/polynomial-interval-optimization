@@ -117,6 +117,14 @@ std::list<std::string> re_order(const std::list<std::string>& input,
 
 double toDouble(std::string s);
 
+std::string toScientificString (std::string s, uint offset = 1);
+
+std::string toDoubleTimeString (std::string s);
+
+std::string toPercentageString(std::string s);
+
+
+
 bool is_number(const std::string& s);
 
 std::string replace (const std::string& in);

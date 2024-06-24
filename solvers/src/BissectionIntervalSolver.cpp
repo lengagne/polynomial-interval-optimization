@@ -74,6 +74,8 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     
     
     start_computation_time_ = get_cpu_time();
+    if ( preparation_duration_ < start_computation_time_ - start_preparation_time_)
+        preparation_duration_ = start_computation_time_ - start_preparation_time_;
     std::cout<<"preparation time : "<< start_computation_time_ - start_preparation_time_ <<" seconds."<<std::endl;
 
     
