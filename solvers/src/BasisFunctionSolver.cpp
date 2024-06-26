@@ -132,7 +132,8 @@ void BasisFunctionSolver::init_end()
     
     LazyPrepare(save_filename_,warm_start_);
     current_time_ = get_cpu_time();
-    if ( preparation_duration_ < current_time_ - start_preparation_time_)
+    
+    if (preparation_duration_ == 0.0)
         preparation_duration_ = current_time_ - start_preparation_time_;
     std::cout<<"preparation time : "<< preparation_duration_ <<" seconds."<<std::endl;
     start_computation_time_  = get_cpu_time();

@@ -194,7 +194,7 @@ void AbstractSolver::save_current_state( const std::string& filename)
     
     current_time_ = get_cpu_time();
     QDomElement computation_time = document.createElement("computation_time");
-    text = document.createTextNode(QString::number(current_time_ - start_computation_time_));
+    text = document.createTextNode(QString::number(previous_time_ + current_time_ - start_computation_time_));
     computation_time.appendChild(text);
     root.appendChild(computation_time);        
     
@@ -234,10 +234,11 @@ param_optim AbstractSolver::set_results()
     std::cout<<"Number of Bissections : "<< (saved_iter_*save_each_iter_)+ cpt_iter_ <<std::endl;
     std::cout<<"Number of valid boxes : "<< nb_valid_box_ <<std::endl;
     std::cout<<"Number of possible boxes : "<< nb_maybe_box_<<std::endl;
+    std::cout<<"previous_time_ : "<< previous_time_ <<std::endl;
 //     std::cout<<"Size of ignored space  : "<< ignored_space_<<std::endl;
     std::cout<<"computation time (wo prep): "<< previous_time_ + current_time_ - start_computation_time_ <<" seconds."<<std::endl;
     std::cout<<"Time per iteration : "<< (previous_time_ + current_time_ - start_computation_time_)/((saved_iter_*save_each_iter_)+cpt_iter_) <<" seconds."<<std::endl;
-    std::cout<<"total time : "<< previous_time_+ (current_time_ - start_preparation_time_) + preparation_duration_ <<" seconds."<<std::endl;
+    std::cout<<"total time : "<< previous_time_+ current_time_ - start_preparation_time_ <<" seconds."<<std::endl;
     if(find_one_feasible_)
     {
         std::cout<<"crit = "<< optim_crit_ <<std::endl;

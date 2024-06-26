@@ -666,8 +666,6 @@ void create_latex_subpart( std::ofstream& outfile,
                     outfile <<toScientificString(d->infos[columns[i]]) ;
                 }else if (columns[i] == "comput_time (%)"|| columns[i] == "total_time (%)"|| columns[i] == "nb_iter (%)")
                 {
-                    std::cout<<"d->infos["<<columns[i]<<"] = "<< d->infos[columns[i]] <<std::endl;
-                    std::cout<<"d->infos["<<columns[i]<<"] = "<< toPercentageString(d->infos[columns[i]])<<std::endl<<std::endl;
                     outfile <<toPercentageString(d->infos[columns[i]]) ; 
                 }else if (columns[i] == "comput_time" || columns[i] == "total_time")
                 {
@@ -848,7 +846,6 @@ std::string toPercentageString(std::string s)
         double val = toDouble(s);
         if (val <= 0.0)
         {
-            std::cout<<"is negative"<<std::endl;
             return s;
         }
         int p = 0;
@@ -860,7 +857,6 @@ std::string toPercentageString(std::string s)
         if (pp < 1) pp = 1;
         return to_string_with_precision(val,pp);
     }
-    std::cout<<"is not double "<<std::endl;
     return "";
 }
 
@@ -1024,9 +1020,6 @@ void set_pourcentage( const std::vector< data_format*> datas)
                     t->infos["total_time (%)"] = to_string_with_precision(100.*toDouble(t->infos["total_time"]) / toDouble(r->infos["total_time"]),2);
                     t->infos["nb_iter (%)"] = to_string_with_precision(100.*toDouble(t->infos["nb_iter"]) / toDouble(r->infos["nb_iter"]),2);
                     t->infos["comput_time (%)"] = to_string_with_precision(100.*toDouble(t->infos["comput_time"]) / toDouble(r->infos["comput_time"]),2);
-                    
-                    std::cout<<"nb_iter (%) : "<< t->infos["nb_iter (%)"] <<std::endl;
-                    
                     break;
                 }                
             }

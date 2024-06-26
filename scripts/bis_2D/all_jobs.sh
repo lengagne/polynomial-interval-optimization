@@ -1,7 +1,7 @@
 #!/bin/bash
 params=(0.01 0.001)
 
-for dof in `seq 2 5`
+for dof in `seq 2 4`
 do
     for precision in "${params[@]}"
     do
@@ -12,7 +12,7 @@ do
                 for pb in `seq 1 9` 
                 do
                     pbname=$(($((10*$pb10))+$pb));
-                    for solveur in `seq 1 8`                    
+                    for solveur in `seq 0 8`                    
                     do
                         sbatch job.sh $dof $pbname $precision $bissection_type $solveur
                     done
@@ -22,7 +22,7 @@ do
     done
 done
 
-for dof in `seq 6 6`
+for dof in `seq 5 5`
 do
     for precision in "${params[@]}"
     do
@@ -33,7 +33,7 @@ do
                 for pb in `seq 1 9` 
                 do
                     pbname=$(($((10*$pb10))+$pb));
-                    for solveur in `seq 1 8`                    
+                    for solveur in `seq 0 8`                    
                     do
                         sbatch long_job.sh $dof $pbname $precision $bissection_type $solveur
                     done

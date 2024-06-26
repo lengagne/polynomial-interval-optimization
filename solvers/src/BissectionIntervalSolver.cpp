@@ -74,9 +74,9 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
     
     
     start_computation_time_ = get_cpu_time();
-    if ( preparation_duration_ < start_computation_time_ - start_preparation_time_)
-        preparation_duration_ = start_computation_time_ - start_preparation_time_;
-    std::cout<<"preparation time : "<< start_computation_time_ - start_preparation_time_ <<" seconds."<<std::endl;
+    if (preparation_duration_ == 0.0)
+        preparation_duration_ = current_time_ - start_preparation_time_;    
+    std::cout<<"preparation time : "<< preparation_duration_ <<" seconds."<<std::endl;
 
     
     if(current_vector_.size() == 0)
@@ -92,6 +92,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
         cpt_iter_++;
         if (cpt_iter_%save_each_iter_ == 0)
         {
+//             std::cout<<cpt_iter_<<" crit ! "<< optim_crit_ <<std::endl;
             save_current_state(save_filename_);
             cpt_iter_ = 0;
             saved_iter_ ++;
@@ -147,7 +148,7 @@ param_optim BissectionIntervalSolver::solve_optim(double eps)
                                     }
                 case(OVERLAP)   :   
                                     Result low, high;
-                                    bissect(current_value,current_vector_);/*
+                                    bissect(current_value, current_vector_);/*
                                     
                                     if(bissect(current_value, low,high))
                                     {
