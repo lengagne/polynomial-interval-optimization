@@ -17,6 +17,7 @@ data_format3D::data_format3D( const std::string& filename)
     std::ifstream file;
     file.open(filename);
     infos["filename"] = filename;
+    infos["criteria"] = "not_defined";
     if(file.is_open())
     {
 //         std::cout<<" reading "<< filename_ <<std::endl;

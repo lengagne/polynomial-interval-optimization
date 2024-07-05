@@ -69,6 +69,7 @@ data_format::data_format( const std::string& filename)
     std::ifstream file;
     file.open(filename);
     infos["filename"] = filename;
+    infos["criteria"] = "not_defined";
     if(file.is_open())
     {
 //         std::cout<<" reading "<< filename_ <<std::endl;
@@ -245,6 +246,7 @@ void data_format::set_date_time(std::string& line)
     else if (month =="avril")    month_i = 4;
     else if (month =="mai")    month_i = 5;
     else if (month =="juin")    month_i = 6;
+    else if (month =="juil.")    month_i = 7;
     else fail = true;
         
     iss>> day;
@@ -299,28 +301,23 @@ void create_latex( std::ofstream& outfile,
                    const std::string &titre,
                    const std::string &label)
 {
-    
-//     std::cout<<"create table"<<std::endl;
+    // std::cout<<"create_latex 1 "<<std::endl;
+//     // std::cout<<"create table"<<std::endl;
 //     std::cout<<"On a "<< columns.size() <<" colonnes "<<std::endl;
     uint cs = columns.size();
 //     outfile <<"\\begin{longtable}{|";
     
-    
+    // std::cout<<"create_latex 2 "<<std::endl;
     outfile <<"\\begin{table}\n  \\resizebox{\\textwidth}{!}{   \n \\begin{tabular}{|";
-    
+    // std::cout<<"create_latex 3 "<<std::endl;
     for (int i=0;i<cs;i++)  outfile<< "c|";
     outfile <<"}\n";
     outfile<<"\\hline\n"; 
-    
-//     for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
-//     outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\endfirsthead \\hline \n";    
-
-//     for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
-//     outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\endhead \\hline \n";        
+    // std::cout<<"create_latex 4 "<<std::endl;
     
     for (int i=0;i<cs-1;i++)  outfile<< replace(columns[i])<<" & ";
     outfile<< replace(columns[cs-1])<<" \\\\ \\hline  \\hline \n";        
-    
+    // std::cout<<"create_latex 5 "<<std::endl;    
 //     std::cout<<"datas.size() = "<< datas.size()<<std::endl;
     create_latex_subpart( outfile, 0, columns, datas);
     outfile <<"\\end{tabular}\n";
@@ -330,10 +327,7 @@ void create_latex( std::ofstream& outfile,
         outfile<<" \\label\{fig"<< label<<"}"<<std::endl;
     }
     outfile <<"\\end{table}\n\n";
-//     outfile <<"\\normalsize \n";
-//     outfile <<"\\end{longtable}\n\n";
-//     std::cout<<"end of table"<<std::endl;
-    
+    // std::cout<<"create_latex fin "<<std::endl;
 }
 
 void create_latex( const std::vector< data_format*> datas,
@@ -348,7 +342,8 @@ void create_latex( const std::vector< data_format*> datas,
                    const std::string& label
                  )
 {
-    std::cout<<"CREATE LATEX With "<< filename <<" "<< datas.size() <<std::endl;
+    // std::cout<<"CREATE LATEX With "<< filename <<" "<< datas.size() <<std::endl;
+    // std::cout<<"CREATE LATEX STEP 1 "<<std::endl;
     std::vector< std::vector< std::string > > differences;
     for (auto& d : datas)
     {
@@ -394,6 +389,7 @@ void create_latex( const std::vector< data_format*> datas,
                 differences.push_back(local_diff);
         }
     }
+    // std::cout<<"CREATE LATEX STEP 2 "<<std::endl;
     
 //     std::cout<<"on a va générer "<< differences.size()<<" tableaux pour "<<std::endl;
     std::ofstream outfile (filename+".tex");
@@ -401,8 +397,10 @@ void create_latex( const std::vector< data_format*> datas,
     
     for (int i=0;i<differences.size();i++)
     {
+        // std::cout<<"CREATE LATEX STEP 2-Ai = "<< i <<std::endl;
         // on trie
         std::vector< data_format*> local_datas;
+        // std::cout<<"CREATE LATEX STEP 2-Bi = "<< i <<std::endl;
         for (auto& d : datas)
         {
             bool test = true;
@@ -417,7 +415,7 @@ void create_latex( const std::vector< data_format*> datas,
             if (test)
                 local_datas.push_back(d);
         }
-        
+        // std::cout<<"CREATE LATEX STEP 2-Ci = "<< i <<std::endl;
         std::string caption = main_title;
         for (int j=0;j<common.size();j++)
         {
@@ -425,10 +423,11 @@ void create_latex( const std::vector< data_format*> datas,
             if (j != common.size()-1)
                 caption += ", ";
         }
-        
+        // std::cout<<"CREATE LATEX STEP 2-Di = "<< i <<std::endl;
         create_latex( outfile, local_datas, columns, caption,label + "_"+ std::to_string(i+1));
+        // std::cout<<"CREATE LATEX STEP 2-Ei = "<< i <<std::endl;
     }
-    
+    // std::cout<<"CREATE LATEX STEP 3 "<<std::endl;
     // list precision and solver
     int nb_average_on = average_on.size();
     
@@ -452,7 +451,7 @@ void create_latex( const std::vector< data_format*> datas,
         counter[i] = 0;
 //         std::cout<<"We found "<< list_on_average[i].size() <<" different values for "<< average_on[i]<<std::endl;
     }
-     
+    // std::cout<<"CREATE LATEX STEP 4 "<<std::endl; 
     std::vector< data_format*> average_data;
     
     while( counter[0] < sizes[0])
@@ -480,7 +479,7 @@ void create_latex( const std::vector< data_format*> datas,
             cpt--;
         }
     }
-
+    // std::cout<<"CREATE LATEX STEP 5 "<<std::endl;
     for (auto& a : average_data)
     {
         uint nb = 0;
@@ -489,6 +488,7 @@ void create_latex( const std::vector< data_format*> datas,
             values[i] = 0.0;
         for (auto& d : datas)
         {
+            
             bool test = true;
             for (int i=0;i<nb_average_on;i++)
             {
@@ -499,8 +499,9 @@ void create_latex( const std::vector< data_format*> datas,
                 }
             }
             
-            if (test) //&& d->infos["criteria"] != "-1")
+            if (test && d->infos["criteria"] != "not_defined") //&& d->infos["criteria"] != "-1")
             {
+//                 std::cout<< d->infos["filename"] <<" : "<<  d->infos["nb_iter"] <<std::endl;
                 nb ++;
                 for (int i=0;i<columns_average.size();i++)
                 {
@@ -517,13 +518,21 @@ void create_latex( const std::vector< data_format*> datas,
 //                 comput_time_percent += toDouble(d->infos["comput_time (%)"] );
             }
         }
+//         std::cout<<"solver = "<<  a->infos["solver"] <<std::endl;
+//         std::cout<<"ndof = "<<  a->infos["ndof"] <<std::endl;
+//         std::cout<<"precision = "<<  a->infos["precision"] <<std::endl;
+//         std::cout<<"robot = "<<  a->infos["robot"] <<std::endl;
+//         std::cout<<"nb = "<< nb <<std::endl;
         
         if(nb !=0)
         {
             for (int i=0;i<columns_average.size();i++)
             {
                 if (columns_average[i] == "nb_iter")
-                    a->infos[columns_average[i]] = std::to_string((int) values[i]/nb);
+                {
+//                     std::cout<<" total = "<< values[i]<<std::endl;
+                    a->infos[columns_average[i]] = std::to_string((long int) values[i]/nb);
+                }
                 else
                 {
                     a->infos[columns_average[i]] = std::to_string( values[i]/nb);
@@ -540,9 +549,11 @@ void create_latex( const std::vector< data_format*> datas,
 //             a->infos["nb_iter (%)"]  = to_string_with_precision(nb_iter_percent/nb,2);
 //             a->infos["comput_time (%)"] = to_string_with_precision(comput_time_percent/nb,2);
         }
+//         std::cout<<" nb_iter : "<<  a->infos["nb_iter"] <<std::endl<<std::endl<<std::endl;
+        
     }
 //     set_pourcentage(average_data);
-    
+    // std::cout<<"CREATE LATEX STEP 6 "<<std::endl;
     std::vector<std::string> col;
     for (int i=0;i<average_on.size();i++)
         col.push_back(average_on[i]);
@@ -551,6 +562,7 @@ void create_latex( const std::vector< data_format*> datas,
     
     create_latex( outfile, average_data, col,average_title,"average_"+label);
     outfile.close();
+    // std::cout<<"CREATE LATEX STEP FIN "<<std::endl;
 }
 
 
@@ -560,11 +572,12 @@ void create_latex_subpart( std::ofstream& outfile,
                            const std::vector< data_format*> datas,
                            const std::string& entete)
 {
+    // std::cout<<"create_latex_subpart 1 : "<< entete <<std::endl;
     if (index >= columns.size())
     {
         return;
     }
-    
+    // std::cout<<"create_latex_subpart 2 : "<< entete <<std::endl;
 //     for (int i=0;i<index;i++)   std::cout<<"\t";
 //     std::cout<<"looking for "<< columns[index]<<"  in "<< datas.size() <<std::endl;
     
@@ -580,7 +593,7 @@ void create_latex_subpart( std::ofstream& outfile,
         add( t, type_data);            
         type_data.sort();            
     }
-    
+    // std::cout<<"create_latex_subpart 3 : "<< entete <<std::endl;
     if (ref == "solver")
         type_data = re_order( type_data,solver_order_);
     
@@ -594,6 +607,7 @@ void create_latex_subpart( std::ofstream& outfile,
     uint cpt = 0;
     for (auto& t : type_data)
     {
+        // std::cout<<"create_latex_subpart 4 t-a : "<< t <<std::endl;
         std::vector< data_format*> local_data;
         for (auto& d : datas)
         {
@@ -602,7 +616,7 @@ void create_latex_subpart( std::ofstream& outfile,
                 local_data.push_back(d);
             }            
         }
-       
+        // std::cout<<"create_latex_subpart 4 t-b : "<< t <<std::endl;
         if (cpt)
             outfile<<replace(entete);
         
@@ -628,39 +642,20 @@ void create_latex_subpart( std::ofstream& outfile,
 //                 std::cout<<"We keep "<< maxValue->infos["filename"] <<" : ("<<maxValue->infos["prep_time"]<<")" <<std::endl;
                 maxValue->infos["prep_time"] = std::to_string(max_prep_time);
                 
-                double t1 = toDouble(maxValue->infos["comput_time"]);
-                double t2 = toDouble(maxValue->infos["total_time"]);
-                
-                if (t1 + max_prep_time > t2)
-                {
-//                     std::cout<<"We replace total time for "<< maxValue->infos["filename"]  <<std::endl,
-                    maxValue->infos["total_time"] = std::to_string( (int) t1 + max_prep_time ); // (int) we assume very big number (no need for coma precision)
-                }
-                
-//                 for (auto& l : local_data)
-//                 {
-//                         std::cout<<"\t\t "<< l->infos["filename"] <<std::endl;
-//                 }
-                
-                
                 // Supprimer toutes les autres valeurs
                 local_data.clear();
                 local_data.push_back(maxValue);
-                // Afficher le résultat
-//                 std::cout << "La plus grande valeur est : " << v[0] << std::endl;
             } 
-//             else {
-//                 std::cout << "Le vecteur est vide." << std::endl;
-//             }
         }
-        
+        // std::cout<<"create_latex_subpart 4 t-c : "<< t <<std::endl;
         if ( local_data.size() == 1)
         {
+//             std::cout<<"si oui "<<std::endl;
             prepare_re_run(local_data);    
             data_format* d = local_data[0];
             for (int i=index;i<columns.size();i++)
             {
-//                 std::cout<<"columns["<<i<<"] = "<< columns[i] <<std::endl;
+                // std::cout<<"columns["<<i<<"] = "<< columns[i] <<std::endl;
                 if (columns[i] == "prep_time" || columns[i] == "time_per_iter")
                 {
                     outfile <<toScientificString(d->infos[columns[i]]) ;
@@ -688,10 +683,13 @@ void create_latex_subpart( std::ofstream& outfile,
                 {
                     outfile<< " &" ;
                 }
+//                 std::cout<<"fin columns["<<i<<"] = "<< columns[i] <<std::endl;
             }
             outfile <<" \\cline{"<< index+1 <<"-"<< columns.size() <<"}\n";               
+//             std::cout<<"fin si oui "<<std::endl;
         }else
         {
+//             std::cout<<"si non "<<std::endl;
             if (entete == "")
             {
                 outfile <<" \\hline \n";   
@@ -703,8 +701,11 @@ void create_latex_subpart( std::ofstream& outfile,
             create_latex_subpart ( outfile, index+1, columns, local_data, entete+" & ");
             outfile <<" \\cline{"<< index+1 <<"-"<< index+2 <<"}";   
         }
+        // std::cout<<"create_latex_subpart 4 t-d : "<< t <<std::endl;
         cpt ++;
-    }    
+        // std::cout<<"create_latex_subpart 4 t-e : "<< t <<std::endl;
+    }   
+    // std::cout<<"create_latex_subpart fin "<<std::endl;
 }
 
 std::string get_bissection( const std::string in)
@@ -862,7 +863,15 @@ std::string toPercentageString(std::string s)
 
 std::string toScientificString (std::string s, uint offset )
 {
+//     std::cout<<"toScientificString s = "<< s <<std::endl;
     double val = toDouble(s);
+    std::string out;
+    if (val <0)
+    {
+        out = "-";
+        val = -val;
+    }
+    
     int expo=0;
     
     while ( val > pow(10,expo+3))
@@ -873,17 +882,18 @@ std::string toScientificString (std::string s, uint offset )
     while ( val < pow(10,expo))
         expo -= 3;    
     
-    double m = val / pow(10,expo);
-    std::string out;
+    double m = val / pow(10,expo);    
+    
     if (m < 10)
-        out = to_string_with_precision(m,offset+2);
+        out += to_string_with_precision(m,offset+2);
     else if (m < 100)
-        out = to_string_with_precision(m,offset+1);    
+        out += to_string_with_precision(m,offset+1);    
     else
-        out = to_string_with_precision(m,offset);    
+        out += to_string_with_precision(m,offset);    
     if (expo != 0 )
         out += "e" + std::to_string(expo);
     
+//     std::cout<<"toScientificString out = "<< out <<std::endl;
     return out;
 }
 
@@ -1017,9 +1027,9 @@ void set_pourcentage( const std::vector< data_format*> datas)
                 {
 //                     std::cout<<"reference pourcentage : "<< r->infos["total_time"] <<std::endl;
                     test = true;
-                    t->infos["total_time (%)"] = to_string_with_precision(100.*toDouble(t->infos["total_time"]) / toDouble(r->infos["total_time"]),2);
-                    t->infos["nb_iter (%)"] = to_string_with_precision(100.*toDouble(t->infos["nb_iter"]) / toDouble(r->infos["nb_iter"]),2);
-                    t->infos["comput_time (%)"] = to_string_with_precision(100.*toDouble(t->infos["comput_time"]) / toDouble(r->infos["comput_time"]),2);
+                    t->infos["total_time (%)"] = to_string_with_precision(100.*toDouble(t->infos["total_time"]) / toDouble(r->infos["total_time"]),10);
+                    t->infos["nb_iter (%)"] = to_string_with_precision(100.*toDouble(t->infos["nb_iter"]) / toDouble(r->infos["nb_iter"]),10);
+                    t->infos["comput_time (%)"] = to_string_with_precision(100.*toDouble(t->infos["comput_time"]) / toDouble(r->infos["comput_time"]),10);
                     break;
                 }                
             }
