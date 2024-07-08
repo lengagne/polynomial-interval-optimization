@@ -87,7 +87,7 @@ class AbstractSolver
         double current_time_;
         double start_preparation_time_;
         double start_computation_time_;
-        double preparation_duration_;
+        double preparation_duration_ = 0.0;
         
         double previous_time_ = 0;
         
